@@ -14,6 +14,7 @@ import {
   Tournament_TournamentSettings_Team,
   Tournament_TournamentSettings_Pool,
   Permissions,
+  RealtimeScore,
 } from "./models/models.js";
 import { Packet } from "./models/packets.js";
 import { StateManager } from "./state-manager.js";
@@ -48,6 +49,7 @@ type TAClientEvents = {
   loadSongRequested: [string, string, Request_LoadSong];
 
   songFinished: Push_SongFinished;
+  realtimeScore: RealtimeScore;
 
   responseReceived: ResponseFromUser;
 
@@ -653,6 +655,9 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       }
       else if (push.data.oneofKind === "songFinished") {
         this.emit("songFinished", push.data.songFinished);
+      }
+      else if (push.data.oneofKind === "realtimeScore") {
+        this.emit("realtimeScore", push.data.realtimeScore);
       }
     }
   };

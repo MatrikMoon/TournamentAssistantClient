@@ -1,7 +1,6 @@
 {
   "name": "moons-ta-client",
-  "private": true,
-  "version": "1.0.1",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -37,5 +36,11 @@
     "npm": "^10.8.0",
     "uuid": "^9.0.0",
     "ws": "^8.17.0"
-  }
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist",
+    "package.json"
+  ]
 }

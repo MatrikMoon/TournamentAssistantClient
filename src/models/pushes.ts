@@ -65,6 +65,22 @@ export interface Push_SongFinished {
      * @generated from protobuf field: int32 score = 4;
      */
     score: number;
+    /**
+     * @generated from protobuf field: int32 misses = 5;
+     */
+    misses: number;
+    /**
+     * @generated from protobuf field: int32 bad_cuts = 6;
+     */
+    badCuts: number;
+    /**
+     * @generated from protobuf field: int32 good_cuts = 7;
+     */
+    goodCuts: number;
+    /**
+     * @generated from protobuf field: float end_time = 8;
+     */
+    endTime: number;
 }
 /**
  * @generated from protobuf enum proto.packets.Push.SongFinished.CompletionType
@@ -173,11 +189,15 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
             { no: 1, name: "player", kind: "message", T: () => User },
             { no: 2, name: "beatmap", kind: "message", T: () => Beatmap },
             { no: 3, name: "type", kind: "enum", T: () => ["proto.packets.Push.SongFinished.CompletionType", Push_SongFinished_CompletionType] },
-            { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "misses", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 6, name: "bad_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 7, name: "good_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 8, name: "end_time", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ }
         ]);
     }
     create(value?: PartialMessage<Push_SongFinished>): Push_SongFinished {
-        const message = { type: 0, score: 0 };
+        const message = { type: 0, score: 0, misses: 0, badCuts: 0, goodCuts: 0, endTime: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Push_SongFinished>(this, message, value);
@@ -199,6 +219,18 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
                     break;
                 case /* int32 score */ 4:
                     message.score = reader.int32();
+                    break;
+                case /* int32 misses */ 5:
+                    message.misses = reader.int32();
+                    break;
+                case /* int32 bad_cuts */ 6:
+                    message.badCuts = reader.int32();
+                    break;
+                case /* int32 good_cuts */ 7:
+                    message.goodCuts = reader.int32();
+                    break;
+                case /* float end_time */ 8:
+                    message.endTime = reader.float();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -224,6 +256,18 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
         /* int32 score = 4; */
         if (message.score !== 0)
             writer.tag(4, WireType.Varint).int32(message.score);
+        /* int32 misses = 5; */
+        if (message.misses !== 0)
+            writer.tag(5, WireType.Varint).int32(message.misses);
+        /* int32 bad_cuts = 6; */
+        if (message.badCuts !== 0)
+            writer.tag(6, WireType.Varint).int32(message.badCuts);
+        /* int32 good_cuts = 7; */
+        if (message.goodCuts !== 0)
+            writer.tag(7, WireType.Varint).int32(message.goodCuts);
+        /* float end_time = 8; */
+        if (message.endTime !== 0)
+            writer.tag(8, WireType.Bit32).float(message.endTime);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

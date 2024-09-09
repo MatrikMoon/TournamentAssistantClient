@@ -114,11 +114,11 @@ export interface Request {
          */
         setQualifierLeaderboardSort: Request_SetQualifierLeaderboardSort;
     } | {
-        oneofKind: "addQualifierMap";
+        oneofKind: "addQualifierMaps";
         /**
-         * @generated from protobuf field: proto.packets.Request.AddQualifierMap add_qualifier_map = 14;
+         * @generated from protobuf field: proto.packets.Request.AddQualifierMaps add_qualifier_maps = 14;
          */
-        addQualifierMap: Request_AddQualifierMap;
+        addQualifierMaps: Request_AddQualifierMaps;
     } | {
         oneofKind: "updateQualifierMap";
         /**
@@ -569,9 +569,9 @@ export interface Request_SetQualifierLeaderboardSort {
     qualifierLeaderboardSort: QualifierEvent_LeaderboardSort;
 }
 /**
- * @generated from protobuf message proto.packets.Request.AddQualifierMap
+ * @generated from protobuf message proto.packets.Request.AddQualifierMaps
  */
-export interface Request_AddQualifierMap {
+export interface Request_AddQualifierMaps {
     /**
      * @generated from protobuf field: string tournament_id = 1;
      */
@@ -581,9 +581,9 @@ export interface Request_AddQualifierMap {
      */
     qualifierId: string;
     /**
-     * @generated from protobuf field: proto.models.Map map = 3;
+     * @generated from protobuf field: repeated proto.models.Map maps = 3;
      */
-    map?: Map;
+    maps: Map[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.UpdateQualifierMap
@@ -1181,7 +1181,7 @@ class Request$Type extends MessageType<Request> {
             { no: 11, name: "set_qualifier_image", kind: "message", oneof: "type", T: () => Request_SetQualifierImage },
             { no: 12, name: "set_qualifier_flags", kind: "message", oneof: "type", T: () => Request_SetQualifierFlags },
             { no: 13, name: "set_qualifier_leaderboard_sort", kind: "message", oneof: "type", T: () => Request_SetQualifierLeaderboardSort },
-            { no: 14, name: "add_qualifier_map", kind: "message", oneof: "type", T: () => Request_AddQualifierMap },
+            { no: 14, name: "add_qualifier_maps", kind: "message", oneof: "type", T: () => Request_AddQualifierMaps },
             { no: 15, name: "update_qualifier_map", kind: "message", oneof: "type", T: () => Request_UpdateQualifierMap },
             { no: 16, name: "remove_qualifier_map", kind: "message", oneof: "type", T: () => Request_RemoveQualifierMap },
             { no: 17, name: "delete_qualifier_event", kind: "message", oneof: "type", T: () => Request_DeleteQualifierEvent },
@@ -1313,10 +1313,10 @@ class Request$Type extends MessageType<Request> {
                         setQualifierLeaderboardSort: Request_SetQualifierLeaderboardSort.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setQualifierLeaderboardSort)
                     };
                     break;
-                case /* proto.packets.Request.AddQualifierMap add_qualifier_map */ 14:
+                case /* proto.packets.Request.AddQualifierMaps add_qualifier_maps */ 14:
                     message.type = {
-                        oneofKind: "addQualifierMap",
-                        addQualifierMap: Request_AddQualifierMap.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addQualifierMap)
+                        oneofKind: "addQualifierMaps",
+                        addQualifierMaps: Request_AddQualifierMaps.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addQualifierMaps)
                     };
                     break;
                 case /* proto.packets.Request.UpdateQualifierMap update_qualifier_map */ 15:
@@ -1604,9 +1604,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.SetQualifierLeaderboardSort set_qualifier_leaderboard_sort = 13; */
         if (message.type.oneofKind === "setQualifierLeaderboardSort")
             Request_SetQualifierLeaderboardSort.internalBinaryWrite(message.type.setQualifierLeaderboardSort, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.AddQualifierMap add_qualifier_map = 14; */
-        if (message.type.oneofKind === "addQualifierMap")
-            Request_AddQualifierMap.internalBinaryWrite(message.type.addQualifierMap, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.AddQualifierMaps add_qualifier_maps = 14; */
+        if (message.type.oneofKind === "addQualifierMaps")
+            Request_AddQualifierMaps.internalBinaryWrite(message.type.addQualifierMaps, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Request.UpdateQualifierMap update_qualifier_map = 15; */
         if (message.type.oneofKind === "updateQualifierMap")
             Request_UpdateQualifierMap.internalBinaryWrite(message.type.updateQualifierMap, writer.tag(15, WireType.LengthDelimited).fork(), options).join();
@@ -2500,22 +2500,22 @@ class Request_SetQualifierLeaderboardSort$Type extends MessageType<Request_SetQu
  */
 export const Request_SetQualifierLeaderboardSort = new Request_SetQualifierLeaderboardSort$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Request_AddQualifierMap$Type extends MessageType<Request_AddQualifierMap> {
+class Request_AddQualifierMaps$Type extends MessageType<Request_AddQualifierMaps> {
     constructor() {
-        super("proto.packets.Request.AddQualifierMap", [
+        super("proto.packets.Request.AddQualifierMaps", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "qualifier_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "map", kind: "message", T: () => Map }
+            { no: 3, name: "maps", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Map }
         ]);
     }
-    create(value?: PartialMessage<Request_AddQualifierMap>): Request_AddQualifierMap {
-        const message = { tournamentId: "", qualifierId: "" };
+    create(value?: PartialMessage<Request_AddQualifierMaps>): Request_AddQualifierMaps {
+        const message = { tournamentId: "", qualifierId: "", maps: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Request_AddQualifierMap>(this, message, value);
+            reflectionMergePartial<Request_AddQualifierMaps>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddQualifierMap): Request_AddQualifierMap {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddQualifierMaps): Request_AddQualifierMaps {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -2526,8 +2526,8 @@ class Request_AddQualifierMap$Type extends MessageType<Request_AddQualifierMap> 
                 case /* string qualifier_id */ 2:
                     message.qualifierId = reader.string();
                     break;
-                case /* proto.models.Map map */ 3:
-                    message.map = Map.internalBinaryRead(reader, reader.uint32(), options, message.map);
+                case /* repeated proto.models.Map maps */ 3:
+                    message.maps.push(Map.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2540,16 +2540,16 @@ class Request_AddQualifierMap$Type extends MessageType<Request_AddQualifierMap> 
         }
         return message;
     }
-    internalBinaryWrite(message: Request_AddQualifierMap, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: Request_AddQualifierMaps, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string tournament_id = 1; */
         if (message.tournamentId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
         /* string qualifier_id = 2; */
         if (message.qualifierId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.qualifierId);
-        /* proto.models.Map map = 3; */
-        if (message.map)
-            Map.internalBinaryWrite(message.map, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* repeated proto.models.Map maps = 3; */
+        for (let i = 0; i < message.maps.length; i++)
+            Map.internalBinaryWrite(message.maps[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2557,9 +2557,9 @@ class Request_AddQualifierMap$Type extends MessageType<Request_AddQualifierMap> 
     }
 }
 /**
- * @generated MessageType for protobuf message proto.packets.Request.AddQualifierMap
+ * @generated MessageType for protobuf message proto.packets.Request.AddQualifierMaps
  */
-export const Request_AddQualifierMap = new Request_AddQualifierMap$Type();
+export const Request_AddQualifierMaps = new Request_AddQualifierMaps$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_UpdateQualifierMap$Type extends MessageType<Request_UpdateQualifierMap> {
     constructor() {

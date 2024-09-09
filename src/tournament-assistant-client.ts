@@ -931,18 +931,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addQualifierMap = async (
+  public addQualifierMaps = async (
     tournamentId: string,
     qualifierId: string,
-    map: Map
+    maps: Map[]
   ) => {
     const response = await this.sendRequest({
       type: {
-        oneofKind: "addQualifierMap",
-        addQualifierMap: {
+        oneofKind: "addQualifierMaps",
+        addQualifierMaps: {
           tournamentId,
           qualifierId,
-          map
+          maps
         },
       },
     });

@@ -270,11 +270,11 @@ export interface Request {
          */
         setTournamentPoolName: Request_SetTournamentPoolName;
     } | {
-        oneofKind: "addTournamentPoolMap";
+        oneofKind: "addTournamentPoolMaps";
         /**
-         * @generated from protobuf field: proto.packets.Request.AddTournamentPoolMap add_tournament_pool_map = 30;
+         * @generated from protobuf field: proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps = 30;
          */
-        addTournamentPoolMap: Request_AddTournamentPoolMap;
+        addTournamentPoolMaps: Request_AddTournamentPoolMaps;
     } | {
         oneofKind: "updateTournamentPoolMap";
         /**
@@ -937,9 +937,9 @@ export interface Request_SetTournamentPoolName {
     poolName: string;
 }
 /**
- * @generated from protobuf message proto.packets.Request.AddTournamentPoolMap
+ * @generated from protobuf message proto.packets.Request.AddTournamentPoolMaps
  */
-export interface Request_AddTournamentPoolMap {
+export interface Request_AddTournamentPoolMaps {
     /**
      * @generated from protobuf field: string tournament_id = 1;
      */
@@ -949,9 +949,9 @@ export interface Request_AddTournamentPoolMap {
      */
     poolId: string;
     /**
-     * @generated from protobuf field: proto.models.Map map = 3;
+     * @generated from protobuf field: repeated proto.models.Map maps = 3;
      */
-    map?: Map;
+    maps: Map[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.UpdateTournamentPoolMap
@@ -1207,7 +1207,7 @@ class Request$Type extends MessageType<Request> {
             { no: 27, name: "remove_tournament_team", kind: "message", oneof: "type", T: () => Request_RemoveTournamentTeam },
             { no: 28, name: "add_tournament_pool", kind: "message", oneof: "type", T: () => Request_AddTournamentPool },
             { no: 29, name: "set_tournament_pool_name", kind: "message", oneof: "type", T: () => Request_SetTournamentPoolName },
-            { no: 30, name: "add_tournament_pool_map", kind: "message", oneof: "type", T: () => Request_AddTournamentPoolMap },
+            { no: 30, name: "add_tournament_pool_maps", kind: "message", oneof: "type", T: () => Request_AddTournamentPoolMaps },
             { no: 31, name: "update_tournament_pool_map", kind: "message", oneof: "type", T: () => Request_UpdateTournamentPoolMap },
             { no: 32, name: "remove_tournament_pool_map", kind: "message", oneof: "type", T: () => Request_RemoveTournamentPoolMap },
             { no: 33, name: "remove_tournament_pool", kind: "message", oneof: "type", T: () => Request_RemoveTournamentPool },
@@ -1469,10 +1469,10 @@ class Request$Type extends MessageType<Request> {
                         setTournamentPoolName: Request_SetTournamentPoolName.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentPoolName)
                     };
                     break;
-                case /* proto.packets.Request.AddTournamentPoolMap add_tournament_pool_map */ 30:
+                case /* proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps */ 30:
                     message.type = {
-                        oneofKind: "addTournamentPoolMap",
-                        addTournamentPoolMap: Request_AddTournamentPoolMap.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addTournamentPoolMap)
+                        oneofKind: "addTournamentPoolMaps",
+                        addTournamentPoolMaps: Request_AddTournamentPoolMaps.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addTournamentPoolMaps)
                     };
                     break;
                 case /* proto.packets.Request.UpdateTournamentPoolMap update_tournament_pool_map */ 31:
@@ -1682,9 +1682,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.SetTournamentPoolName set_tournament_pool_name = 29; */
         if (message.type.oneofKind === "setTournamentPoolName")
             Request_SetTournamentPoolName.internalBinaryWrite(message.type.setTournamentPoolName, writer.tag(29, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.AddTournamentPoolMap add_tournament_pool_map = 30; */
-        if (message.type.oneofKind === "addTournamentPoolMap")
-            Request_AddTournamentPoolMap.internalBinaryWrite(message.type.addTournamentPoolMap, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps = 30; */
+        if (message.type.oneofKind === "addTournamentPoolMaps")
+            Request_AddTournamentPoolMaps.internalBinaryWrite(message.type.addTournamentPoolMaps, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Request.UpdateTournamentPoolMap update_tournament_pool_map = 31; */
         if (message.type.oneofKind === "updateTournamentPoolMap")
             Request_UpdateTournamentPoolMap.internalBinaryWrite(message.type.updateTournamentPoolMap, writer.tag(31, WireType.LengthDelimited).fork(), options).join();
@@ -3953,22 +3953,22 @@ class Request_SetTournamentPoolName$Type extends MessageType<Request_SetTourname
  */
 export const Request_SetTournamentPoolName = new Request_SetTournamentPoolName$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Request_AddTournamentPoolMap$Type extends MessageType<Request_AddTournamentPoolMap> {
+class Request_AddTournamentPoolMaps$Type extends MessageType<Request_AddTournamentPoolMaps> {
     constructor() {
-        super("proto.packets.Request.AddTournamentPoolMap", [
+        super("proto.packets.Request.AddTournamentPoolMaps", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "pool_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "map", kind: "message", T: () => Map }
+            { no: 3, name: "maps", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Map }
         ]);
     }
-    create(value?: PartialMessage<Request_AddTournamentPoolMap>): Request_AddTournamentPoolMap {
-        const message = { tournamentId: "", poolId: "" };
+    create(value?: PartialMessage<Request_AddTournamentPoolMaps>): Request_AddTournamentPoolMaps {
+        const message = { tournamentId: "", poolId: "", maps: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Request_AddTournamentPoolMap>(this, message, value);
+            reflectionMergePartial<Request_AddTournamentPoolMaps>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddTournamentPoolMap): Request_AddTournamentPoolMap {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddTournamentPoolMaps): Request_AddTournamentPoolMaps {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -3979,8 +3979,8 @@ class Request_AddTournamentPoolMap$Type extends MessageType<Request_AddTournamen
                 case /* string pool_id */ 2:
                     message.poolId = reader.string();
                     break;
-                case /* proto.models.Map map */ 3:
-                    message.map = Map.internalBinaryRead(reader, reader.uint32(), options, message.map);
+                case /* repeated proto.models.Map maps */ 3:
+                    message.maps.push(Map.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3993,16 +3993,16 @@ class Request_AddTournamentPoolMap$Type extends MessageType<Request_AddTournamen
         }
         return message;
     }
-    internalBinaryWrite(message: Request_AddTournamentPoolMap, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: Request_AddTournamentPoolMaps, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string tournament_id = 1; */
         if (message.tournamentId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
         /* string pool_id = 2; */
         if (message.poolId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.poolId);
-        /* proto.models.Map map = 3; */
-        if (message.map)
-            Map.internalBinaryWrite(message.map, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* repeated proto.models.Map maps = 3; */
+        for (let i = 0; i < message.maps.length; i++)
+            Map.internalBinaryWrite(message.maps[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -4010,9 +4010,9 @@ class Request_AddTournamentPoolMap$Type extends MessageType<Request_AddTournamen
     }
 }
 /**
- * @generated MessageType for protobuf message proto.packets.Request.AddTournamentPoolMap
+ * @generated MessageType for protobuf message proto.packets.Request.AddTournamentPoolMaps
  */
-export const Request_AddTournamentPoolMap = new Request_AddTournamentPoolMap$Type();
+export const Request_AddTournamentPoolMaps = new Request_AddTournamentPoolMaps$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_UpdateTournamentPoolMap$Type extends MessageType<Request_UpdateTournamentPoolMap> {
     constructor() {

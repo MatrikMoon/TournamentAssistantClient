@@ -1431,18 +1431,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addTournamentPoolMap = async (
+  public addTournamentPoolMaps = async (
     tournamentId: string,
     poolId: string,
-    map: Map
+    maps: Map[]
   ) => {
     const response = await this.sendRequest({
       type: {
-        oneofKind: "addTournamentPoolMap",
-        addTournamentPoolMap: {
+        oneofKind: "addTournamentPoolMaps",
+        addTournamentPoolMaps: {
           tournamentId,
           poolId,
-          map
+          maps
         },
       },
     });

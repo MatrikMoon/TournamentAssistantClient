@@ -81,6 +81,14 @@ export interface Push_SongFinished {
      * @generated from protobuf field: float end_time = 8;
      */
     endTime: number;
+    /**
+     * @generated from protobuf field: string tournament_id = 9;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string match_id = 10;
+     */
+    matchId: string;
 }
 /**
  * @generated from protobuf enum proto.packets.Push.SongFinished.CompletionType
@@ -193,11 +201,13 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
             { no: 5, name: "misses", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 6, name: "bad_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 7, name: "good_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 8, name: "end_time", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ }
+            { no: 8, name: "end_time", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 9, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "match_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Push_SongFinished>): Push_SongFinished {
-        const message = { type: 0, score: 0, misses: 0, badCuts: 0, goodCuts: 0, endTime: 0 };
+        const message = { type: 0, score: 0, misses: 0, badCuts: 0, goodCuts: 0, endTime: 0, tournamentId: "", matchId: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Push_SongFinished>(this, message, value);
@@ -231,6 +241,12 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
                     break;
                 case /* float end_time */ 8:
                     message.endTime = reader.float();
+                    break;
+                case /* string tournament_id */ 9:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string match_id */ 10:
+                    message.matchId = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -268,6 +284,12 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
         /* float end_time = 8; */
         if (message.endTime !== 0)
             writer.tag(8, WireType.Bit32).float(message.endTime);
+        /* string tournament_id = 9; */
+        if (message.tournamentId !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.tournamentId);
+        /* string match_id = 10; */
+        if (message.matchId !== "")
+            writer.tag(10, WireType.LengthDelimited).string(message.matchId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

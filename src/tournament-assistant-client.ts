@@ -79,15 +79,17 @@ type TAClientEvents = {
 export class TAClient extends CustomEventEmitter<TAClientEvents> {
   public stateManager: StateManager;
 
+  private uiVersion: number | undefined;
   private client?: Client;
   private token = "";
 
   private shouldHeartbeat = false;
   private heartbeatInterval: NodeJS.Timeout | undefined;
 
-  constructor() {
+  constructor(uiVersion: number | undefined = undefined) {
     super();
     this.stateManager = new StateManager();
+    this.uiVersion = uiVersion;
   }
 
   // --- State helpers --- //
@@ -129,6 +131,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             oneofKind: "connect",
             connect: {
               clientVersion: versionCode,
+              uiVersion: this.uiVersion ?? 0
             },
           },
         });

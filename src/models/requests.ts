@@ -1040,6 +1040,10 @@ export interface Request_Connect {
      * @generated from protobuf field: int32 client_version = 1;
      */
     clientVersion: number;
+    /**
+     * @generated from protobuf field: int32 ui_version = 2;
+     */
+    uiVersion: number; // TAUI uses the client, but also can be required to update when the client has not
 }
 /**
  * @generated from protobuf message proto.packets.Request.Join
@@ -4294,11 +4298,12 @@ export const Request_AddServer = new Request_AddServer$Type();
 class Request_Connect$Type extends MessageType<Request_Connect> {
     constructor() {
         super("proto.packets.Request.Connect", [
-            { no: 1, name: "client_version", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 1, name: "client_version", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "ui_version", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<Request_Connect>): Request_Connect {
-        const message = { clientVersion: 0 };
+        const message = { clientVersion: 0, uiVersion: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_Connect>(this, message, value);
@@ -4311,6 +4316,9 @@ class Request_Connect$Type extends MessageType<Request_Connect> {
             switch (fieldNo) {
                 case /* int32 client_version */ 1:
                     message.clientVersion = reader.int32();
+                    break;
+                case /* int32 ui_version */ 2:
+                    message.uiVersion = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4327,6 +4335,9 @@ class Request_Connect$Type extends MessageType<Request_Connect> {
         /* int32 client_version = 1; */
         if (message.clientVersion !== 0)
             writer.tag(1, WireType.Varint).int32(message.clientVersion);
+        /* int32 ui_version = 2; */
+        if (message.uiVersion !== 0)
+            writer.tag(2, WireType.Varint).int32(message.uiVersion);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

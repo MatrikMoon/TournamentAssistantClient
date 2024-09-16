@@ -43,8 +43,6 @@ type TAClientEvents = {
   disconnectedFromServer: {};
 
   authorizationRequestedFromServer: string;
-  authorizedWithServer: string;
-  failedToAuthorizeWithServer: {};
 
   loadSongRequested: [string, string, Request_LoadSong];
 
@@ -245,7 +243,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       const addListeners = () => {
         this.on("responseReceived", onResponseReceived);
         this.on("authorizationRequestedFromServer", onAuthorizationRequested);
-        this.on("authorizedWithServer", onAuthroizedWithServer);
       };
 
       const removeListeners = () => {
@@ -254,7 +251,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           "authorizationRequestedFromServer",
           onAuthorizationRequested
         );
-        this.removeListener("authorizedWithServer", onAuthroizedWithServer);
       };
 
       // Check that we got responses from all expected users
@@ -308,17 +304,11 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
       const timeout = createTimeout(30000);
 
-      // If authorization is requested, we're assuming an external application will handle
-      // resetting the auth token, so we'll extend the timeout by 30 seconds and try again
-      // if a successful auth is noticed
+      // If authorization is requested, we're assuming an external application failed
+      // to provide a valid token, so we will combust
       const onAuthorizationRequested = () => {
         clearTimeout(timeout);
-        createTimeout(30000);
-      };
-
-      // Retry on successful authorization
-      const onAuthroizedWithServer = () => {
-        sendRequest();
+        throw "Authorization token invalid or not provided";
       };
 
       addListeners();
@@ -646,14 +636,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     } else if (packet.packet.oneofKind === "push") {
       const push = packet.packet.push;
 
-      if (push.data.oneofKind === "discordAuthorized") {
-        if (push.data.discordAuthorized.success) {
-          this.emit("authorizedWithServer", push.data.discordAuthorized.token);
-        } else {
-          this.emit("failedToAuthorizeWithServer", {});
-        }
-      }
-      else if (push.data.oneofKind === "songFinished") {
+      if (push.data.oneofKind === "songFinished") {
         this.emit("songFinished", push.data.songFinished);
       }
       else if (push.data.oneofKind === "realtimeScore") {

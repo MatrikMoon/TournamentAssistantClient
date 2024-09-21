@@ -227,7 +227,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
   private async sendRequest(
     request: Request,
-    to?: string[]
+    to?: string[],
+    timeout: number = 30000,
   ): Promise<ResponseFromUser[]> {
     const packet: Packet = {
       token: "", // Overridden in this.send()
@@ -256,28 +257,38 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         );
       };
 
-      // Check that we got responses from all expected users
-      const checkResponses = () => {
+      const getUnrespondedUsers = () => {
         const responseUsers = responseDictionary.map((x) => x.userId);
         const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
-        if (responseUsers.length !== expectedUsers.length) {
-          return;
+        if (responseUsers.length === expectedUsers.length) {
+          return [];
         }
 
         const sortedArr1 = responseUsers.slice().sort();
         const sortedArr2 = expectedUsers.slice().sort();
 
-        for (let i = 0; i < sortedArr1.length; i++) {
-          if (sortedArr1[i] !== sortedArr2[i]) {
-            return;
+        let waitingForUsers = [];
+
+        for (let i = 0; i < sortedArr2.length; i++) {
+          if (i > sortedArr1.length || sortedArr2[i] !== sortedArr1[i]) {
+            waitingForUsers.push(sortedArr2[i]);
           }
         }
 
-        // All responses are received, clean up and resolve
-        removeListeners();
-        clearTimeout(timeout);
-        resolve(responseDictionary);
+        return waitingForUsers;
+      };
+
+      // Check that we got responses from all expected users
+      const checkResponses = () => {
+        const waitingForUsers = getUnrespondedUsers();
+
+        if (waitingForUsers.length === 0) {
+          // All responses are received, clean up and resolve
+          removeListeners();
+          clearTimeout(timeoutTimer);
+          resolve(responseDictionary);
+        }
       };
 
       // Add to the dictionary when the response is to this packet, and from an expected user
@@ -297,20 +308,35 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         }
       };
 
-      // Return what we have after 5 seconds
+      // Return what we have after 30 seconds, inject errors for users that haven't responded yet
       const createTimeout = (time: number) => {
         return setTimeout(() => {
+          const unrespondedUsers = getUnrespondedUsers();
+
+          for (let user of unrespondedUsers) {
+            responseDictionary.push({
+              userId: user,
+              response: {
+                type: Response_ResponseType.Fail,
+                respondingToPacketId: packet.id,
+                details: {
+                  oneofKind: undefined
+                }
+              },
+            });
+          }
+
           removeListeners();
           resolve(responseDictionary);
         }, time);
       };
 
-      const timeout = createTimeout(30000);
+      const timeoutTimer = createTimeout(timeout);
 
       // If authorization is requested, we're assuming an external application failed
       // to provide a valid token, so we will combust
       const onAuthorizationRequested = () => {
-        clearTimeout(timeout);
+        clearTimeout(timeoutTimer);
         throw "Authorization token invalid or not provided";
       };
 
@@ -426,7 +452,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public loadSong = async (levelId: string, userIds: string[]) => {
+  public loadSong = async (levelId: string, userIds: string[], timeout?: number) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "loadSong",
@@ -435,7 +461,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           customHostUrl: ""
         },
       },
-    }, userIds);
+    }, userIds, timeout);
 
     if (response.length <= 0) {
       throw new Error("Server timed out, or no users responded");

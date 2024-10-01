@@ -315,7 +315,11 @@ export interface GameplayParameters {
     /**
      * @generated from protobuf field: bool use_sync = 10;
      */
-    useSync: boolean;
+    useSync: boolean; // Matches only
+    /**
+     * @generated from protobuf field: int32 target = 11;
+     */
+    target: number; // Qualifiers only
 }
 /**
  * @generated from protobuf message proto.models.Map
@@ -564,37 +568,57 @@ export enum QualifierEvent_LeaderboardSort {
      */
     ModifiedScoreAscending = 1,
     /**
-     * @generated from protobuf enum value: NotesMissed = 2;
+     * @generated from protobuf enum value: ModifiedScoreTarget = 2;
      */
-    NotesMissed = 2,
+    ModifiedScoreTarget = 2,
     /**
-     * @generated from protobuf enum value: NotesMissedAscending = 3;
+     * @generated from protobuf enum value: NotesMissed = 3;
      */
-    NotesMissedAscending = 3,
+    NotesMissed = 3,
     /**
-     * @generated from protobuf enum value: BadCuts = 4;
+     * @generated from protobuf enum value: NotesMissedAscending = 4;
      */
-    BadCuts = 4,
+    NotesMissedAscending = 4,
     /**
-     * @generated from protobuf enum value: BadCutsAscending = 5;
+     * @generated from protobuf enum value: NotesMissedTarget = 5;
      */
-    BadCutsAscending = 5,
+    NotesMissedTarget = 5,
     /**
-     * @generated from protobuf enum value: MaxCombo = 6;
+     * @generated from protobuf enum value: BadCuts = 6;
      */
-    MaxCombo = 6,
+    BadCuts = 6,
     /**
-     * @generated from protobuf enum value: MaxComboAscending = 7;
+     * @generated from protobuf enum value: BadCutsAscending = 7;
      */
-    MaxComboAscending = 7,
+    BadCutsAscending = 7,
     /**
-     * @generated from protobuf enum value: GoodCuts = 8;
+     * @generated from protobuf enum value: BadCutsTarget = 8;
      */
-    GoodCuts = 8,
+    BadCutsTarget = 8,
     /**
-     * @generated from protobuf enum value: GoodCutsAscending = 9;
+     * @generated from protobuf enum value: MaxCombo = 9;
      */
-    GoodCutsAscending = 9
+    MaxCombo = 9,
+    /**
+     * @generated from protobuf enum value: MaxComboAscending = 10;
+     */
+    MaxComboAscending = 10,
+    /**
+     * @generated from protobuf enum value: MaxComboTarget = 11;
+     */
+    MaxComboTarget = 11,
+    /**
+     * @generated from protobuf enum value: GoodCuts = 12;
+     */
+    GoodCuts = 12,
+    /**
+     * @generated from protobuf enum value: GoodCutsAscending = 13;
+     */
+    GoodCutsAscending = 13,
+    /**
+     * @generated from protobuf enum value: GoodCutsTarget = 14;
+     */
+    GoodCutsTarget = 14
 }
 /**
  * @generated from protobuf message proto.models.CoreServer
@@ -1217,11 +1241,12 @@ class GameplayParameters$Type extends MessageType<GameplayParameters> {
             { no: 7, name: "disable_fail", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 8, name: "disable_scoresaber_submission", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 9, name: "disable_custom_notes_on_stream", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 10, name: "use_sync", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 10, name: "use_sync", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 11, name: "target", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<GameplayParameters>): GameplayParameters {
-        const message = { attempts: 0, showScoreboard: false, disablePause: false, disableFail: false, disableScoresaberSubmission: false, disableCustomNotesOnStream: false, useSync: false };
+        const message = { attempts: 0, showScoreboard: false, disablePause: false, disableFail: false, disableScoresaberSubmission: false, disableCustomNotesOnStream: false, useSync: false, target: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GameplayParameters>(this, message, value);
@@ -1261,6 +1286,9 @@ class GameplayParameters$Type extends MessageType<GameplayParameters> {
                     break;
                 case /* bool use_sync */ 10:
                     message.useSync = reader.bool();
+                    break;
+                case /* int32 target */ 11:
+                    message.target = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1304,6 +1332,9 @@ class GameplayParameters$Type extends MessageType<GameplayParameters> {
         /* bool use_sync = 10; */
         if (message.useSync !== false)
             writer.tag(10, WireType.Varint).bool(message.useSync);
+        /* int32 target = 11; */
+        if (message.target !== 0)
+            writer.tag(11, WireType.Varint).int32(message.target);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -11,7 +11,6 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-import { ModalOption } from './models.js';
 import { GameplayParameters } from './models.js';
 import { LeaderboardEntry } from './models.js';
 import { CoreServer } from './models.js';
@@ -342,11 +341,11 @@ export interface Request {
          */
         preloadImageForStreamSync: Request_PreloadImageForStreamSync;
     } | {
-        oneofKind: "showModal";
+        oneofKind: "showPrompt";
         /**
-         * @generated from protobuf field: proto.packets.Request.ShowModal show_modal = 42;
+         * @generated from protobuf field: proto.packets.Request.ShowPrompt show_prompt = 42;
          */
-        showModal: Request_ShowModal;
+        showPrompt: Request_ShowPrompt;
     } | {
         oneofKind: "remainingAttempts";
         /**
@@ -1123,13 +1122,13 @@ export interface Request_PreloadImageForStreamSync {
     data: Uint8Array;
 }
 /**
- * @generated from protobuf message proto.packets.Request.ShowModal
+ * @generated from protobuf message proto.packets.Request.ShowPrompt
  */
-export interface Request_ShowModal {
+export interface Request_ShowPrompt {
     /**
-     * @generated from protobuf field: string modal_id = 1;
+     * @generated from protobuf field: string prompt_id = 1;
      */
-    modalId: string;
+    promptId: string;
     /**
      * @generated from protobuf field: string message_title = 2;
      */
@@ -1139,17 +1138,34 @@ export interface Request_ShowModal {
      */
     messageText: string;
     /**
-     * @generated from protobuf field: bool can_close = 4;
+     * @generated from protobuf field: int32 timeout = 4;
+     */
+    timeout: number;
+    /**
+     * @generated from protobuf field: bool show_timer = 5;
+     */
+    showTimer: boolean;
+    /**
+     * @generated from protobuf field: bool can_close = 6;
      */
     canClose: boolean;
     /**
-     * @generated from protobuf field: proto.models.ModalOption option_1 = 5;
+     * @generated from protobuf field: repeated proto.packets.Request.ShowPrompt.PromptOption options = 7;
      */
-    option1?: ModalOption;
+    options: Request_ShowPrompt_PromptOption[]; // for now we can show up to three options
+}
+/**
+ * @generated from protobuf message proto.packets.Request.ShowPrompt.PromptOption
+ */
+export interface Request_ShowPrompt_PromptOption {
     /**
-     * @generated from protobuf field: proto.models.ModalOption option_2 = 6;
+     * @generated from protobuf field: string label = 1;
      */
-    option2?: ModalOption;
+    label: string;
+    /**
+     * @generated from protobuf field: string value = 2;
+     */
+    value: string;
 }
 /**
  * @generated from protobuf message proto.packets.Request.RemainingAttempts
@@ -1223,7 +1239,7 @@ class Request$Type extends MessageType<Request> {
             { no: 39, name: "submit_qualifier_score", kind: "message", oneof: "type", T: () => Request_SubmitQualifierScore },
             { no: 40, name: "load_song", kind: "message", oneof: "type", T: () => Request_LoadSong },
             { no: 41, name: "preload_image_for_stream_sync", kind: "message", oneof: "type", T: () => Request_PreloadImageForStreamSync },
-            { no: 42, name: "show_modal", kind: "message", oneof: "type", T: () => Request_ShowModal },
+            { no: 42, name: "show_prompt", kind: "message", oneof: "type", T: () => Request_ShowPrompt },
             { no: 43, name: "remaining_attempts", kind: "message", oneof: "type", T: () => Request_RemainingAttempts }
         ]);
     }
@@ -1545,10 +1561,10 @@ class Request$Type extends MessageType<Request> {
                         preloadImageForStreamSync: Request_PreloadImageForStreamSync.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).preloadImageForStreamSync)
                     };
                     break;
-                case /* proto.packets.Request.ShowModal show_modal */ 42:
+                case /* proto.packets.Request.ShowPrompt show_prompt */ 42:
                     message.type = {
-                        oneofKind: "showModal",
-                        showModal: Request_ShowModal.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).showModal)
+                        oneofKind: "showPrompt",
+                        showPrompt: Request_ShowPrompt.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).showPrompt)
                     };
                     break;
                 case /* proto.packets.Request.RemainingAttempts remaining_attempts */ 43:
@@ -1722,9 +1738,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.PreloadImageForStreamSync preload_image_for_stream_sync = 41; */
         if (message.type.oneofKind === "preloadImageForStreamSync")
             Request_PreloadImageForStreamSync.internalBinaryWrite(message.type.preloadImageForStreamSync, writer.tag(41, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.ShowModal show_modal = 42; */
-        if (message.type.oneofKind === "showModal")
-            Request_ShowModal.internalBinaryWrite(message.type.showModal, writer.tag(42, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.ShowPrompt show_prompt = 42; */
+        if (message.type.oneofKind === "showPrompt")
+            Request_ShowPrompt.internalBinaryWrite(message.type.showPrompt, writer.tag(42, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Request.RemainingAttempts remaining_attempts = 43; */
         if (message.type.oneofKind === "remainingAttempts")
             Request_RemainingAttempts.internalBinaryWrite(message.type.remainingAttempts, writer.tag(43, WireType.LengthDelimited).fork(), options).join();
@@ -4640,31 +4656,32 @@ class Request_PreloadImageForStreamSync$Type extends MessageType<Request_Preload
  */
 export const Request_PreloadImageForStreamSync = new Request_PreloadImageForStreamSync$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Request_ShowModal$Type extends MessageType<Request_ShowModal> {
+class Request_ShowPrompt$Type extends MessageType<Request_ShowPrompt> {
     constructor() {
-        super("proto.packets.Request.ShowModal", [
-            { no: 1, name: "modal_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+        super("proto.packets.Request.ShowPrompt", [
+            { no: 1, name: "prompt_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "message_title", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "message_text", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "can_close", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 5, name: "option_1", kind: "message", T: () => ModalOption },
-            { no: 6, name: "option_2", kind: "message", T: () => ModalOption }
+            { no: 4, name: "timeout", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "show_timer", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "can_close", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 7, name: "options", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Request_ShowPrompt_PromptOption }
         ]);
     }
-    create(value?: PartialMessage<Request_ShowModal>): Request_ShowModal {
-        const message = { modalId: "", messageTitle: "", messageText: "", canClose: false };
+    create(value?: PartialMessage<Request_ShowPrompt>): Request_ShowPrompt {
+        const message = { promptId: "", messageTitle: "", messageText: "", timeout: 0, showTimer: false, canClose: false, options: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Request_ShowModal>(this, message, value);
+            reflectionMergePartial<Request_ShowPrompt>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_ShowModal): Request_ShowModal {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_ShowPrompt): Request_ShowPrompt {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string modal_id */ 1:
-                    message.modalId = reader.string();
+                case /* string prompt_id */ 1:
+                    message.promptId = reader.string();
                     break;
                 case /* string message_title */ 2:
                     message.messageTitle = reader.string();
@@ -4672,14 +4689,17 @@ class Request_ShowModal$Type extends MessageType<Request_ShowModal> {
                 case /* string message_text */ 3:
                     message.messageText = reader.string();
                     break;
-                case /* bool can_close */ 4:
+                case /* int32 timeout */ 4:
+                    message.timeout = reader.int32();
+                    break;
+                case /* bool show_timer */ 5:
+                    message.showTimer = reader.bool();
+                    break;
+                case /* bool can_close */ 6:
                     message.canClose = reader.bool();
                     break;
-                case /* proto.models.ModalOption option_1 */ 5:
-                    message.option1 = ModalOption.internalBinaryRead(reader, reader.uint32(), options, message.option1);
-                    break;
-                case /* proto.models.ModalOption option_2 */ 6:
-                    message.option2 = ModalOption.internalBinaryRead(reader, reader.uint32(), options, message.option2);
+                case /* repeated proto.packets.Request.ShowPrompt.PromptOption options */ 7:
+                    message.options.push(Request_ShowPrompt_PromptOption.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4692,25 +4712,28 @@ class Request_ShowModal$Type extends MessageType<Request_ShowModal> {
         }
         return message;
     }
-    internalBinaryWrite(message: Request_ShowModal, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string modal_id = 1; */
-        if (message.modalId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.modalId);
+    internalBinaryWrite(message: Request_ShowPrompt, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string prompt_id = 1; */
+        if (message.promptId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.promptId);
         /* string message_title = 2; */
         if (message.messageTitle !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.messageTitle);
         /* string message_text = 3; */
         if (message.messageText !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.messageText);
-        /* bool can_close = 4; */
+        /* int32 timeout = 4; */
+        if (message.timeout !== 0)
+            writer.tag(4, WireType.Varint).int32(message.timeout);
+        /* bool show_timer = 5; */
+        if (message.showTimer !== false)
+            writer.tag(5, WireType.Varint).bool(message.showTimer);
+        /* bool can_close = 6; */
         if (message.canClose !== false)
-            writer.tag(4, WireType.Varint).bool(message.canClose);
-        /* proto.models.ModalOption option_1 = 5; */
-        if (message.option1)
-            ModalOption.internalBinaryWrite(message.option1, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        /* proto.models.ModalOption option_2 = 6; */
-        if (message.option2)
-            ModalOption.internalBinaryWrite(message.option2, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+            writer.tag(6, WireType.Varint).bool(message.canClose);
+        /* repeated proto.packets.Request.ShowPrompt.PromptOption options = 7; */
+        for (let i = 0; i < message.options.length; i++)
+            Request_ShowPrompt_PromptOption.internalBinaryWrite(message.options[i], writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -4718,9 +4741,63 @@ class Request_ShowModal$Type extends MessageType<Request_ShowModal> {
     }
 }
 /**
- * @generated MessageType for protobuf message proto.packets.Request.ShowModal
+ * @generated MessageType for protobuf message proto.packets.Request.ShowPrompt
  */
-export const Request_ShowModal = new Request_ShowModal$Type();
+export const Request_ShowPrompt = new Request_ShowPrompt$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_ShowPrompt_PromptOption$Type extends MessageType<Request_ShowPrompt_PromptOption> {
+    constructor() {
+        super("proto.packets.Request.ShowPrompt.PromptOption", [
+            { no: 1, name: "label", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "value", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_ShowPrompt_PromptOption>): Request_ShowPrompt_PromptOption {
+        const message = { label: "", value: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_ShowPrompt_PromptOption>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_ShowPrompt_PromptOption): Request_ShowPrompt_PromptOption {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string label */ 1:
+                    message.label = reader.string();
+                    break;
+                case /* string value */ 2:
+                    message.value = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_ShowPrompt_PromptOption, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string label = 1; */
+        if (message.label !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.label);
+        /* string value = 2; */
+        if (message.value !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.value);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.ShowPrompt.PromptOption
+ */
+export const Request_ShowPrompt_PromptOption = new Request_ShowPrompt_PromptOption$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_RemainingAttempts$Type extends MessageType<Request_RemainingAttempts> {
     constructor() {

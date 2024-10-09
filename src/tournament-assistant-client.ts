@@ -23,7 +23,7 @@ import {
   Response_Connect,
   Response_ResponseType,
 } from "./models/responses.js";
-import { Request, Request_LoadSong } from "./models/requests.js";
+import { Request, Request_LoadSong, Request_ShowPrompt_PromptOption } from "./models/requests.js";
 import { Command } from "./models/commands.js";
 import { versionCode } from "./constants.js";
 import { Channel, Push_SongFinished } from "./models/index.js";
@@ -279,18 +279,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         return waitingForUsers;
       };
 
-      // Check that we got responses from all expected users
-      const checkResponses = () => {
-        const waitingForUsers = getUnrespondedUsers();
-
-        if (waitingForUsers.length === 0) {
-          // All responses are received, clean up and resolve
-          removeListeners();
-          clearTimeout(timeoutTimer);
-          resolve(responseDictionary);
-        }
-      };
-
       // Add to the dictionary when the response is to this packet, and from an expected user
       const onResponseReceived = (response: ResponseFromUser) => {
         const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
@@ -304,7 +292,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             response: response.response,
           });
 
-          checkResponses();
+          if (getUnrespondedUsers().length === 0) {
+            // All responses are received, clean up and resolve
+            removeListeners();
+            clearTimeout(timeoutTimer);
+            resolve(responseDictionary);
+          }
         }
       };
 
@@ -344,15 +337,11 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     });
 
     // Assume forwardToUsers emits the 'responseReceived' event asynchronously
-    const sendRequest = () => {
-      if (to) {
-        this.forwardToUsers(packet, to);
-      } else {
-        this.client?.send(packet, to);
-      }
-    };
-
-    sendRequest();
+    if (to) {
+      this.forwardToUsers(packet, to);
+    } else {
+      this.client?.send(packet, to);
+    }
 
     return responsesPromise;
   }
@@ -478,6 +467,29 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           fileId: uuidv4(),
           data: bitmap,
           compressed: false
+        },
+      },
+    }, userIds);
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out, or no users responded");
+    }
+
+    return response;
+  };
+
+  public showPrompt = async (userIds: string[], titleText: string, bodyText: string, canClose: boolean, options: Request_ShowPrompt_PromptOption[], timer?: number) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "showPrompt",
+        showPrompt: {
+          promptId: uuidv4(),
+          messageTitle: titleText,
+          messageText: bodyText,
+          showTimer: !!timer,
+          timeout: timer ?? 0,
+          canClose: canClose,
+          options
         },
       },
     }, userIds);

@@ -163,11 +163,11 @@ export interface Response {
          */
         preloadImageForStreamSync: Response_PreloadImageForStreamSync;
     } | {
-        oneofKind: "showModal";
+        oneofKind: "showPrompt";
         /**
-         * @generated from protobuf field: proto.packets.Response.ShowModal show_modal = 19;
+         * @generated from protobuf field: proto.packets.Response.ShowPrompt show_prompt = 19;
          */
-        showModal: Response_ShowModal;
+        showPrompt: Response_ShowPrompt;
     } | {
         oneofKind: "remainingAttempts";
         /**
@@ -519,13 +519,13 @@ export interface Response_PreloadImageForStreamSync {
     fileId: string;
 }
 /**
- * @generated from protobuf message proto.packets.Response.ShowModal
+ * @generated from protobuf message proto.packets.Response.ShowPrompt
  */
-export interface Response_ShowModal {
+export interface Response_ShowPrompt {
     /**
-     * @generated from protobuf field: string modal_id = 1;
+     * @generated from protobuf field: string prompt_id = 1;
      */
-    modalId: string;
+    promptId: string;
     /**
      * @generated from protobuf field: string value = 2;
      */
@@ -580,7 +580,7 @@ class Response$Type extends MessageType<Response> {
             { no: 16, name: "leaderboard_entries", kind: "message", oneof: "details", T: () => Response_LeaderboardEntries },
             { no: 17, name: "load_song", kind: "message", oneof: "details", T: () => Response_LoadSong },
             { no: 18, name: "preload_image_for_stream_sync", kind: "message", oneof: "details", T: () => Response_PreloadImageForStreamSync },
-            { no: 19, name: "show_modal", kind: "message", oneof: "details", T: () => Response_ShowModal },
+            { no: 19, name: "show_prompt", kind: "message", oneof: "details", T: () => Response_ShowPrompt },
             { no: 20, name: "remaining_attempts", kind: "message", oneof: "details", T: () => Response_RemainingAttempts }
         ]);
     }
@@ -728,10 +728,10 @@ class Response$Type extends MessageType<Response> {
                         preloadImageForStreamSync: Response_PreloadImageForStreamSync.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).preloadImageForStreamSync)
                     };
                     break;
-                case /* proto.packets.Response.ShowModal show_modal */ 19:
+                case /* proto.packets.Response.ShowPrompt show_prompt */ 19:
                     message.details = {
-                        oneofKind: "showModal",
-                        showModal: Response_ShowModal.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).showModal)
+                        oneofKind: "showPrompt",
+                        showPrompt: Response_ShowPrompt.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).showPrompt)
                     };
                     break;
                 case /* proto.packets.Response.RemainingAttempts remaining_attempts */ 20:
@@ -821,9 +821,9 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.PreloadImageForStreamSync preload_image_for_stream_sync = 18; */
         if (message.details.oneofKind === "preloadImageForStreamSync")
             Response_PreloadImageForStreamSync.internalBinaryWrite(message.details.preloadImageForStreamSync, writer.tag(18, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Response.ShowModal show_modal = 19; */
-        if (message.details.oneofKind === "showModal")
-            Response_ShowModal.internalBinaryWrite(message.details.showModal, writer.tag(19, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.ShowPrompt show_prompt = 19; */
+        if (message.details.oneofKind === "showPrompt")
+            Response_ShowPrompt.internalBinaryWrite(message.details.showPrompt, writer.tag(19, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Response.RemainingAttempts remaining_attempts = 20; */
         if (message.details.oneofKind === "remainingAttempts")
             Response_RemainingAttempts.internalBinaryWrite(message.details.remainingAttempts, writer.tag(20, WireType.LengthDelimited).fork(), options).join();
@@ -2082,27 +2082,27 @@ class Response_PreloadImageForStreamSync$Type extends MessageType<Response_Prelo
  */
 export const Response_PreloadImageForStreamSync = new Response_PreloadImageForStreamSync$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Response_ShowModal$Type extends MessageType<Response_ShowModal> {
+class Response_ShowPrompt$Type extends MessageType<Response_ShowPrompt> {
     constructor() {
-        super("proto.packets.Response.ShowModal", [
-            { no: 1, name: "modal_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+        super("proto.packets.Response.ShowPrompt", [
+            { no: 1, name: "prompt_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "value", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<Response_ShowModal>): Response_ShowModal {
-        const message = { modalId: "", value: "" };
+    create(value?: PartialMessage<Response_ShowPrompt>): Response_ShowPrompt {
+        const message = { promptId: "", value: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Response_ShowModal>(this, message, value);
+            reflectionMergePartial<Response_ShowPrompt>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_ShowModal): Response_ShowModal {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_ShowPrompt): Response_ShowPrompt {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string modal_id */ 1:
-                    message.modalId = reader.string();
+                case /* string prompt_id */ 1:
+                    message.promptId = reader.string();
                     break;
                 case /* string value */ 2:
                     message.value = reader.string();
@@ -2118,10 +2118,10 @@ class Response_ShowModal$Type extends MessageType<Response_ShowModal> {
         }
         return message;
     }
-    internalBinaryWrite(message: Response_ShowModal, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string modal_id = 1; */
-        if (message.modalId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.modalId);
+    internalBinaryWrite(message: Response_ShowPrompt, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string prompt_id = 1; */
+        if (message.promptId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.promptId);
         /* string value = 2; */
         if (message.value !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.value);
@@ -2132,9 +2132,9 @@ class Response_ShowModal$Type extends MessageType<Response_ShowModal> {
     }
 }
 /**
- * @generated MessageType for protobuf message proto.packets.Response.ShowModal
+ * @generated MessageType for protobuf message proto.packets.Response.ShowPrompt
  */
-export const Response_ShowModal = new Response_ShowModal$Type();
+export const Response_ShowPrompt = new Response_ShowPrompt$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Response_RemainingAttempts$Type extends MessageType<Response_RemainingAttempts> {
     constructor() {

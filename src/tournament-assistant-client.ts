@@ -492,7 +492,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           options
         },
       },
-    }, userIds);
+    }, userIds, timer ? timer * 1000 : timer);
 
     if (response.length <= 0) {
       throw new Error("Server timed out, or no users responded");

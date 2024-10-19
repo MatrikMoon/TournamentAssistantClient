@@ -523,11 +523,7 @@ export interface Response_PreloadImageForStreamSync {
  */
 export interface Response_ShowPrompt {
     /**
-     * @generated from protobuf field: string prompt_id = 1;
-     */
-    promptId: string;
-    /**
-     * @generated from protobuf field: string value = 2;
+     * @generated from protobuf field: string value = 1;
      */
     value: string;
 }
@@ -2085,12 +2081,11 @@ export const Response_PreloadImageForStreamSync = new Response_PreloadImageForSt
 class Response_ShowPrompt$Type extends MessageType<Response_ShowPrompt> {
     constructor() {
         super("proto.packets.Response.ShowPrompt", [
-            { no: 1, name: "prompt_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "value", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "value", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Response_ShowPrompt>): Response_ShowPrompt {
-        const message = { promptId: "", value: "" };
+        const message = { value: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Response_ShowPrompt>(this, message, value);
@@ -2101,10 +2096,7 @@ class Response_ShowPrompt$Type extends MessageType<Response_ShowPrompt> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string prompt_id */ 1:
-                    message.promptId = reader.string();
-                    break;
-                case /* string value */ 2:
+                case /* string value */ 1:
                     message.value = reader.string();
                     break;
                 default:
@@ -2119,12 +2111,9 @@ class Response_ShowPrompt$Type extends MessageType<Response_ShowPrompt> {
         return message;
     }
     internalBinaryWrite(message: Response_ShowPrompt, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string prompt_id = 1; */
-        if (message.promptId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.promptId);
-        /* string value = 2; */
+        /* string value = 1; */
         if (message.value !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.value);
+            writer.tag(1, WireType.LengthDelimited).string(message.value);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

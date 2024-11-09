@@ -1117,6 +1117,57 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
+  public getBotTokensForUser = async (ownerDiscordId: string) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "getBotTokensForUser",
+        getBotTokensForUser: {
+          ownerDiscordId
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public generateBotToken = async (username: string) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "generateBotToken",
+        generateBotToken: {
+          username
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public revokeBotToken = async (botTokenGuid: string) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "revokeBotToken",
+        revokeBotToken: {
+          botTokenGuid
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
   public createTournament = async (tournament: Tournament) => {
     const response = await this.sendRequest({
       type: {

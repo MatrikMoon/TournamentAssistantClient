@@ -175,6 +175,24 @@ export interface Response {
          */
         remainingAttempts: Response_RemainingAttempts;
     } | {
+        oneofKind: "getBotTokensForUser";
+        /**
+         * @generated from protobuf field: proto.packets.Response.GetBotTokensForUser get_bot_tokens_for_user = 26;
+         */
+        getBotTokensForUser: Response_GetBotTokensForUser;
+    } | {
+        oneofKind: "generateBotToken";
+        /**
+         * @generated from protobuf field: proto.packets.Response.GenerateBotToken generate_bot_token = 27;
+         */
+        generateBotToken: Response_GenerateBotToken;
+    } | {
+        oneofKind: "revokeBotToken";
+        /**
+         * @generated from protobuf field: proto.packets.Response.RevokeBotToken revoke_bot_token = 28;
+         */
+        revokeBotToken: Response_RevokeBotToken;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -537,6 +555,50 @@ export interface Response_RemainingAttempts {
     remainingAttempts: number;
 }
 /**
+ * @generated from protobuf message proto.packets.Response.GetBotTokensForUser
+ */
+export interface Response_GetBotTokensForUser {
+    /**
+     * @generated from protobuf field: repeated proto.packets.Response.GetBotTokensForUser.BotUser bot_users = 1;
+     */
+    botUsers: Response_GetBotTokensForUser_BotUser[];
+}
+/**
+ * @generated from protobuf message proto.packets.Response.GetBotTokensForUser.BotUser
+ */
+export interface Response_GetBotTokensForUser_BotUser {
+    /**
+     * @generated from protobuf field: string guid = 1;
+     */
+    guid: string;
+    /**
+     * @generated from protobuf field: string username = 2;
+     */
+    username: string;
+    /**
+     * @generated from protobuf field: string owner_discord_id = 3;
+     */
+    ownerDiscordId: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.GenerateBotToken
+ */
+export interface Response_GenerateBotToken {
+    /**
+     * @generated from protobuf field: string bot_token = 1;
+     */
+    botToken: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.RevokeBotToken
+ */
+export interface Response_RevokeBotToken {
+    /**
+     * @generated from protobuf field: string message = 1;
+     */
+    message: string;
+}
+/**
  * @generated from protobuf enum proto.packets.Response.ResponseType
  */
 export enum Response_ResponseType {
@@ -577,7 +639,10 @@ class Response$Type extends MessageType<Response> {
             { no: 17, name: "load_song", kind: "message", oneof: "details", T: () => Response_LoadSong },
             { no: 18, name: "preload_image_for_stream_sync", kind: "message", oneof: "details", T: () => Response_PreloadImageForStreamSync },
             { no: 19, name: "show_prompt", kind: "message", oneof: "details", T: () => Response_ShowPrompt },
-            { no: 20, name: "remaining_attempts", kind: "message", oneof: "details", T: () => Response_RemainingAttempts }
+            { no: 20, name: "remaining_attempts", kind: "message", oneof: "details", T: () => Response_RemainingAttempts },
+            { no: 26, name: "get_bot_tokens_for_user", kind: "message", oneof: "details", T: () => Response_GetBotTokensForUser },
+            { no: 27, name: "generate_bot_token", kind: "message", oneof: "details", T: () => Response_GenerateBotToken },
+            { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -736,6 +801,24 @@ class Response$Type extends MessageType<Response> {
                         remainingAttempts: Response_RemainingAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).remainingAttempts)
                     };
                     break;
+                case /* proto.packets.Response.GetBotTokensForUser get_bot_tokens_for_user */ 26:
+                    message.details = {
+                        oneofKind: "getBotTokensForUser",
+                        getBotTokensForUser: Response_GetBotTokensForUser.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).getBotTokensForUser)
+                    };
+                    break;
+                case /* proto.packets.Response.GenerateBotToken generate_bot_token */ 27:
+                    message.details = {
+                        oneofKind: "generateBotToken",
+                        generateBotToken: Response_GenerateBotToken.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).generateBotToken)
+                    };
+                    break;
+                case /* proto.packets.Response.RevokeBotToken revoke_bot_token */ 28:
+                    message.details = {
+                        oneofKind: "revokeBotToken",
+                        revokeBotToken: Response_RevokeBotToken.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).revokeBotToken)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -823,6 +906,15 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.RemainingAttempts remaining_attempts = 20; */
         if (message.details.oneofKind === "remainingAttempts")
             Response_RemainingAttempts.internalBinaryWrite(message.details.remainingAttempts, writer.tag(20, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.GetBotTokensForUser get_bot_tokens_for_user = 26; */
+        if (message.details.oneofKind === "getBotTokensForUser")
+            Response_GetBotTokensForUser.internalBinaryWrite(message.details.getBotTokensForUser, writer.tag(26, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.GenerateBotToken generate_bot_token = 27; */
+        if (message.details.oneofKind === "generateBotToken")
+            Response_GenerateBotToken.internalBinaryWrite(message.details.generateBotToken, writer.tag(27, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.RevokeBotToken revoke_bot_token = 28; */
+        if (message.details.oneofKind === "revokeBotToken")
+            Response_RevokeBotToken.internalBinaryWrite(message.details.revokeBotToken, writer.tag(28, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2171,3 +2263,205 @@ class Response_RemainingAttempts$Type extends MessageType<Response_RemainingAtte
  * @generated MessageType for protobuf message proto.packets.Response.RemainingAttempts
  */
 export const Response_RemainingAttempts = new Response_RemainingAttempts$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_GetBotTokensForUser$Type extends MessageType<Response_GetBotTokensForUser> {
+    constructor() {
+        super("proto.packets.Response.GetBotTokensForUser", [
+            { no: 1, name: "bot_users", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Response_GetBotTokensForUser_BotUser }
+        ]);
+    }
+    create(value?: PartialMessage<Response_GetBotTokensForUser>): Response_GetBotTokensForUser {
+        const message = { botUsers: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_GetBotTokensForUser>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_GetBotTokensForUser): Response_GetBotTokensForUser {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated proto.packets.Response.GetBotTokensForUser.BotUser bot_users */ 1:
+                    message.botUsers.push(Response_GetBotTokensForUser_BotUser.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_GetBotTokensForUser, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated proto.packets.Response.GetBotTokensForUser.BotUser bot_users = 1; */
+        for (let i = 0; i < message.botUsers.length; i++)
+            Response_GetBotTokensForUser_BotUser.internalBinaryWrite(message.botUsers[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.GetBotTokensForUser
+ */
+export const Response_GetBotTokensForUser = new Response_GetBotTokensForUser$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_GetBotTokensForUser_BotUser$Type extends MessageType<Response_GetBotTokensForUser_BotUser> {
+    constructor() {
+        super("proto.packets.Response.GetBotTokensForUser.BotUser", [
+            { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "username", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "owner_discord_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_GetBotTokensForUser_BotUser>): Response_GetBotTokensForUser_BotUser {
+        const message = { guid: "", username: "", ownerDiscordId: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_GetBotTokensForUser_BotUser>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_GetBotTokensForUser_BotUser): Response_GetBotTokensForUser_BotUser {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string guid */ 1:
+                    message.guid = reader.string();
+                    break;
+                case /* string username */ 2:
+                    message.username = reader.string();
+                    break;
+                case /* string owner_discord_id */ 3:
+                    message.ownerDiscordId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_GetBotTokensForUser_BotUser, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string guid = 1; */
+        if (message.guid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.guid);
+        /* string username = 2; */
+        if (message.username !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.username);
+        /* string owner_discord_id = 3; */
+        if (message.ownerDiscordId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.ownerDiscordId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.GetBotTokensForUser.BotUser
+ */
+export const Response_GetBotTokensForUser_BotUser = new Response_GetBotTokensForUser_BotUser$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_GenerateBotToken$Type extends MessageType<Response_GenerateBotToken> {
+    constructor() {
+        super("proto.packets.Response.GenerateBotToken", [
+            { no: 1, name: "bot_token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_GenerateBotToken>): Response_GenerateBotToken {
+        const message = { botToken: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_GenerateBotToken>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_GenerateBotToken): Response_GenerateBotToken {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string bot_token */ 1:
+                    message.botToken = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_GenerateBotToken, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string bot_token = 1; */
+        if (message.botToken !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.botToken);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.GenerateBotToken
+ */
+export const Response_GenerateBotToken = new Response_GenerateBotToken$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_RevokeBotToken$Type extends MessageType<Response_RevokeBotToken> {
+    constructor() {
+        super("proto.packets.Response.RevokeBotToken", [
+            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_RevokeBotToken>): Response_RevokeBotToken {
+        const message = { message: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_RevokeBotToken>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_RevokeBotToken): Response_RevokeBotToken {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string message */ 1:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_RevokeBotToken, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string message = 1; */
+        if (message.message !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.RevokeBotToken
+ */
+export const Response_RevokeBotToken = new Response_RevokeBotToken$Type();

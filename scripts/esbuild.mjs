@@ -7,7 +7,7 @@ import { polyfillNode } from "esbuild-plugin-polyfill-node";
 esbuild.build({
     entryPoints: ['src/index.ts'],
     bundle: true,
-    outfile: pkg.exports['.'].default,
+    outfile: pkg.exports['.'].default.default,
     globalName: 'TournamentAssistantClient',
     platform: 'browser',
     define: {

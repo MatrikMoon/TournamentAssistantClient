@@ -24,7 +24,7 @@ import {
   Response_ResponseType,
 } from "./models/responses.js";
 import { Request, Request_LoadSong, Request_ShowPrompt_PromptOption } from "./models/requests.js";
-import { Command } from "./models/commands.js";
+import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
 import { versionCode } from "./constants.js";
 import { Channel, Push_SongFinished } from "./models/index.js";
 import WebSocket from "ws";
@@ -381,6 +381,28 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       type: {
         oneofKind: "returnToMenu",
         returnToMenu: true,
+      },
+    }, userIds);
+  };
+
+  public flipColors = (userIds: string[]) => {
+    this.sendCommand({
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.InvertColors
+        },
+      },
+    }, userIds);
+  };
+
+  public flipHands = (userIds: string[]) => {
+    this.sendCommand({
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.InvertHandedness
+        },
       },
     }, userIds);
   };

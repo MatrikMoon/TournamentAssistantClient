@@ -65,6 +65,12 @@ export interface Command {
          */
         discordAuthorize: string;
     } | {
+        oneofKind: "modifyGameplay";
+        /**
+         * @generated from protobuf field: proto.packets.Command.ModifyGameplay modify_gameplay = 10;
+         */
+        modifyGameplay: Command_ModifyGameplay;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -90,6 +96,28 @@ export interface Command_SendBotMessage {
      */
     message: string;
 }
+/**
+ * @generated from protobuf message proto.packets.Command.ModifyGameplay
+ */
+export interface Command_ModifyGameplay {
+    /**
+     * @generated from protobuf field: proto.packets.Command.ModifyGameplay.Modifier modifier = 1;
+     */
+    modifier: Command_ModifyGameplay_Modifier;
+}
+/**
+ * @generated from protobuf enum proto.packets.Command.ModifyGameplay.Modifier
+ */
+export enum Command_ModifyGameplay_Modifier {
+    /**
+     * @generated from protobuf enum value: InvertColors = 0;
+     */
+    InvertColors = 0,
+    /**
+     * @generated from protobuf enum value: InvertHandedness = 1;
+     */
+    InvertHandedness = 1
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Command$Type extends MessageType<Command> {
     constructor() {
@@ -100,7 +128,8 @@ class Command$Type extends MessageType<Command> {
             { no: 4, name: "stream_sync_show_image", kind: "scalar", oneof: "type", T: 8 /*ScalarType.BOOL*/ },
             { no: 6, name: "play_song", kind: "message", oneof: "type", T: () => Command_PlaySong },
             { no: 7, name: "send_bot_message", kind: "message", oneof: "type", T: () => Command_SendBotMessage },
-            { no: 9, name: "discord_authorize", kind: "scalar", oneof: "type", T: 9 /*ScalarType.STRING*/ }
+            { no: 9, name: "discord_authorize", kind: "scalar", oneof: "type", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "modify_gameplay", kind: "message", oneof: "type", T: () => Command_ModifyGameplay }
         ]);
     }
     create(value?: PartialMessage<Command>): Command {
@@ -157,6 +186,12 @@ class Command$Type extends MessageType<Command> {
                         discordAuthorize: reader.string()
                     };
                     break;
+                case /* proto.packets.Command.ModifyGameplay modify_gameplay */ 10:
+                    message.type = {
+                        oneofKind: "modifyGameplay",
+                        modifyGameplay: Command_ModifyGameplay.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).modifyGameplay)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -190,6 +225,9 @@ class Command$Type extends MessageType<Command> {
         /* string discord_authorize = 9; */
         if (message.type.oneofKind === "discordAuthorize")
             writer.tag(9, WireType.LengthDelimited).string(message.type.discordAuthorize);
+        /* proto.packets.Command.ModifyGameplay modify_gameplay = 10; */
+        if (message.type.oneofKind === "modifyGameplay")
+            Command_ModifyGameplay.internalBinaryWrite(message.type.modifyGameplay, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -301,3 +339,50 @@ class Command_SendBotMessage$Type extends MessageType<Command_SendBotMessage> {
  * @generated MessageType for protobuf message proto.packets.Command.SendBotMessage
  */
 export const Command_SendBotMessage = new Command_SendBotMessage$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Command_ModifyGameplay$Type extends MessageType<Command_ModifyGameplay> {
+    constructor() {
+        super("proto.packets.Command.ModifyGameplay", [
+            { no: 1, name: "modifier", kind: "enum", T: () => ["proto.packets.Command.ModifyGameplay.Modifier", Command_ModifyGameplay_Modifier] }
+        ]);
+    }
+    create(value?: PartialMessage<Command_ModifyGameplay>): Command_ModifyGameplay {
+        const message = { modifier: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Command_ModifyGameplay>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Command_ModifyGameplay): Command_ModifyGameplay {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* proto.packets.Command.ModifyGameplay.Modifier modifier */ 1:
+                    message.modifier = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Command_ModifyGameplay, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* proto.packets.Command.ModifyGameplay.Modifier modifier = 1; */
+        if (message.modifier !== 0)
+            writer.tag(1, WireType.Varint).int32(message.modifier);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Command.ModifyGameplay
+ */
+export const Command_ModifyGameplay = new Command_ModifyGameplay$Type();

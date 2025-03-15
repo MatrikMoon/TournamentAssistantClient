@@ -23,10 +23,18 @@ import {
   Response_Connect,
   Response_ResponseType,
 } from "./models/responses.js";
-import { Request, Request_LoadSong, Request_ShowPrompt_PromptOption } from "./models/requests.js";
+import {
+  Request,
+  Request_LoadSong,
+  Request_ShowPrompt_PromptOption,
+} from "./models/requests.js";
 import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
 import { versionCode } from "./constants.js";
-import { Channel, Push_SongFinished } from "./models/index.js";
+import {
+  Channel,
+  Push_QualifierScoreSubmitted,
+  Push_SongFinished,
+} from "./models/index.js";
 import WebSocket from "ws";
 
 // Created by Moon on 6/12/2022
@@ -48,6 +56,7 @@ type TAClientEvents = {
 
   songFinished: Push_SongFinished;
   realtimeScore: RealtimeScore;
+  qualifierScoreSubmitted: Push_QualifierScoreSubmitted;
 
   responseReceived: ResponseFromUser;
 
@@ -131,7 +140,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             oneofKind: "connect",
             connect: {
               clientVersion: versionCode,
-              uiVersion: this.uiVersion ?? 0
+              uiVersion: this.uiVersion ?? 0,
             },
           },
         });
@@ -228,7 +237,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   private async sendRequest(
     request: Request,
     to?: string[],
-    timeout: number = 30000,
+    timeout: number = 30000
   ): Promise<ResponseFromUser[]> {
     const packet: Packet = {
       token: "", // Overridden in this.send()
@@ -313,8 +322,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
                 type: Response_ResponseType.Fail,
                 respondingToPacketId: packet.id,
                 details: {
-                  oneofKind: undefined
-                }
+                  oneofKind: undefined,
+                },
               },
             });
           }
@@ -365,64 +374,85 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   }
 
   // --- Commands --- //
-  public playSong = (gameplayParameters: GameplayParameters, userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "playSong",
-        playSong: {
-          gameplayParameters,
+  public playSong = (
+    gameplayParameters: GameplayParameters,
+    userIds: string[]
+  ) => {
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "playSong",
+          playSong: {
+            gameplayParameters,
+          },
         },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   public returnToMenu = (userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "returnToMenu",
-        returnToMenu: true,
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "returnToMenu",
+          returnToMenu: true,
+        },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   public flipColors = (userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "modifyGameplay",
-        modifyGameplay: {
-          modifier: Command_ModifyGameplay_Modifier.InvertColors
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "modifyGameplay",
+          modifyGameplay: {
+            modifier: Command_ModifyGameplay_Modifier.InvertColors,
+          },
         },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   public flipHands = (userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "modifyGameplay",
-        modifyGameplay: {
-          modifier: Command_ModifyGameplay_Modifier.InvertHandedness
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "modifyGameplay",
+          modifyGameplay: {
+            modifier: Command_ModifyGameplay_Modifier.InvertHandedness,
+          },
         },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   public showLoadedImage = (userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "streamSyncShowImage",
-        streamSyncShowImage: true,
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "streamSyncShowImage",
+          streamSyncShowImage: true,
+        },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   public delayTestFinished = (userIds: string[]) => {
-    this.sendCommand({
-      type: {
-        oneofKind: "delayTestFinish",
-        delayTestFinish: true,
+    this.sendCommand(
+      {
+        type: {
+          oneofKind: "delayTestFinish",
+          delayTestFinish: true,
+        },
       },
-    }, userIds);
+      userIds
+    );
   };
 
   // --- Requests --- //
@@ -444,7 +474,11 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public getLeaderboard = async (tournamentId: string, qualifierId: string, mapId: string) => {
+  public getLeaderboard = async (
+    tournamentId: string,
+    qualifierId: string,
+    mapId: string
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "qualifierScores",
@@ -463,16 +497,24 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public loadSong = async (levelId: string, userIds: string[], timeout?: number) => {
-    const response = await this.sendRequest({
-      type: {
-        oneofKind: "loadSong",
-        loadSong: {
-          levelId,
-          customHostUrl: ""
+  public loadSong = async (
+    levelId: string,
+    userIds: string[],
+    timeout?: number
+  ) => {
+    const response = await this.sendRequest(
+      {
+        type: {
+          oneofKind: "loadSong",
+          loadSong: {
+            levelId,
+            customHostUrl: "",
+          },
         },
       },
-    }, userIds, timeout);
+      userIds,
+      timeout
+    );
 
     if (response.length <= 0) {
       throw new Error("Server timed out, or no users responded");
@@ -482,16 +524,19 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   };
 
   public loadImage = async (bitmap: Uint8Array, userIds: string[]) => {
-    const response = await this.sendRequest({
-      type: {
-        oneofKind: "preloadImageForStreamSync",
-        preloadImageForStreamSync: {
-          fileId: uuidv4(),
-          data: bitmap,
-          compressed: false
+    const response = await this.sendRequest(
+      {
+        type: {
+          oneofKind: "preloadImageForStreamSync",
+          preloadImageForStreamSync: {
+            fileId: uuidv4(),
+            data: bitmap,
+            compressed: false,
+          },
         },
       },
-    }, userIds);
+      userIds
+    );
 
     if (response.length <= 0) {
       throw new Error("Server timed out, or no users responded");
@@ -500,21 +545,32 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response;
   };
 
-  public showPrompt = async (userIds: string[], titleText: string, bodyText: string, canClose: boolean, options: Request_ShowPrompt_PromptOption[], timer?: number) => {
-    const response = await this.sendRequest({
-      type: {
-        oneofKind: "showPrompt",
-        showPrompt: {
-          promptId: uuidv4(),
-          messageTitle: titleText,
-          messageText: bodyText,
-          showTimer: !!timer,
-          timeout: timer ?? 0,
-          canClose: canClose,
-          options
+  public showPrompt = async (
+    userIds: string[],
+    titleText: string,
+    bodyText: string,
+    canClose: boolean,
+    options: Request_ShowPrompt_PromptOption[],
+    timer?: number
+  ) => {
+    const response = await this.sendRequest(
+      {
+        type: {
+          oneofKind: "showPrompt",
+          showPrompt: {
+            promptId: uuidv4(),
+            messageTitle: titleText,
+            messageText: bodyText,
+            showTimer: !!timer,
+            timeout: timer ?? 0,
+            canClose: canClose,
+            options,
+          },
         },
       },
-    }, userIds, timer ? timer * 1000 : timer);
+      userIds,
+      timer ? timer * 1000 : timer
+    );
 
     if (response.length <= 0) {
       throw new Error("Server timed out, or no users responded");
@@ -547,17 +603,21 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     if (packet.packet.oneofKind === "command") {
       const command = packet.packet.command;
 
-      if (command.type.oneofKind === 'discordAuthorize') {
+      if (command.type.oneofKind === "discordAuthorize") {
         this.emit(
           "authorizationRequestedFromServer",
           command.type.discordAuthorize
         );
       }
-    } else if (packet.packet.oneofKind === 'request') {
+    } else if (packet.packet.oneofKind === "request") {
       const request = packet.packet.request;
 
-      if (request.type.oneofKind === 'loadSong') {
-        this.emit("loadSongRequested", [packet.id, packet.from, request.type.loadSong]);
+      if (request.type.oneofKind === "loadSong") {
+        this.emit("loadSongRequested", [
+          packet.id,
+          packet.from,
+          request.type.loadSong,
+        ]);
       }
     } else if (packet.packet.oneofKind === "response") {
       const response = packet.packet.response;
@@ -701,9 +761,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
       if (push.data.oneofKind === "songFinished") {
         this.emit("songFinished", push.data.songFinished);
-      }
-      else if (push.data.oneofKind === "realtimeScore") {
+      } else if (push.data.oneofKind === "realtimeScore") {
         this.emit("realtimeScore", push.data.realtimeScore);
+      } else if (push.data.oneofKind === "qualifierScoreSubmtited") {
+        this.emit("qualifierScoreSubmitted", push.data.qualifierScoreSubmtited);
       }
     }
   };
@@ -746,15 +807,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-
-  public addUserToMatch = async (tournamentId: string, matchId: string, userId: string) => {
+  public addUserToMatch = async (
+    tournamentId: string,
+    matchId: string,
+    userId: string
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addUserToMatch",
         addUserToMatch: {
           tournamentId,
           matchId,
-          userId
+          userId,
         },
       },
     });
@@ -766,14 +830,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeUserFromMatch = async (tournamentId: string, matchId: string, userId: string) => {
+  public removeUserFromMatch = async (
+    tournamentId: string,
+    matchId: string,
+    userId: string
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeUserFromMatch",
         removeUserFromMatch: {
           tournamentId,
           matchId,
-          userId
+          userId,
         },
       },
     });
@@ -785,14 +853,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setMatchLeader = async (tournamentId: string, matchId: string, userId: string) => {
+  public setMatchLeader = async (
+    tournamentId: string,
+    matchId: string,
+    userId: string
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setMatchLeader",
         setMatchLeader: {
           tournamentId,
           matchId,
-          userId
+          userId,
         },
       },
     });
@@ -804,14 +876,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setMatchMap = async (tournamentId: string, matchId: string, map: Map) => {
+  public setMatchMap = async (
+    tournamentId: string,
+    matchId: string,
+    map: Map
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setMatchMap",
         setMatchMap: {
           tournamentId,
           matchId,
-          map
+          map,
         },
       },
     });
@@ -873,7 +949,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setQualifierName: {
           tournamentId,
           qualifierId,
-          qualifierName
+          qualifierName,
         },
       },
     });
@@ -896,7 +972,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setQualifierImage: {
           tournamentId,
           qualifierId,
-          qualifierImage
+          qualifierImage,
         },
       },
     });
@@ -919,7 +995,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setQualifierInfoChannel: {
           tournamentId,
           qualifierId,
-          infoChannel
+          infoChannel,
         },
       },
     });
@@ -942,7 +1018,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setQualifierFlags: {
           tournamentId,
           qualifierId,
-          qualifierFlags
+          qualifierFlags,
         },
       },
     });
@@ -965,7 +1041,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setQualifierLeaderboardSort: {
           tournamentId,
           qualifierId,
-          qualifierLeaderboardSort
+          qualifierLeaderboardSort,
         },
       },
     });
@@ -988,7 +1064,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         addQualifierMaps: {
           tournamentId,
           qualifierId,
-          maps
+          maps,
         },
       },
     });
@@ -1011,7 +1087,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         updateQualifierMap: {
           tournamentId,
           qualifierId,
-          map
+          map,
         },
       },
     });
@@ -1034,7 +1110,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         removeQualifierMap: {
           tournamentId,
           qualifierId,
-          mapId
+          mapId,
         },
       },
     });
@@ -1067,14 +1143,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addAuthorizedUser = async (tournamentId: string, discordId: string, permissionFlags: Permissions) => {
+  public addAuthorizedUser = async (
+    tournamentId: string,
+    discordId: string,
+    permissionFlags: Permissions
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addAuthorizedUser",
         addAuthorizedUser: {
           tournamentId,
           discordId,
-          permissionFlags
+          permissionFlags,
         },
       },
     });
@@ -1086,13 +1166,16 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeAuthorizedUser = async (tournamentId: string, discordId: string) => {
+  public removeAuthorizedUser = async (
+    tournamentId: string,
+    discordId: string
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeAuthorizedUser",
         removeAuthorizedUser: {
           tournamentId,
-          discordId
+          discordId,
         },
       },
     });
@@ -1127,7 +1210,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "getDiscordInfo",
         getDiscordInfo: {
           tournamentId,
-          discordId
+          discordId,
         },
       },
     });
@@ -1144,7 +1227,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       type: {
         oneofKind: "getBotTokensForUser",
         getBotTokensForUser: {
-          ownerDiscordId
+          ownerDiscordId,
         },
       },
     });
@@ -1161,7 +1244,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       type: {
         oneofKind: "generateBotToken",
         generateBotToken: {
-          username
+          username,
         },
       },
     });
@@ -1178,7 +1261,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       type: {
         oneofKind: "revokeBotToken",
         revokeBotToken: {
-          botTokenGuid
+          botTokenGuid,
         },
       },
     });
@@ -1216,7 +1299,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentName",
         setTournamentName: {
           tournamentId,
-          tournamentName
+          tournamentName,
         },
       },
     });
@@ -1237,7 +1320,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentImage",
         setTournamentImage: {
           tournamentId,
-          tournamentImage
+          tournamentImage,
         },
       },
     });
@@ -1258,7 +1341,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentEnableTeams",
         setTournamentEnableTeams: {
           tournamentId,
-          enableTeams
+          enableTeams,
         },
       },
     });
@@ -1279,7 +1362,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentEnablePools",
         setTournamentEnablePools: {
           tournamentId,
-          enablePools
+          enablePools,
         },
       },
     });
@@ -1300,7 +1383,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentShowTournamentButton",
         setTournamentShowTournamentButton: {
           tournamentId,
-          showTournamentButton
+          showTournamentButton,
         },
       },
     });
@@ -1321,7 +1404,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentShowQualifierButton",
         setTournamentShowQualifierButton: {
           tournamentId,
-          showQualifierButton
+          showQualifierButton,
         },
       },
     });
@@ -1342,7 +1425,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentAllowUnauthorizedView",
         setTournamentAllowUnauthorizedView: {
           tournamentId,
-          allowUnauthorizedView
+          allowUnauthorizedView,
         },
       },
     });
@@ -1363,7 +1446,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "setTournamentScoreUpdateFrequency",
         setTournamentScoreUpdateFrequency: {
           tournamentId,
-          scoreUpdateFrequency
+          scoreUpdateFrequency,
         },
       },
     });
@@ -1381,10 +1464,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   ) => {
     const response = await this.sendRequest({
       type: {
-        oneofKind: 'setTournamentBannedMods',
+        oneofKind: "setTournamentBannedMods",
         setTournamentBannedMods: {
           tournamentId,
-          bannedMods
+          bannedMods,
         },
       },
     });
@@ -1405,7 +1488,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "addTournamentTeam",
         addTournamentTeam: {
           tournamentId,
-          team
+          team,
         },
       },
     });
@@ -1428,7 +1511,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setTournamentTeamName: {
           tournamentId,
           teamId,
-          teamName
+          teamName,
         },
       },
     });
@@ -1451,7 +1534,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setTournamentTeamImage: {
           tournamentId,
           teamId,
-          teamImage
+          teamImage,
         },
       },
     });
@@ -1472,7 +1555,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "removeTournamentTeam",
         removeTournamentTeam: {
           tournamentId,
-          teamId
+          teamId,
         },
       },
     });
@@ -1493,7 +1576,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "addTournamentPool",
         addTournamentPool: {
           tournamentId,
-          pool
+          pool,
         },
       },
     });
@@ -1516,7 +1599,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setTournamentPoolName: {
           tournamentId,
           poolId,
-          poolName
+          poolName,
         },
       },
     });
@@ -1539,7 +1622,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         addTournamentPoolMaps: {
           tournamentId,
           poolId,
-          maps
+          maps,
         },
       },
     });
@@ -1562,7 +1645,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         updateTournamentPoolMap: {
           tournamentId,
           poolId,
-          map
+          map,
         },
       },
     });
@@ -1585,7 +1668,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         removeTournamentPoolMap: {
           tournamentId,
           poolId,
-          mapId
+          mapId,
         },
       },
     });
@@ -1606,7 +1689,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         oneofKind: "removeTournamentPool",
         removeTournamentPool: {
           tournamentId,
-          poolId
+          poolId,
         },
       },
     });

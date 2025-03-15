@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import pkg from '../package.json' assert { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
 import esbuild from 'esbuild';
 import GlobalsPlugin from 'esbuild-plugin-globals';
 import { polyfillNode } from "esbuild-plugin-polyfill-node";

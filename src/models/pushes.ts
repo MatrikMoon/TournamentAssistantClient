@@ -11,6 +11,9 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { LeaderboardEntry } from './models.js';
+import { GameplayParameters } from './models.js';
+import { QualifierEvent } from './models.js';
 import { Beatmap } from './models.js';
 import { User } from './models.js';
 import { RealtimeScore } from './models.js';
@@ -35,6 +38,12 @@ export interface Push {
          * @generated from protobuf field: proto.packets.Push.SongFinished song_finished = 2;
          */
         songFinished: Push_SongFinished;
+    } | {
+        oneofKind: "qualifierScoreSubmtited";
+        /**
+         * @generated from protobuf field: proto.packets.Push.QualifierScoreSubmitted qualifier_score_submtited = 3;
+         */
+        qualifierScoreSubmtited: Push_QualifierScoreSubmitted;
     } | {
         oneofKind: undefined;
     };
@@ -101,12 +110,34 @@ export enum Push_SongFinished_CompletionType {
      */
     Quit = 2
 }
+/**
+ * @generated from protobuf message proto.packets.Push.QualifierScoreSubmitted
+ */
+export interface Push_QualifierScoreSubmitted {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: proto.models.QualifierEvent event = 2;
+     */
+    event?: QualifierEvent;
+    /**
+     * @generated from protobuf field: proto.models.GameplayParameters map = 3;
+     */
+    map?: GameplayParameters;
+    /**
+     * @generated from protobuf field: proto.models.LeaderboardEntry qualifier_score = 4;
+     */
+    qualifierScore?: LeaderboardEntry;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Push$Type extends MessageType<Push> {
     constructor() {
         super("proto.packets.Push", [
             { no: 1, name: "realtime_score", kind: "message", oneof: "data", T: () => RealtimeScore },
-            { no: 2, name: "song_finished", kind: "message", oneof: "data", T: () => Push_SongFinished }
+            { no: 2, name: "song_finished", kind: "message", oneof: "data", T: () => Push_SongFinished },
+            { no: 3, name: "qualifier_score_submtited", kind: "message", oneof: "data", T: () => Push_QualifierScoreSubmitted }
         ]);
     }
     create(value?: PartialMessage<Push>): Push {
@@ -133,6 +164,12 @@ class Push$Type extends MessageType<Push> {
                         songFinished: Push_SongFinished.internalBinaryRead(reader, reader.uint32(), options, (message.data as any).songFinished)
                     };
                     break;
+                case /* proto.packets.Push.QualifierScoreSubmitted qualifier_score_submtited */ 3:
+                    message.data = {
+                        oneofKind: "qualifierScoreSubmtited",
+                        qualifierScoreSubmtited: Push_QualifierScoreSubmitted.internalBinaryRead(reader, reader.uint32(), options, (message.data as any).qualifierScoreSubmtited)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -151,6 +188,9 @@ class Push$Type extends MessageType<Push> {
         /* proto.packets.Push.SongFinished song_finished = 2; */
         if (message.data.oneofKind === "songFinished")
             Push_SongFinished.internalBinaryWrite(message.data.songFinished, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Push.QualifierScoreSubmitted qualifier_score_submtited = 3; */
+        if (message.data.oneofKind === "qualifierScoreSubmtited")
+            Push_QualifierScoreSubmitted.internalBinaryWrite(message.data.qualifierScoreSubmtited, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -271,3 +311,71 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
  * @generated MessageType for protobuf message proto.packets.Push.SongFinished
  */
 export const Push_SongFinished = new Push_SongFinished$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Push_QualifierScoreSubmitted$Type extends MessageType<Push_QualifierScoreSubmitted> {
+    constructor() {
+        super("proto.packets.Push.QualifierScoreSubmitted", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "event", kind: "message", T: () => QualifierEvent },
+            { no: 3, name: "map", kind: "message", T: () => GameplayParameters },
+            { no: 4, name: "qualifier_score", kind: "message", T: () => LeaderboardEntry }
+        ]);
+    }
+    create(value?: PartialMessage<Push_QualifierScoreSubmitted>): Push_QualifierScoreSubmitted {
+        const message = { tournamentId: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Push_QualifierScoreSubmitted>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Push_QualifierScoreSubmitted): Push_QualifierScoreSubmitted {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* proto.models.QualifierEvent event */ 2:
+                    message.event = QualifierEvent.internalBinaryRead(reader, reader.uint32(), options, message.event);
+                    break;
+                case /* proto.models.GameplayParameters map */ 3:
+                    message.map = GameplayParameters.internalBinaryRead(reader, reader.uint32(), options, message.map);
+                    break;
+                case /* proto.models.LeaderboardEntry qualifier_score */ 4:
+                    message.qualifierScore = LeaderboardEntry.internalBinaryRead(reader, reader.uint32(), options, message.qualifierScore);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Push_QualifierScoreSubmitted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* proto.models.QualifierEvent event = 2; */
+        if (message.event)
+            QualifierEvent.internalBinaryWrite(message.event, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* proto.models.GameplayParameters map = 3; */
+        if (message.map)
+            GameplayParameters.internalBinaryWrite(message.map, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* proto.models.LeaderboardEntry qualifier_score = 4; */
+        if (message.qualifierScore)
+            LeaderboardEntry.internalBinaryWrite(message.qualifierScore, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Push.QualifierScoreSubmitted
+ */
+export const Push_QualifierScoreSubmitted = new Push_QualifierScoreSubmitted$Type();

@@ -371,6 +371,12 @@ export interface Request {
          */
         revokeBotToken: Request_RevokeBotToken;
     } | {
+        oneofKind: "refundAttempts";
+        /**
+         * @generated from protobuf field: proto.packets.Request.RefundAttempts refund_attempts = 58;
+         */
+        refundAttempts: Request_RefundAttempts;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -1233,6 +1239,31 @@ export interface Request_RevokeBotToken {
      */
     botTokenGuid: string;
 }
+/**
+ * @generated from protobuf message proto.packets.Request.RefundAttempts
+ */
+export interface Request_RefundAttempts {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string; // Included so this request can be permission gated to a tourney
+    /**
+     * @generated from protobuf field: string event_id = 2;
+     */
+    eventId: string;
+    /**
+     * @generated from protobuf field: string map_id = 3;
+     */
+    mapId: string;
+    /**
+     * @generated from protobuf field: string platform_id = 4;
+     */
+    platformId: string;
+    /**
+     * @generated from protobuf field: int32 count = 5;
+     */
+    count: number;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Request$Type extends MessageType<Request> {
     constructor() {
@@ -1292,7 +1323,8 @@ class Request$Type extends MessageType<Request> {
             { no: 43, name: "remaining_attempts", kind: "message", oneof: "type", T: () => Request_RemainingAttempts },
             { no: 55, name: "get_bot_tokens_for_user", kind: "message", oneof: "type", T: () => Request_GetBotTokensForUser },
             { no: 56, name: "generate_bot_token", kind: "message", oneof: "type", T: () => Request_GenerateBotToken },
-            { no: 57, name: "revoke_bot_token", kind: "message", oneof: "type", T: () => Request_RevokeBotToken }
+            { no: 57, name: "revoke_bot_token", kind: "message", oneof: "type", T: () => Request_RevokeBotToken },
+            { no: 58, name: "refund_attempts", kind: "message", oneof: "type", T: () => Request_RefundAttempts }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1643,6 +1675,12 @@ class Request$Type extends MessageType<Request> {
                         revokeBotToken: Request_RevokeBotToken.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).revokeBotToken)
                     };
                     break;
+                case /* proto.packets.Request.RefundAttempts refund_attempts */ 58:
+                    message.type = {
+                        oneofKind: "refundAttempts",
+                        refundAttempts: Request_RefundAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).refundAttempts)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1823,6 +1861,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.RevokeBotToken revoke_bot_token = 57; */
         if (message.type.oneofKind === "revokeBotToken")
             Request_RevokeBotToken.internalBinaryWrite(message.type.revokeBotToken, writer.tag(57, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.RefundAttempts refund_attempts = 58; */
+        if (message.type.oneofKind === "refundAttempts")
+            Request_RefundAttempts.internalBinaryWrite(message.type.refundAttempts, writer.tag(58, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -5086,3 +5127,78 @@ class Request_RevokeBotToken$Type extends MessageType<Request_RevokeBotToken> {
  * @generated MessageType for protobuf message proto.packets.Request.RevokeBotToken
  */
 export const Request_RevokeBotToken = new Request_RevokeBotToken$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_RefundAttempts$Type extends MessageType<Request_RefundAttempts> {
+    constructor() {
+        super("proto.packets.Request.RefundAttempts", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "event_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "map_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "platform_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_RefundAttempts>): Request_RefundAttempts {
+        const message = { tournamentId: "", eventId: "", mapId: "", platformId: "", count: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_RefundAttempts>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_RefundAttempts): Request_RefundAttempts {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string event_id */ 2:
+                    message.eventId = reader.string();
+                    break;
+                case /* string map_id */ 3:
+                    message.mapId = reader.string();
+                    break;
+                case /* string platform_id */ 4:
+                    message.platformId = reader.string();
+                    break;
+                case /* int32 count */ 5:
+                    message.count = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_RefundAttempts, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string event_id = 2; */
+        if (message.eventId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.eventId);
+        /* string map_id = 3; */
+        if (message.mapId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.mapId);
+        /* string platform_id = 4; */
+        if (message.platformId !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.platformId);
+        /* int32 count = 5; */
+        if (message.count !== 0)
+            writer.tag(5, WireType.Varint).int32(message.count);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.RefundAttempts
+ */
+export const Request_RefundAttempts = new Request_RefundAttempts$Type();

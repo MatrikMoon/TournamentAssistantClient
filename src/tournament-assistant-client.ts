@@ -580,6 +580,33 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response;
   };
 
+  public refundAttempts = async (
+    tournamentId: string,
+    qualifierId: string,
+    mapId: string,
+    platformId: string,
+    count: number
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "refundAttempts",
+        refundAttempts: {
+          tournamentId,
+          eventId: qualifierId,
+          mapId,
+          platformId,
+          count,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out, or no users responded");
+    }
+
+    return response;
+  };
+
   // --- Packet Handler --- //
   private handlePacket = (packet: Packet) => {
     this.stateManager.handlePacket(packet);

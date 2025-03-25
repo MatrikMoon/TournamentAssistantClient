@@ -193,6 +193,12 @@ export interface Response {
          */
         revokeBotToken: Response_RevokeBotToken;
     } | {
+        oneofKind: "refundAttempts";
+        /**
+         * @generated from protobuf field: proto.packets.Response.RefundAttempts refund_attempts = 29;
+         */
+        refundAttempts: Response_RefundAttempts;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -599,6 +605,15 @@ export interface Response_RevokeBotToken {
     message: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Response.RefundAttempts
+ */
+export interface Response_RefundAttempts {
+    /**
+     * @generated from protobuf field: string message = 1;
+     */
+    message: string;
+}
+/**
  * @generated from protobuf enum proto.packets.Response.ResponseType
  */
 export enum Response_ResponseType {
@@ -642,7 +657,8 @@ class Response$Type extends MessageType<Response> {
             { no: 20, name: "remaining_attempts", kind: "message", oneof: "details", T: () => Response_RemainingAttempts },
             { no: 26, name: "get_bot_tokens_for_user", kind: "message", oneof: "details", T: () => Response_GetBotTokensForUser },
             { no: 27, name: "generate_bot_token", kind: "message", oneof: "details", T: () => Response_GenerateBotToken },
-            { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken }
+            { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken },
+            { no: 29, name: "refund_attempts", kind: "message", oneof: "details", T: () => Response_RefundAttempts }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -819,6 +835,12 @@ class Response$Type extends MessageType<Response> {
                         revokeBotToken: Response_RevokeBotToken.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).revokeBotToken)
                     };
                     break;
+                case /* proto.packets.Response.RefundAttempts refund_attempts */ 29:
+                    message.details = {
+                        oneofKind: "refundAttempts",
+                        refundAttempts: Response_RefundAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).refundAttempts)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -915,6 +937,9 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.RevokeBotToken revoke_bot_token = 28; */
         if (message.details.oneofKind === "revokeBotToken")
             Response_RevokeBotToken.internalBinaryWrite(message.details.revokeBotToken, writer.tag(28, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.RefundAttempts refund_attempts = 29; */
+        if (message.details.oneofKind === "refundAttempts")
+            Response_RefundAttempts.internalBinaryWrite(message.details.refundAttempts, writer.tag(29, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2465,3 +2490,50 @@ class Response_RevokeBotToken$Type extends MessageType<Response_RevokeBotToken> 
  * @generated MessageType for protobuf message proto.packets.Response.RevokeBotToken
  */
 export const Response_RevokeBotToken = new Response_RevokeBotToken$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_RefundAttempts$Type extends MessageType<Response_RefundAttempts> {
+    constructor() {
+        super("proto.packets.Response.RefundAttempts", [
+            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_RefundAttempts>): Response_RefundAttempts {
+        const message = { message: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_RefundAttempts>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_RefundAttempts): Response_RefundAttempts {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string message */ 1:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_RefundAttempts, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string message = 1; */
+        if (message.message !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.RefundAttempts
+ */
+export const Response_RefundAttempts = new Response_RefundAttempts$Type();

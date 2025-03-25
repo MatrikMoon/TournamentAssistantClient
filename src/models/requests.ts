@@ -1074,6 +1074,10 @@ export interface Request_Join {
      * @generated from protobuf field: string password = 2;
      */
     password: string;
+    /**
+     * @generated from protobuf field: repeated string mod_list = 3;
+     */
+    modList: string[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.QualifierScores
@@ -4444,11 +4448,12 @@ class Request_Join$Type extends MessageType<Request_Join> {
     constructor() {
         super("proto.packets.Request.Join", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "mod_list", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_Join>): Request_Join {
-        const message = { tournamentId: "", password: "" };
+        const message = { tournamentId: "", password: "", modList: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_Join>(this, message, value);
@@ -4464,6 +4469,9 @@ class Request_Join$Type extends MessageType<Request_Join> {
                     break;
                 case /* string password */ 2:
                     message.password = reader.string();
+                    break;
+                case /* repeated string mod_list */ 3:
+                    message.modList.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4483,6 +4491,9 @@ class Request_Join$Type extends MessageType<Request_Join> {
         /* string password = 2; */
         if (message.password !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.password);
+        /* repeated string mod_list = 3; */
+        for (let i = 0; i < message.modList.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.modList[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

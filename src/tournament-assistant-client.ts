@@ -463,6 +463,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         join: {
           tournamentId,
           password: "",
+          modList: [],
         },
       },
     });

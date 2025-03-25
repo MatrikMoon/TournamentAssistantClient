@@ -431,12 +431,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     );
   };
 
-  public showLoadedImage = (userIds: string[]) => {
+  public showLoadedImage = (userIds: string[], show = true) => {
     this.sendCommand(
       {
         type: {
           oneofKind: "streamSyncShowImage",
-          streamSyncShowImage: true,
+          streamSyncShowImage: show,
         },
       },
       userIds

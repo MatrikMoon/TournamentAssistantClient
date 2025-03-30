@@ -443,6 +443,26 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     );
   };
 
+  public showColor = async (color: string, userIds: string[]) => {
+    const response = await this.sendRequest(
+      {
+        type: {
+          oneofKind: "showColorForStreamSync",
+          showColorForStreamSync: {
+            color,
+          },
+        },
+      },
+      userIds
+    );
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out, or no users responded");
+    }
+
+    return response;
+  };
+
   public delayTestFinished = (userIds: string[]) => {
     this.sendCommand(
       {

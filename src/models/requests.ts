@@ -377,6 +377,12 @@ export interface Request {
          */
         refundAttempts: Request_RefundAttempts;
     } | {
+        oneofKind: "showColorForStreamSync";
+        /**
+         * @generated from protobuf field: proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync = 59;
+         */
+        showColorForStreamSync: Request_ShowColorForStreamSync;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -1264,6 +1270,15 @@ export interface Request_RefundAttempts {
      */
     count: number;
 }
+/**
+ * @generated from protobuf message proto.packets.Request.ShowColorForStreamSync
+ */
+export interface Request_ShowColorForStreamSync {
+    /**
+     * @generated from protobuf field: string color = 1;
+     */
+    color: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Request$Type extends MessageType<Request> {
     constructor() {
@@ -1324,7 +1339,8 @@ class Request$Type extends MessageType<Request> {
             { no: 55, name: "get_bot_tokens_for_user", kind: "message", oneof: "type", T: () => Request_GetBotTokensForUser },
             { no: 56, name: "generate_bot_token", kind: "message", oneof: "type", T: () => Request_GenerateBotToken },
             { no: 57, name: "revoke_bot_token", kind: "message", oneof: "type", T: () => Request_RevokeBotToken },
-            { no: 58, name: "refund_attempts", kind: "message", oneof: "type", T: () => Request_RefundAttempts }
+            { no: 58, name: "refund_attempts", kind: "message", oneof: "type", T: () => Request_RefundAttempts },
+            { no: 59, name: "show_color_for_stream_sync", kind: "message", oneof: "type", T: () => Request_ShowColorForStreamSync }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1681,6 +1697,12 @@ class Request$Type extends MessageType<Request> {
                         refundAttempts: Request_RefundAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).refundAttempts)
                     };
                     break;
+                case /* proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync */ 59:
+                    message.type = {
+                        oneofKind: "showColorForStreamSync",
+                        showColorForStreamSync: Request_ShowColorForStreamSync.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).showColorForStreamSync)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1864,6 +1886,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.RefundAttempts refund_attempts = 58; */
         if (message.type.oneofKind === "refundAttempts")
             Request_RefundAttempts.internalBinaryWrite(message.type.refundAttempts, writer.tag(58, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync = 59; */
+        if (message.type.oneofKind === "showColorForStreamSync")
+            Request_ShowColorForStreamSync.internalBinaryWrite(message.type.showColorForStreamSync, writer.tag(59, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -5202,3 +5227,50 @@ class Request_RefundAttempts$Type extends MessageType<Request_RefundAttempts> {
  * @generated MessageType for protobuf message proto.packets.Request.RefundAttempts
  */
 export const Request_RefundAttempts = new Request_RefundAttempts$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_ShowColorForStreamSync$Type extends MessageType<Request_ShowColorForStreamSync> {
+    constructor() {
+        super("proto.packets.Request.ShowColorForStreamSync", [
+            { no: 1, name: "color", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_ShowColorForStreamSync>): Request_ShowColorForStreamSync {
+        const message = { color: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_ShowColorForStreamSync>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_ShowColorForStreamSync): Request_ShowColorForStreamSync {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string color */ 1:
+                    message.color = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_ShowColorForStreamSync, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string color = 1; */
+        if (message.color !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.color);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.ShowColorForStreamSync
+ */
+export const Request_ShowColorForStreamSync = new Request_ShowColorForStreamSync$Type();

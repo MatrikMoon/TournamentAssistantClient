@@ -474,7 +474,11 @@ export enum User_ClientTypes {
     /**
      * @generated from protobuf enum value: WebsocketConnection = 1;
      */
-    WebsocketConnection = 1
+    WebsocketConnection = 1,
+    /**
+     * @generated from protobuf enum value: RESTConnection = 2;
+     */
+    RESTConnection = 2
 }
 /**
  * @generated from protobuf message proto.models.Match

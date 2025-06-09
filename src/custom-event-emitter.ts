@@ -1,7 +1,11 @@
 import { EventEmitter } from 'events';
 
 export class CustomEventEmitter<T extends Record<string, any>> {
-    private emitter = new EventEmitter();
+    private readonly emitter = new EventEmitter();
+
+    constructor() {
+        this.emitter.setMaxListeners(0);
+    }
 
     public get on(): <K extends Extract<keyof T, string | symbol>>(eventName: K, fn: (params: T[K]) => void) => void {
         return this.emitter.on.bind(this.emitter);

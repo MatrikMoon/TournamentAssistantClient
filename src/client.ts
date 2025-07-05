@@ -75,26 +75,9 @@ export class Client extends CustomEventEmitter<ClientEvents> {
     this.token = token;
   }
 
-  public send(packet: Packet, ids?: string[]): void {
+  public send(packet: Packet): void {
     let toSend = packet;
     toSend.token = this.token;
-
-    if (ids) {
-      const toForward: ForwardingPacket = {
-        packet,
-        forwardTo: ids,
-      };
-
-      toSend = {
-        token: this.token,
-        from: packet.from,
-        id: packet.id,
-        packet: {
-          oneofKind: "forwardingPacket",
-          forwardingPacket: toForward,
-        },
-      };
-    }
 
     this.websocket?.send(Packet.toBinary(toSend));
   }

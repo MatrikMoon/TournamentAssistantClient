@@ -13,8 +13,8 @@ import {
   QualifierEvent_LeaderboardSort,
   Tournament_TournamentSettings_Team,
   Tournament_TournamentSettings_Pool,
-  Permissions,
   RealtimeScore,
+  Role,
 } from "./models/models.js";
 import { Packet } from "./models/packets.js";
 import { StateManager } from "./state-manager.js";
@@ -152,13 +152,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               from: this.stateManager.getSelfGuid(),
               id: uuidv4(),
               packet: {
-                oneofKind: "command",
-                command: {
-                  type: {
-                    oneofKind: "heartbeat",
-                    heartbeat: true,
-                  },
-                },
+                oneofKind: "heartbeat",
+                heartbeat: true,
               },
             });
           }, 10000);
@@ -205,33 +200,16 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     this.client?.setToken(token);
   }
 
-  private forwardToUsers(packet: Packet, to: string[]) {
+  private sendCommand(command: Command) {
     this.client?.send({
       token: "", // Overridden in this.send()
-      from: packet.from,
-      id: packet.id,
-      packet: {
-        oneofKind: "forwardingPacket",
-        forwardingPacket: {
-          forwardTo: to,
-          packet,
-        },
-      },
-    });
-  }
-
-  private sendCommand(command: Command, to: string[]) {
-    const packet: Packet = {
-      token: this.token,
       from: this.stateManager.getSelfGuid(),
       id: uuidv4(),
       packet: {
         oneofKind: "command",
         command,
       },
-    };
-
-    this.forwardToUsers(packet, to);
+    });
   }
 
   private async sendRequest(
@@ -345,17 +323,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       addListeners();
     });
 
-    // Assume forwardToUsers emits the 'responseReceived' event asynchronously
-    if (to) {
-      this.forwardToUsers(packet, to);
-    } else {
-      this.client?.send(packet, to);
-    }
+    this.client?.send(packet);
 
     return responsesPromise;
   }
 
-  public async sendResponse(response: Response, to?: string[]) {
+  public async sendResponse(response: Response) {
     const packet: Packet = {
       token: this.token,
       from: this.stateManager.getSelfGuid(),
@@ -366,113 +339,105 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       },
     };
 
-    if (to) {
-      this.forwardToUsers(packet, to);
-    } else {
-      this.client?.send(packet, to);
-    }
+    this.client?.send(packet);
   }
 
   // --- Commands --- //
   public playSong = (
+    tournamentId: string,
     gameplayParameters: GameplayParameters,
     userIds: string[]
   ) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "playSong",
-          playSong: {
-            gameplayParameters,
-          },
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "playSong",
+        playSong: {
+          gameplayParameters,
         },
       },
-      userIds
-    );
+    });
   };
 
-  public returnToMenu = (userIds: string[]) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "returnToMenu",
-          returnToMenu: true,
-        },
+  public returnToMenu = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "returnToMenu",
+        returnToMenu: true,
       },
-      userIds
-    );
+    });
   };
 
-  public flipColors = (userIds: string[]) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "modifyGameplay",
-          modifyGameplay: {
-            modifier: Command_ModifyGameplay_Modifier.InvertColors,
-          },
+  public flipColors = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.InvertColors,
         },
       },
-      userIds
-    );
+    });
   };
 
-  public flipHands = (userIds: string[]) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "modifyGameplay",
-          modifyGameplay: {
-            modifier: Command_ModifyGameplay_Modifier.InvertHandedness,
-          },
+  public flipHands = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.InvertHandedness,
         },
       },
-      userIds
-    );
+    });
   };
 
-  public showLoadedImage = (userIds: string[], show = true) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "streamSyncShowImage",
-          streamSyncShowImage: show,
-        },
+  public showLoadedImage = (
+    tournamentId: string,
+    userIds: string[],
+    show = true
+  ) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "streamSyncShowImage",
+        streamSyncShowImage: show,
       },
-      userIds
-    );
+    });
   };
 
-  public showColor = async (color: string, userIds: string[]) => {
-    const response = await this.sendRequest(
-      {
-        type: {
-          oneofKind: "showColorForStreamSync",
-          showColorForStreamSync: {
-            color,
-          },
+  public showColor = (
+    tournamentId: string,
+    color: string,
+    userIds: string[]
+  ) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "showColorForStreamSync",
+        showColorForStreamSync: {
+          color,
         },
       },
-      userIds
-    );
-
-    if (response.length <= 0) {
-      throw new Error("Server timed out, or no users responded");
-    }
-
-    return response;
+    });
   };
 
-  public delayTestFinished = (userIds: string[]) => {
-    this.sendCommand(
-      {
-        type: {
-          oneofKind: "delayTestFinish",
-          delayTestFinish: true,
-        },
+  public delayTestFinished = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "delayTestFinish",
+        delayTestFinish: true,
       },
-      userIds
-    );
+    });
   };
 
   // --- Requests --- //
@@ -519,6 +484,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   };
 
   public loadSong = async (
+    tournamentId: string,
     levelId: string,
     userIds: string[],
     timeout?: number
@@ -528,6 +494,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         type: {
           oneofKind: "loadSong",
           loadSong: {
+            tournamentId,
+            forwardTo: userIds,
             levelId,
             customHostUrl: "",
           },
@@ -544,12 +512,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response;
   };
 
-  public loadImage = async (bitmap: Uint8Array, userIds: string[]) => {
+  public loadImage = async (
+    tournamentId: string,
+    bitmap: Uint8Array,
+    userIds: string[]
+  ) => {
     const response = await this.sendRequest(
       {
         type: {
           oneofKind: "preloadImageForStreamSync",
           preloadImageForStreamSync: {
+            tournamentId,
+            forwardTo: userIds,
             fileId: uuidv4(),
             data: bitmap,
             compressed: false,
@@ -567,6 +541,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   };
 
   public showPrompt = async (
+    tournamentId: string,
     userIds: string[],
     titleText: string,
     bodyText: string,
@@ -579,6 +554,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         type: {
           oneofKind: "showPrompt",
           showPrompt: {
+            tournamentId,
+            forwardTo: userIds,
             promptId: uuidv4(),
             messageTitle: titleText,
             messageText: bodyText,
@@ -1194,7 +1171,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   public addAuthorizedUser = async (
     tournamentId: string,
     discordId: string,
-    permissionFlags: Permissions
+    roleIds: string[]
   ) => {
     const response = await this.sendRequest({
       type: {
@@ -1202,7 +1179,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         addAuthorizedUser: {
           tournamentId,
           discordId,
-          permissionFlags,
+          roleIds,
         },
       },
     });
@@ -1516,6 +1493,91 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setTournamentBannedMods: {
           tournamentId,
           bannedMods,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public addTournamentRole = async (tournamentId: string, role: Role) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "addTournamentRole",
+        addTournamentRole: {
+          tournamentId,
+          role,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public setTournamentRoleName = async (
+    tournamentId: string,
+    roleId: string,
+    roleName: string
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentRoleName",
+        setTournamentRoleName: {
+          tournamentId,
+          roleId,
+          roleName,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public setTournamentRolePermissions = async (
+    tournamentId: string,
+    roleId: string,
+    permissions: string[]
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentRolePermissions",
+        setTournamentRolePermissions: {
+          tournamentId,
+          roleId,
+          permissions,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public removeTournamentRole = async (
+    tournamentId: string,
+    roleId: string
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "removeTournamentRole",
+        removeTournamentRole: {
+          tournamentId,
+          roleId,
         },
       },
     });

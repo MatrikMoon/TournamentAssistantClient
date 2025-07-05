@@ -14,10 +14,10 @@ import { MessageType } from "@protobuf-ts/runtime";
 import { GameplayParameters } from './models.js';
 import { LeaderboardEntry } from './models.js';
 import { CoreServer } from './models.js';
+import { Role } from './models.js';
 import { Tournament_TournamentSettings_Pool } from './models.js';
 import { Tournament_TournamentSettings_Team } from './models.js';
 import { Tournament } from './models.js';
-import { Permissions } from './models.js';
 import { QualifierEvent_LeaderboardSort } from './models.js';
 import { QualifierEvent_EventSettings } from './models.js';
 import { Channel } from './discord.js';
@@ -143,17 +143,11 @@ export interface Request {
          */
         addAuthorizedUser: Request_AddAuthorizedUser;
     } | {
-        oneofKind: "addAuthorizedUserPermission";
+        oneofKind: "updateAuthorizedUserRoles";
         /**
-         * @generated from protobuf field: proto.packets.Request.AddAuthorizedUserPermission add_authorized_user_permission = 49;
+         * @generated from protobuf field: proto.packets.Request.UpdateAuthorizedUserRoles update_authorized_user_roles = 49;
          */
-        addAuthorizedUserPermission: Request_AddAuthorizedUserPermission;
-    } | {
-        oneofKind: "removeAuthorizedUserPermission";
-        /**
-         * @generated from protobuf field: proto.packets.Request.RemoveAuthorizedUserPermission remove_authorized_user_permission = 50;
-         */
-        removeAuthorizedUserPermission: Request_RemoveAuthorizedUserPermission;
+        updateAuthorizedUserRoles: Request_UpdateAuthorizedUserRoles;
     } | {
         oneofKind: "removeAuthorizedUser";
         /**
@@ -377,11 +371,29 @@ export interface Request {
          */
         refundAttempts: Request_RefundAttempts;
     } | {
-        oneofKind: "showColorForStreamSync";
+        oneofKind: "addTournamentRole";
         /**
-         * @generated from protobuf field: proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync = 59;
+         * @generated from protobuf field: proto.packets.Request.AddTournamentRole add_tournament_role = 59;
          */
-        showColorForStreamSync: Request_ShowColorForStreamSync;
+        addTournamentRole: Request_AddTournamentRole;
+    } | {
+        oneofKind: "setTournamentRoleName";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetTournamentRoleName set_tournament_role_name = 60;
+         */
+        setTournamentRoleName: Request_SetTournamentRoleName;
+    } | {
+        oneofKind: "setTournamentRolePermissions";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetTournamentRolePermissions set_tournament_role_permissions = 61;
+         */
+        setTournamentRolePermissions: Request_SetTournamentRolePermissions;
+    } | {
+        oneofKind: "removeTournamentRole";
+        /**
+         * @generated from protobuf field: proto.packets.Request.RemoveTournamentRole remove_tournament_role = 62;
+         */
+        removeTournamentRole: Request_RemoveTournamentRole;
     } | {
         oneofKind: undefined;
     };
@@ -676,14 +688,14 @@ export interface Request_AddAuthorizedUser {
      */
     discordId: string;
     /**
-     * @generated from protobuf field: proto.models.Permissions permission_flags = 3;
+     * @generated from protobuf field: repeated string role_ids = 3;
      */
-    permissionFlags: Permissions;
+    roleIds: string[];
 }
 /**
- * @generated from protobuf message proto.packets.Request.AddAuthorizedUserPermission
+ * @generated from protobuf message proto.packets.Request.UpdateAuthorizedUserRoles
  */
-export interface Request_AddAuthorizedUserPermission {
+export interface Request_UpdateAuthorizedUserRoles {
     /**
      * @generated from protobuf field: string tournament_id = 1;
      */
@@ -693,26 +705,9 @@ export interface Request_AddAuthorizedUserPermission {
      */
     discordId: string;
     /**
-     * @generated from protobuf field: proto.models.Permissions permission = 3;
+     * @generated from protobuf field: repeated string role_ids = 3;
      */
-    permission: Permissions;
-}
-/**
- * @generated from protobuf message proto.packets.Request.RemoveAuthorizedUserPermission
- */
-export interface Request_RemoveAuthorizedUserPermission {
-    /**
-     * @generated from protobuf field: string tournament_id = 1;
-     */
-    tournamentId: string;
-    /**
-     * @generated from protobuf field: string discord_id = 2;
-     */
-    discordId: string;
-    /**
-     * @generated from protobuf field: proto.models.Permissions permission = 3;
-     */
-    permission: Permissions;
+    roleIds: string[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.RemoveAuthorizedUser
@@ -1030,6 +1025,66 @@ export interface Request_RemoveTournamentPool {
     poolId: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Request.AddTournamentRole
+ */
+export interface Request_AddTournamentRole {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: proto.models.Role role = 2;
+     */
+    role?: Role;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.SetTournamentRoleName
+ */
+export interface Request_SetTournamentRoleName {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string role_id = 2;
+     */
+    roleId: string;
+    /**
+     * @generated from protobuf field: string role_name = 3;
+     */
+    roleName: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.SetTournamentRolePermissions
+ */
+export interface Request_SetTournamentRolePermissions {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string role_id = 2;
+     */
+    roleId: string;
+    /**
+     * @generated from protobuf field: repeated string permissions = 3;
+     */
+    permissions: string[];
+}
+/**
+ * @generated from protobuf message proto.packets.Request.RemoveTournamentRole
+ */
+export interface Request_RemoveTournamentRole {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string role_id = 2;
+     */
+    roleId: string;
+}
+/**
  * @generated from protobuf message proto.packets.Request.DeleteTournament
  */
 export interface Request_DeleteTournament {
@@ -1137,6 +1192,14 @@ export interface Request_LoadSong {
      * @generated from protobuf field: string custom_host_url = 2;
      */
     customHostUrl: string;
+    /**
+     * @generated from protobuf field: string tournament_id = 3;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: repeated string forward_to = 4;
+     */
+    forwardTo: string[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.PreloadImageForStreamSync
@@ -1154,6 +1217,14 @@ export interface Request_PreloadImageForStreamSync {
      * @generated from protobuf field: bytes data = 3;
      */
     data: Uint8Array;
+    /**
+     * @generated from protobuf field: string tournament_id = 4;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: repeated string forward_to = 5;
+     */
+    forwardTo: string[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.ShowPrompt
@@ -1187,6 +1258,14 @@ export interface Request_ShowPrompt {
      * @generated from protobuf field: repeated proto.packets.Request.ShowPrompt.PromptOption options = 7;
      */
     options: Request_ShowPrompt_PromptOption[]; // for now we can show up to three options
+    /**
+     * @generated from protobuf field: string tournament_id = 8;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: repeated string forward_to = 9;
+     */
+    forwardTo: string[];
 }
 /**
  * @generated from protobuf message proto.packets.Request.ShowPrompt.PromptOption
@@ -1270,15 +1349,6 @@ export interface Request_RefundAttempts {
      */
     count: number;
 }
-/**
- * @generated from protobuf message proto.packets.Request.ShowColorForStreamSync
- */
-export interface Request_ShowColorForStreamSync {
-    /**
-     * @generated from protobuf field: string color = 1;
-     */
-    color: string;
-}
 // @generated message type with reflection information, may provide speed optimized methods
 class Request$Type extends MessageType<Request> {
     constructor() {
@@ -1301,8 +1371,7 @@ class Request$Type extends MessageType<Request> {
             { no: 16, name: "remove_qualifier_map", kind: "message", oneof: "type", T: () => Request_RemoveQualifierMap },
             { no: 17, name: "delete_qualifier_event", kind: "message", oneof: "type", T: () => Request_DeleteQualifierEvent },
             { no: 48, name: "add_authorized_user", kind: "message", oneof: "type", T: () => Request_AddAuthorizedUser },
-            { no: 49, name: "add_authorized_user_permission", kind: "message", oneof: "type", T: () => Request_AddAuthorizedUserPermission },
-            { no: 50, name: "remove_authorized_user_permission", kind: "message", oneof: "type", T: () => Request_RemoveAuthorizedUserPermission },
+            { no: 49, name: "update_authorized_user_roles", kind: "message", oneof: "type", T: () => Request_UpdateAuthorizedUserRoles },
             { no: 51, name: "remove_authorized_user", kind: "message", oneof: "type", T: () => Request_RemoveAuthorizedUser },
             { no: 52, name: "get_authorized_users", kind: "message", oneof: "type", T: () => Request_GetAuthorizedUsers },
             { no: 53, name: "get_discord_info", kind: "message", oneof: "type", T: () => Request_GetDiscordInfo },
@@ -1340,7 +1409,10 @@ class Request$Type extends MessageType<Request> {
             { no: 56, name: "generate_bot_token", kind: "message", oneof: "type", T: () => Request_GenerateBotToken },
             { no: 57, name: "revoke_bot_token", kind: "message", oneof: "type", T: () => Request_RevokeBotToken },
             { no: 58, name: "refund_attempts", kind: "message", oneof: "type", T: () => Request_RefundAttempts },
-            { no: 59, name: "show_color_for_stream_sync", kind: "message", oneof: "type", T: () => Request_ShowColorForStreamSync }
+            { no: 59, name: "add_tournament_role", kind: "message", oneof: "type", T: () => Request_AddTournamentRole },
+            { no: 60, name: "set_tournament_role_name", kind: "message", oneof: "type", T: () => Request_SetTournamentRoleName },
+            { no: 61, name: "set_tournament_role_permissions", kind: "message", oneof: "type", T: () => Request_SetTournamentRolePermissions },
+            { no: 62, name: "remove_tournament_role", kind: "message", oneof: "type", T: () => Request_RemoveTournamentRole }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1463,16 +1535,10 @@ class Request$Type extends MessageType<Request> {
                         addAuthorizedUser: Request_AddAuthorizedUser.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addAuthorizedUser)
                     };
                     break;
-                case /* proto.packets.Request.AddAuthorizedUserPermission add_authorized_user_permission */ 49:
+                case /* proto.packets.Request.UpdateAuthorizedUserRoles update_authorized_user_roles */ 49:
                     message.type = {
-                        oneofKind: "addAuthorizedUserPermission",
-                        addAuthorizedUserPermission: Request_AddAuthorizedUserPermission.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addAuthorizedUserPermission)
-                    };
-                    break;
-                case /* proto.packets.Request.RemoveAuthorizedUserPermission remove_authorized_user_permission */ 50:
-                    message.type = {
-                        oneofKind: "removeAuthorizedUserPermission",
-                        removeAuthorizedUserPermission: Request_RemoveAuthorizedUserPermission.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).removeAuthorizedUserPermission)
+                        oneofKind: "updateAuthorizedUserRoles",
+                        updateAuthorizedUserRoles: Request_UpdateAuthorizedUserRoles.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).updateAuthorizedUserRoles)
                     };
                     break;
                 case /* proto.packets.Request.RemoveAuthorizedUser remove_authorized_user */ 51:
@@ -1697,10 +1763,28 @@ class Request$Type extends MessageType<Request> {
                         refundAttempts: Request_RefundAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).refundAttempts)
                     };
                     break;
-                case /* proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync */ 59:
+                case /* proto.packets.Request.AddTournamentRole add_tournament_role */ 59:
                     message.type = {
-                        oneofKind: "showColorForStreamSync",
-                        showColorForStreamSync: Request_ShowColorForStreamSync.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).showColorForStreamSync)
+                        oneofKind: "addTournamentRole",
+                        addTournamentRole: Request_AddTournamentRole.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).addTournamentRole)
+                    };
+                    break;
+                case /* proto.packets.Request.SetTournamentRoleName set_tournament_role_name */ 60:
+                    message.type = {
+                        oneofKind: "setTournamentRoleName",
+                        setTournamentRoleName: Request_SetTournamentRoleName.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentRoleName)
+                    };
+                    break;
+                case /* proto.packets.Request.SetTournamentRolePermissions set_tournament_role_permissions */ 61:
+                    message.type = {
+                        oneofKind: "setTournamentRolePermissions",
+                        setTournamentRolePermissions: Request_SetTournamentRolePermissions.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentRolePermissions)
+                    };
+                    break;
+                case /* proto.packets.Request.RemoveTournamentRole remove_tournament_role */ 62:
+                    message.type = {
+                        oneofKind: "removeTournamentRole",
+                        removeTournamentRole: Request_RemoveTournamentRole.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).removeTournamentRole)
                     };
                     break;
                 default:
@@ -1769,12 +1853,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.AddAuthorizedUser add_authorized_user = 48; */
         if (message.type.oneofKind === "addAuthorizedUser")
             Request_AddAuthorizedUser.internalBinaryWrite(message.type.addAuthorizedUser, writer.tag(48, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.AddAuthorizedUserPermission add_authorized_user_permission = 49; */
-        if (message.type.oneofKind === "addAuthorizedUserPermission")
-            Request_AddAuthorizedUserPermission.internalBinaryWrite(message.type.addAuthorizedUserPermission, writer.tag(49, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.RemoveAuthorizedUserPermission remove_authorized_user_permission = 50; */
-        if (message.type.oneofKind === "removeAuthorizedUserPermission")
-            Request_RemoveAuthorizedUserPermission.internalBinaryWrite(message.type.removeAuthorizedUserPermission, writer.tag(50, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.UpdateAuthorizedUserRoles update_authorized_user_roles = 49; */
+        if (message.type.oneofKind === "updateAuthorizedUserRoles")
+            Request_UpdateAuthorizedUserRoles.internalBinaryWrite(message.type.updateAuthorizedUserRoles, writer.tag(49, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Request.RemoveAuthorizedUser remove_authorized_user = 51; */
         if (message.type.oneofKind === "removeAuthorizedUser")
             Request_RemoveAuthorizedUser.internalBinaryWrite(message.type.removeAuthorizedUser, writer.tag(51, WireType.LengthDelimited).fork(), options).join();
@@ -1886,9 +1967,18 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.RefundAttempts refund_attempts = 58; */
         if (message.type.oneofKind === "refundAttempts")
             Request_RefundAttempts.internalBinaryWrite(message.type.refundAttempts, writer.tag(58, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Request.ShowColorForStreamSync show_color_for_stream_sync = 59; */
-        if (message.type.oneofKind === "showColorForStreamSync")
-            Request_ShowColorForStreamSync.internalBinaryWrite(message.type.showColorForStreamSync, writer.tag(59, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.AddTournamentRole add_tournament_role = 59; */
+        if (message.type.oneofKind === "addTournamentRole")
+            Request_AddTournamentRole.internalBinaryWrite(message.type.addTournamentRole, writer.tag(59, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetTournamentRoleName set_tournament_role_name = 60; */
+        if (message.type.oneofKind === "setTournamentRoleName")
+            Request_SetTournamentRoleName.internalBinaryWrite(message.type.setTournamentRoleName, writer.tag(60, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetTournamentRolePermissions set_tournament_role_permissions = 61; */
+        if (message.type.oneofKind === "setTournamentRolePermissions")
+            Request_SetTournamentRolePermissions.internalBinaryWrite(message.type.setTournamentRolePermissions, writer.tag(61, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.RemoveTournamentRole remove_tournament_role = 62; */
+        if (message.type.oneofKind === "removeTournamentRole")
+            Request_RemoveTournamentRole.internalBinaryWrite(message.type.removeTournamentRole, writer.tag(62, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2907,11 +2997,11 @@ class Request_AddAuthorizedUser$Type extends MessageType<Request_AddAuthorizedUs
         super("proto.packets.Request.AddAuthorizedUser", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "discord_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "permission_flags", kind: "enum", T: () => ["proto.models.Permissions", Permissions] }
+            { no: 3, name: "role_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_AddAuthorizedUser>): Request_AddAuthorizedUser {
-        const message = { tournamentId: "", discordId: "", permissionFlags: 0 };
+        const message = { tournamentId: "", discordId: "", roleIds: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_AddAuthorizedUser>(this, message, value);
@@ -2928,8 +3018,8 @@ class Request_AddAuthorizedUser$Type extends MessageType<Request_AddAuthorizedUs
                 case /* string discord_id */ 2:
                     message.discordId = reader.string();
                     break;
-                case /* proto.models.Permissions permission_flags */ 3:
-                    message.permissionFlags = reader.int32();
+                case /* repeated string role_ids */ 3:
+                    message.roleIds.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2949,9 +3039,9 @@ class Request_AddAuthorizedUser$Type extends MessageType<Request_AddAuthorizedUs
         /* string discord_id = 2; */
         if (message.discordId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.discordId);
-        /* proto.models.Permissions permission_flags = 3; */
-        if (message.permissionFlags !== 0)
-            writer.tag(3, WireType.Varint).int32(message.permissionFlags);
+        /* repeated string role_ids = 3; */
+        for (let i = 0; i < message.roleIds.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.roleIds[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2963,22 +3053,22 @@ class Request_AddAuthorizedUser$Type extends MessageType<Request_AddAuthorizedUs
  */
 export const Request_AddAuthorizedUser = new Request_AddAuthorizedUser$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Request_AddAuthorizedUserPermission$Type extends MessageType<Request_AddAuthorizedUserPermission> {
+class Request_UpdateAuthorizedUserRoles$Type extends MessageType<Request_UpdateAuthorizedUserRoles> {
     constructor() {
-        super("proto.packets.Request.AddAuthorizedUserPermission", [
+        super("proto.packets.Request.UpdateAuthorizedUserRoles", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "discord_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "permission", kind: "enum", T: () => ["proto.models.Permissions", Permissions] }
+            { no: 3, name: "role_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<Request_AddAuthorizedUserPermission>): Request_AddAuthorizedUserPermission {
-        const message = { tournamentId: "", discordId: "", permission: 0 };
+    create(value?: PartialMessage<Request_UpdateAuthorizedUserRoles>): Request_UpdateAuthorizedUserRoles {
+        const message = { tournamentId: "", discordId: "", roleIds: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Request_AddAuthorizedUserPermission>(this, message, value);
+            reflectionMergePartial<Request_UpdateAuthorizedUserRoles>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddAuthorizedUserPermission): Request_AddAuthorizedUserPermission {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_UpdateAuthorizedUserRoles): Request_UpdateAuthorizedUserRoles {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -2989,8 +3079,8 @@ class Request_AddAuthorizedUserPermission$Type extends MessageType<Request_AddAu
                 case /* string discord_id */ 2:
                     message.discordId = reader.string();
                     break;
-                case /* proto.models.Permissions permission */ 3:
-                    message.permission = reader.int32();
+                case /* repeated string role_ids */ 3:
+                    message.roleIds.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3003,16 +3093,16 @@ class Request_AddAuthorizedUserPermission$Type extends MessageType<Request_AddAu
         }
         return message;
     }
-    internalBinaryWrite(message: Request_AddAuthorizedUserPermission, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: Request_UpdateAuthorizedUserRoles, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string tournament_id = 1; */
         if (message.tournamentId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
         /* string discord_id = 2; */
         if (message.discordId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.discordId);
-        /* proto.models.Permissions permission = 3; */
-        if (message.permission !== 0)
-            writer.tag(3, WireType.Varint).int32(message.permission);
+        /* repeated string role_ids = 3; */
+        for (let i = 0; i < message.roleIds.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.roleIds[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3020,70 +3110,9 @@ class Request_AddAuthorizedUserPermission$Type extends MessageType<Request_AddAu
     }
 }
 /**
- * @generated MessageType for protobuf message proto.packets.Request.AddAuthorizedUserPermission
+ * @generated MessageType for protobuf message proto.packets.Request.UpdateAuthorizedUserRoles
  */
-export const Request_AddAuthorizedUserPermission = new Request_AddAuthorizedUserPermission$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class Request_RemoveAuthorizedUserPermission$Type extends MessageType<Request_RemoveAuthorizedUserPermission> {
-    constructor() {
-        super("proto.packets.Request.RemoveAuthorizedUserPermission", [
-            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "discord_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "permission", kind: "enum", T: () => ["proto.models.Permissions", Permissions] }
-        ]);
-    }
-    create(value?: PartialMessage<Request_RemoveAuthorizedUserPermission>): Request_RemoveAuthorizedUserPermission {
-        const message = { tournamentId: "", discordId: "", permission: 0 };
-        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
-        if (value !== undefined)
-            reflectionMergePartial<Request_RemoveAuthorizedUserPermission>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_RemoveAuthorizedUserPermission): Request_RemoveAuthorizedUserPermission {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string tournament_id */ 1:
-                    message.tournamentId = reader.string();
-                    break;
-                case /* string discord_id */ 2:
-                    message.discordId = reader.string();
-                    break;
-                case /* proto.models.Permissions permission */ 3:
-                    message.permission = reader.int32();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: Request_RemoveAuthorizedUserPermission, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string tournament_id = 1; */
-        if (message.tournamentId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
-        /* string discord_id = 2; */
-        if (message.discordId !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.discordId);
-        /* proto.models.Permissions permission = 3; */
-        if (message.permission !== 0)
-            writer.tag(3, WireType.Varint).int32(message.permission);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message proto.packets.Request.RemoveAuthorizedUserPermission
- */
-export const Request_RemoveAuthorizedUserPermission = new Request_RemoveAuthorizedUserPermission$Type();
+export const Request_UpdateAuthorizedUserRoles = new Request_UpdateAuthorizedUserRoles$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_RemoveAuthorizedUser$Type extends MessageType<Request_RemoveAuthorizedUser> {
     constructor() {
@@ -4355,6 +4384,236 @@ class Request_RemoveTournamentPool$Type extends MessageType<Request_RemoveTourna
  */
 export const Request_RemoveTournamentPool = new Request_RemoveTournamentPool$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class Request_AddTournamentRole$Type extends MessageType<Request_AddTournamentRole> {
+    constructor() {
+        super("proto.packets.Request.AddTournamentRole", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "role", kind: "message", T: () => Role }
+        ]);
+    }
+    create(value?: PartialMessage<Request_AddTournamentRole>): Request_AddTournamentRole {
+        const message = { tournamentId: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_AddTournamentRole>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_AddTournamentRole): Request_AddTournamentRole {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* proto.models.Role role */ 2:
+                    message.role = Role.internalBinaryRead(reader, reader.uint32(), options, message.role);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_AddTournamentRole, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* proto.models.Role role = 2; */
+        if (message.role)
+            Role.internalBinaryWrite(message.role, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.AddTournamentRole
+ */
+export const Request_AddTournamentRole = new Request_AddTournamentRole$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetTournamentRoleName$Type extends MessageType<Request_SetTournamentRoleName> {
+    constructor() {
+        super("proto.packets.Request.SetTournamentRoleName", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "role_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "role_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetTournamentRoleName>): Request_SetTournamentRoleName {
+        const message = { tournamentId: "", roleId: "", roleName: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetTournamentRoleName>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetTournamentRoleName): Request_SetTournamentRoleName {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string role_id */ 2:
+                    message.roleId = reader.string();
+                    break;
+                case /* string role_name */ 3:
+                    message.roleName = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetTournamentRoleName, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string role_id = 2; */
+        if (message.roleId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.roleId);
+        /* string role_name = 3; */
+        if (message.roleName !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.roleName);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetTournamentRoleName
+ */
+export const Request_SetTournamentRoleName = new Request_SetTournamentRoleName$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetTournamentRolePermissions$Type extends MessageType<Request_SetTournamentRolePermissions> {
+    constructor() {
+        super("proto.packets.Request.SetTournamentRolePermissions", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "role_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetTournamentRolePermissions>): Request_SetTournamentRolePermissions {
+        const message = { tournamentId: "", roleId: "", permissions: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetTournamentRolePermissions>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetTournamentRolePermissions): Request_SetTournamentRolePermissions {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string role_id */ 2:
+                    message.roleId = reader.string();
+                    break;
+                case /* repeated string permissions */ 3:
+                    message.permissions.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetTournamentRolePermissions, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string role_id = 2; */
+        if (message.roleId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.roleId);
+        /* repeated string permissions = 3; */
+        for (let i = 0; i < message.permissions.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.permissions[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetTournamentRolePermissions
+ */
+export const Request_SetTournamentRolePermissions = new Request_SetTournamentRolePermissions$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_RemoveTournamentRole$Type extends MessageType<Request_RemoveTournamentRole> {
+    constructor() {
+        super("proto.packets.Request.RemoveTournamentRole", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "role_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_RemoveTournamentRole>): Request_RemoveTournamentRole {
+        const message = { tournamentId: "", roleId: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_RemoveTournamentRole>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_RemoveTournamentRole): Request_RemoveTournamentRole {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string role_id */ 2:
+                    message.roleId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_RemoveTournamentRole, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string role_id = 2; */
+        if (message.roleId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.roleId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.RemoveTournamentRole
+ */
+export const Request_RemoveTournamentRole = new Request_RemoveTournamentRole$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Request_DeleteTournament$Type extends MessageType<Request_DeleteTournament> {
     constructor() {
         super("proto.packets.Request.DeleteTournament", [
@@ -4697,11 +4956,13 @@ class Request_LoadSong$Type extends MessageType<Request_LoadSong> {
     constructor() {
         super("proto.packets.Request.LoadSong", [
             { no: 1, name: "level_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "custom_host_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "custom_host_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "forward_to", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_LoadSong>): Request_LoadSong {
-        const message = { levelId: "", customHostUrl: "" };
+        const message = { levelId: "", customHostUrl: "", tournamentId: "", forwardTo: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_LoadSong>(this, message, value);
@@ -4717,6 +4978,12 @@ class Request_LoadSong$Type extends MessageType<Request_LoadSong> {
                     break;
                 case /* string custom_host_url */ 2:
                     message.customHostUrl = reader.string();
+                    break;
+                case /* string tournament_id */ 3:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* repeated string forward_to */ 4:
+                    message.forwardTo.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4736,6 +5003,12 @@ class Request_LoadSong$Type extends MessageType<Request_LoadSong> {
         /* string custom_host_url = 2; */
         if (message.customHostUrl !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.customHostUrl);
+        /* string tournament_id = 3; */
+        if (message.tournamentId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.tournamentId);
+        /* repeated string forward_to = 4; */
+        for (let i = 0; i < message.forwardTo.length; i++)
+            writer.tag(4, WireType.LengthDelimited).string(message.forwardTo[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -4752,11 +5025,13 @@ class Request_PreloadImageForStreamSync$Type extends MessageType<Request_Preload
         super("proto.packets.Request.PreloadImageForStreamSync", [
             { no: 1, name: "file_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "compressed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 3, name: "data", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 3, name: "data", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 4, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "forward_to", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_PreloadImageForStreamSync>): Request_PreloadImageForStreamSync {
-        const message = { fileId: "", compressed: false, data: new Uint8Array(0) };
+        const message = { fileId: "", compressed: false, data: new Uint8Array(0), tournamentId: "", forwardTo: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_PreloadImageForStreamSync>(this, message, value);
@@ -4775,6 +5050,12 @@ class Request_PreloadImageForStreamSync$Type extends MessageType<Request_Preload
                     break;
                 case /* bytes data */ 3:
                     message.data = reader.bytes();
+                    break;
+                case /* string tournament_id */ 4:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* repeated string forward_to */ 5:
+                    message.forwardTo.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4797,6 +5078,12 @@ class Request_PreloadImageForStreamSync$Type extends MessageType<Request_Preload
         /* bytes data = 3; */
         if (message.data.length)
             writer.tag(3, WireType.LengthDelimited).bytes(message.data);
+        /* string tournament_id = 4; */
+        if (message.tournamentId !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.tournamentId);
+        /* repeated string forward_to = 5; */
+        for (let i = 0; i < message.forwardTo.length; i++)
+            writer.tag(5, WireType.LengthDelimited).string(message.forwardTo[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -4817,11 +5104,13 @@ class Request_ShowPrompt$Type extends MessageType<Request_ShowPrompt> {
             { no: 4, name: "timeout", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 5, name: "show_timer", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 6, name: "can_close", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 7, name: "options", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Request_ShowPrompt_PromptOption }
+            { no: 7, name: "options", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Request_ShowPrompt_PromptOption },
+            { no: 8, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "forward_to", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_ShowPrompt>): Request_ShowPrompt {
-        const message = { promptId: "", messageTitle: "", messageText: "", timeout: 0, showTimer: false, canClose: false, options: [] };
+        const message = { promptId: "", messageTitle: "", messageText: "", timeout: 0, showTimer: false, canClose: false, options: [], tournamentId: "", forwardTo: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_ShowPrompt>(this, message, value);
@@ -4852,6 +5141,12 @@ class Request_ShowPrompt$Type extends MessageType<Request_ShowPrompt> {
                     break;
                 case /* repeated proto.packets.Request.ShowPrompt.PromptOption options */ 7:
                     message.options.push(Request_ShowPrompt_PromptOption.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* string tournament_id */ 8:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* repeated string forward_to */ 9:
+                    message.forwardTo.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -4886,6 +5181,12 @@ class Request_ShowPrompt$Type extends MessageType<Request_ShowPrompt> {
         /* repeated proto.packets.Request.ShowPrompt.PromptOption options = 7; */
         for (let i = 0; i < message.options.length; i++)
             Request_ShowPrompt_PromptOption.internalBinaryWrite(message.options[i], writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* string tournament_id = 8; */
+        if (message.tournamentId !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.tournamentId);
+        /* repeated string forward_to = 9; */
+        for (let i = 0; i < message.forwardTo.length; i++)
+            writer.tag(9, WireType.LengthDelimited).string(message.forwardTo[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -5227,50 +5528,3 @@ class Request_RefundAttempts$Type extends MessageType<Request_RefundAttempts> {
  * @generated MessageType for protobuf message proto.packets.Request.RefundAttempts
  */
 export const Request_RefundAttempts = new Request_RefundAttempts$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class Request_ShowColorForStreamSync$Type extends MessageType<Request_ShowColorForStreamSync> {
-    constructor() {
-        super("proto.packets.Request.ShowColorForStreamSync", [
-            { no: 1, name: "color", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<Request_ShowColorForStreamSync>): Request_ShowColorForStreamSync {
-        const message = { color: "" };
-        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
-        if (value !== undefined)
-            reflectionMergePartial<Request_ShowColorForStreamSync>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_ShowColorForStreamSync): Request_ShowColorForStreamSync {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string color */ 1:
-                    message.color = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: Request_ShowColorForStreamSync, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string color = 1; */
-        if (message.color !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.color);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message proto.packets.Request.ShowColorForStreamSync
- */
-export const Request_ShowColorForStreamSync = new Request_ShowColorForStreamSync$Type();

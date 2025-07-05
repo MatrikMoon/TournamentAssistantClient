@@ -11,7 +11,6 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-import { Channel } from './discord.js';
 import { GameplayParameters } from './models.js';
 /**
  * ---- Commands (DO something!) ---- //
@@ -20,15 +19,17 @@ import { GameplayParameters } from './models.js';
  */
 export interface Command {
     /**
+     * @generated from protobuf field: string tournament_id = 11;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: repeated string forward_to = 12;
+     */
+    forwardTo: string[];
+    /**
      * @generated from protobuf oneof: type
      */
     type: {
-        oneofKind: "heartbeat";
-        /**
-         * @generated from protobuf field: bool heartbeat = 1;
-         */
-        heartbeat: boolean; // Is this really a command?
-    } | {
         oneofKind: "returnToMenu";
         /**
          * @generated from protobuf field: bool return_to_menu = 2;
@@ -53,12 +54,6 @@ export interface Command {
          */
         playSong: Command_PlaySong;
     } | {
-        oneofKind: "sendBotMessage";
-        /**
-         * @generated from protobuf field: proto.packets.Command.SendBotMessage send_bot_message = 7;
-         */
-        sendBotMessage: Command_SendBotMessage;
-    } | {
         oneofKind: "discordAuthorize";
         /**
          * @generated from protobuf field: string discord_authorize = 9;
@@ -71,6 +66,12 @@ export interface Command {
          */
         modifyGameplay: Command_ModifyGameplay;
     } | {
+        oneofKind: "showColorForStreamSync";
+        /**
+         * @generated from protobuf field: proto.packets.Command.ShowColorForStreamSync show_color_for_stream_sync = 13;
+         */
+        showColorForStreamSync: Command_ShowColorForStreamSync;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -82,19 +83,6 @@ export interface Command_PlaySong {
      * @generated from protobuf field: proto.models.GameplayParameters gameplay_parameters = 1;
      */
     gameplayParameters?: GameplayParameters;
-}
-/**
- * @generated from protobuf message proto.packets.Command.SendBotMessage
- */
-export interface Command_SendBotMessage {
-    /**
-     * @generated from protobuf field: proto.discord.Channel channel = 1;
-     */
-    channel?: Channel;
-    /**
-     * @generated from protobuf field: string message = 2;
-     */
-    message: string;
 }
 /**
  * @generated from protobuf message proto.packets.Command.ModifyGameplay
@@ -118,22 +106,32 @@ export enum Command_ModifyGameplay_Modifier {
      */
     InvertHandedness = 1
 }
+/**
+ * @generated from protobuf message proto.packets.Command.ShowColorForStreamSync
+ */
+export interface Command_ShowColorForStreamSync {
+    /**
+     * @generated from protobuf field: string color = 1;
+     */
+    color: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Command$Type extends MessageType<Command> {
     constructor() {
         super("proto.packets.Command", [
-            { no: 1, name: "heartbeat", kind: "scalar", oneof: "type", T: 8 /*ScalarType.BOOL*/ },
+            { no: 11, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 12, name: "forward_to", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "return_to_menu", kind: "scalar", oneof: "type", T: 8 /*ScalarType.BOOL*/ },
             { no: 3, name: "delay_test_finish", kind: "scalar", oneof: "type", T: 8 /*ScalarType.BOOL*/ },
             { no: 4, name: "stream_sync_show_image", kind: "scalar", oneof: "type", T: 8 /*ScalarType.BOOL*/ },
             { no: 6, name: "play_song", kind: "message", oneof: "type", T: () => Command_PlaySong },
-            { no: 7, name: "send_bot_message", kind: "message", oneof: "type", T: () => Command_SendBotMessage },
             { no: 9, name: "discord_authorize", kind: "scalar", oneof: "type", T: 9 /*ScalarType.STRING*/ },
-            { no: 10, name: "modify_gameplay", kind: "message", oneof: "type", T: () => Command_ModifyGameplay }
+            { no: 10, name: "modify_gameplay", kind: "message", oneof: "type", T: () => Command_ModifyGameplay },
+            { no: 13, name: "show_color_for_stream_sync", kind: "message", oneof: "type", T: () => Command_ShowColorForStreamSync }
         ]);
     }
     create(value?: PartialMessage<Command>): Command {
-        const message = { type: { oneofKind: undefined } };
+        const message = { tournamentId: "", forwardTo: [], type: { oneofKind: undefined } };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Command>(this, message, value);
@@ -144,11 +142,11 @@ class Command$Type extends MessageType<Command> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* bool heartbeat */ 1:
-                    message.type = {
-                        oneofKind: "heartbeat",
-                        heartbeat: reader.bool()
-                    };
+                case /* string tournament_id */ 11:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* repeated string forward_to */ 12:
+                    message.forwardTo.push(reader.string());
                     break;
                 case /* bool return_to_menu */ 2:
                     message.type = {
@@ -174,12 +172,6 @@ class Command$Type extends MessageType<Command> {
                         playSong: Command_PlaySong.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).playSong)
                     };
                     break;
-                case /* proto.packets.Command.SendBotMessage send_bot_message */ 7:
-                    message.type = {
-                        oneofKind: "sendBotMessage",
-                        sendBotMessage: Command_SendBotMessage.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).sendBotMessage)
-                    };
-                    break;
                 case /* string discord_authorize */ 9:
                     message.type = {
                         oneofKind: "discordAuthorize",
@@ -190,6 +182,12 @@ class Command$Type extends MessageType<Command> {
                     message.type = {
                         oneofKind: "modifyGameplay",
                         modifyGameplay: Command_ModifyGameplay.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).modifyGameplay)
+                    };
+                    break;
+                case /* proto.packets.Command.ShowColorForStreamSync show_color_for_stream_sync */ 13:
+                    message.type = {
+                        oneofKind: "showColorForStreamSync",
+                        showColorForStreamSync: Command_ShowColorForStreamSync.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).showColorForStreamSync)
                     };
                     break;
                 default:
@@ -204,9 +202,12 @@ class Command$Type extends MessageType<Command> {
         return message;
     }
     internalBinaryWrite(message: Command, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* bool heartbeat = 1; */
-        if (message.type.oneofKind === "heartbeat")
-            writer.tag(1, WireType.Varint).bool(message.type.heartbeat);
+        /* string tournament_id = 11; */
+        if (message.tournamentId !== "")
+            writer.tag(11, WireType.LengthDelimited).string(message.tournamentId);
+        /* repeated string forward_to = 12; */
+        for (let i = 0; i < message.forwardTo.length; i++)
+            writer.tag(12, WireType.LengthDelimited).string(message.forwardTo[i]);
         /* bool return_to_menu = 2; */
         if (message.type.oneofKind === "returnToMenu")
             writer.tag(2, WireType.Varint).bool(message.type.returnToMenu);
@@ -219,15 +220,15 @@ class Command$Type extends MessageType<Command> {
         /* proto.packets.Command.PlaySong play_song = 6; */
         if (message.type.oneofKind === "playSong")
             Command_PlaySong.internalBinaryWrite(message.type.playSong, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
-        /* proto.packets.Command.SendBotMessage send_bot_message = 7; */
-        if (message.type.oneofKind === "sendBotMessage")
-            Command_SendBotMessage.internalBinaryWrite(message.type.sendBotMessage, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         /* string discord_authorize = 9; */
         if (message.type.oneofKind === "discordAuthorize")
             writer.tag(9, WireType.LengthDelimited).string(message.type.discordAuthorize);
         /* proto.packets.Command.ModifyGameplay modify_gameplay = 10; */
         if (message.type.oneofKind === "modifyGameplay")
             Command_ModifyGameplay.internalBinaryWrite(message.type.modifyGameplay, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Command.ShowColorForStreamSync show_color_for_stream_sync = 13; */
+        if (message.type.oneofKind === "showColorForStreamSync")
+            Command_ShowColorForStreamSync.internalBinaryWrite(message.type.showColorForStreamSync, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -286,60 +287,6 @@ class Command_PlaySong$Type extends MessageType<Command_PlaySong> {
  */
 export const Command_PlaySong = new Command_PlaySong$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Command_SendBotMessage$Type extends MessageType<Command_SendBotMessage> {
-    constructor() {
-        super("proto.packets.Command.SendBotMessage", [
-            { no: 1, name: "channel", kind: "message", T: () => Channel },
-            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<Command_SendBotMessage>): Command_SendBotMessage {
-        const message = { message: "" };
-        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
-        if (value !== undefined)
-            reflectionMergePartial<Command_SendBotMessage>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Command_SendBotMessage): Command_SendBotMessage {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* proto.discord.Channel channel */ 1:
-                    message.channel = Channel.internalBinaryRead(reader, reader.uint32(), options, message.channel);
-                    break;
-                case /* string message */ 2:
-                    message.message = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: Command_SendBotMessage, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* proto.discord.Channel channel = 1; */
-        if (message.channel)
-            Channel.internalBinaryWrite(message.channel, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* string message = 2; */
-        if (message.message !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.message);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message proto.packets.Command.SendBotMessage
- */
-export const Command_SendBotMessage = new Command_SendBotMessage$Type();
-// @generated message type with reflection information, may provide speed optimized methods
 class Command_ModifyGameplay$Type extends MessageType<Command_ModifyGameplay> {
     constructor() {
         super("proto.packets.Command.ModifyGameplay", [
@@ -386,3 +333,50 @@ class Command_ModifyGameplay$Type extends MessageType<Command_ModifyGameplay> {
  * @generated MessageType for protobuf message proto.packets.Command.ModifyGameplay
  */
 export const Command_ModifyGameplay = new Command_ModifyGameplay$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Command_ShowColorForStreamSync$Type extends MessageType<Command_ShowColorForStreamSync> {
+    constructor() {
+        super("proto.packets.Command.ShowColorForStreamSync", [
+            { no: 1, name: "color", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Command_ShowColorForStreamSync>): Command_ShowColorForStreamSync {
+        const message = { color: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Command_ShowColorForStreamSync>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Command_ShowColorForStreamSync): Command_ShowColorForStreamSync {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string color */ 1:
+                    message.color = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Command_ShowColorForStreamSync, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string color = 1; */
+        if (message.color !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.color);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Command.ShowColorForStreamSync
+ */
+export const Command_ShowColorForStreamSync = new Command_ShowColorForStreamSync$Type();

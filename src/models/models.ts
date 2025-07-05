@@ -335,6 +335,31 @@ export interface Map {
     gameplayParameters?: GameplayParameters;
 }
 /**
+ * @generated from protobuf message proto.models.Role
+ */
+export interface Role {
+    /**
+     * @generated from protobuf field: string guid = 1;
+     */
+    guid: string;
+    /**
+     * @generated from protobuf field: string name = 2;
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: string role_id = 3;
+     */
+    roleId: string;
+    /**
+     * @generated from protobuf field: string tournament_id = 4;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: repeated string permissions = 5;
+     */
+    permissions: string[];
+}
+/**
  * @generated from protobuf message proto.models.User
  */
 export interface User {
@@ -390,10 +415,6 @@ export interface User {
      * @generated from protobuf field: bytes user_image = 13;
      */
     userImage: Uint8Array;
-    /**
-     * @generated from protobuf field: proto.models.Permissions permissions = 14;
-     */
-    permissions: Permissions;
 }
 /**
  * @generated from protobuf message proto.models.User.DiscordInfo
@@ -722,6 +743,14 @@ export interface Tournament_TournamentSettings {
      * @generated from protobuf field: bool allow_unauthorized_view = 11;
      */
     allowUnauthorizedView: boolean;
+    /**
+     * @generated from protobuf field: repeated proto.models.Role roles = 12;
+     */
+    roles: Role[];
+    /**
+     * @generated from protobuf field: repeated string my_permissions = 13;
+     */
+    myPermissions: string[];
 }
 /**
  * @generated from protobuf message proto.models.Tournament.TournamentSettings.Pool
@@ -928,23 +957,6 @@ export interface ScoreTrackerHand {
      * @generated from protobuf field: repeated float avg_cut = 4;
      */
     avgCut: number[];
-}
-/**
- * @generated from protobuf enum proto.models.Permissions
- */
-export enum Permissions {
-    /**
-     * @generated from protobuf enum value: None = 0;
-     */
-    None = 0,
-    /**
-     * @generated from protobuf enum value: View = 1;
-     */
-    View = 1,
-    /**
-     * @generated from protobuf enum value: Admin = 2;
-     */
-    Admin = 2
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Characteristic$Type extends MessageType<Characteristic> {
@@ -1391,6 +1403,81 @@ class Map$Type extends MessageType<Map> {
  */
 export const Map = new Map$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class Role$Type extends MessageType<Role> {
+    constructor() {
+        super("proto.models.Role", [
+            { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "role_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Role>): Role {
+        const message = { guid: "", name: "", roleId: "", tournamentId: "", permissions: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Role>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Role): Role {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string guid */ 1:
+                    message.guid = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* string role_id */ 3:
+                    message.roleId = reader.string();
+                    break;
+                case /* string tournament_id */ 4:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* repeated string permissions */ 5:
+                    message.permissions.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Role, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string guid = 1; */
+        if (message.guid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.guid);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string role_id = 3; */
+        if (message.roleId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.roleId);
+        /* string tournament_id = 4; */
+        if (message.tournamentId !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.tournamentId);
+        /* repeated string permissions = 5; */
+        for (let i = 0; i < message.permissions.length; i++)
+            writer.tag(5, WireType.LengthDelimited).string(message.permissions[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.models.Role
+ */
+export const Role = new Role$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class User$Type extends MessageType<User> {
     constructor() {
         super("proto.models.User", [
@@ -1406,12 +1493,11 @@ class User$Type extends MessageType<User> {
             { no: 10, name: "stream_delay_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 11, name: "stream_sync_start_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 12, name: "discord_info", kind: "message", T: () => User_DiscordInfo },
-            { no: 13, name: "user_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-            { no: 14, name: "permissions", kind: "enum", T: () => ["proto.models.Permissions", Permissions] }
+            { no: 13, name: "user_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<User>): User {
-        const message = { guid: "", name: "", platformId: "", clientType: 0, teamId: "", playState: 0, downloadState: 0, modList: [], streamDelayMs: 0n, streamSyncStartMs: 0n, userImage: new Uint8Array(0), permissions: 0 };
+        const message = { guid: "", name: "", platformId: "", clientType: 0, teamId: "", playState: 0, downloadState: 0, modList: [], streamDelayMs: 0n, streamSyncStartMs: 0n, userImage: new Uint8Array(0) };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<User>(this, message, value);
@@ -1460,9 +1546,6 @@ class User$Type extends MessageType<User> {
                     break;
                 case /* bytes user_image */ 13:
                     message.userImage = reader.bytes();
-                    break;
-                case /* proto.models.Permissions permissions */ 14:
-                    message.permissions = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1515,9 +1598,6 @@ class User$Type extends MessageType<User> {
         /* bytes user_image = 13; */
         if (message.userImage.length)
             writer.tag(13, WireType.LengthDelimited).bytes(message.userImage);
-        /* proto.models.Permissions permissions = 14; */
-        if (message.permissions !== 0)
-            writer.tag(14, WireType.Varint).int32(message.permissions);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1964,11 +2044,13 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
             { no: 8, name: "pools", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Tournament_TournamentSettings_Pool },
             { no: 9, name: "show_tournament_button", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 10, name: "show_qualifier_button", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 11, name: "allow_unauthorized_view", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 11, name: "allow_unauthorized_view", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 12, name: "roles", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Role },
+            { no: 13, name: "my_permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings>): Tournament_TournamentSettings {
-        const message = { tournamentName: "", tournamentImage: new Uint8Array(0), enableTeams: false, enablePools: false, teams: [], scoreUpdateFrequency: 0, bannedMods: [], pools: [], showTournamentButton: false, showQualifierButton: false, allowUnauthorizedView: false };
+        const message = { tournamentName: "", tournamentImage: new Uint8Array(0), enableTeams: false, enablePools: false, teams: [], scoreUpdateFrequency: 0, bannedMods: [], pools: [], showTournamentButton: false, showQualifierButton: false, allowUnauthorizedView: false, roles: [], myPermissions: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings>(this, message, value);
@@ -2011,6 +2093,12 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
                     break;
                 case /* bool allow_unauthorized_view */ 11:
                     message.allowUnauthorizedView = reader.bool();
+                    break;
+                case /* repeated proto.models.Role roles */ 12:
+                    message.roles.push(Role.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated string my_permissions */ 13:
+                    message.myPermissions.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2057,6 +2145,12 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         /* bool allow_unauthorized_view = 11; */
         if (message.allowUnauthorizedView !== false)
             writer.tag(11, WireType.Varint).bool(message.allowUnauthorizedView);
+        /* repeated proto.models.Role roles = 12; */
+        for (let i = 0; i < message.roles.length; i++)
+            Role.internalBinaryWrite(message.roles[i], writer.tag(12, WireType.LengthDelimited).fork(), options).join();
+        /* repeated string my_permissions = 13; */
+        for (let i = 0; i < message.myPermissions.length; i++)
+            writer.tag(13, WireType.LengthDelimited).string(message.myPermissions[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

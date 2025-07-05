@@ -73,6 +73,12 @@ export interface Packet {
      * @generated from protobuf oneof: packet
      */
     packet: {
+        oneofKind: "heartbeat";
+        /**
+         * @generated from protobuf field: bool heartbeat = 11;
+         */
+        heartbeat: boolean;
+    } | {
         oneofKind: "acknowledgement";
         /**
          * @generated from protobuf field: proto.packets.Acknowledgement acknowledgement = 4;
@@ -233,6 +239,7 @@ class Packet$Type extends MessageType<Packet> {
             { no: 1, name: "token", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "from", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "heartbeat", kind: "scalar", oneof: "packet", T: 8 /*ScalarType.BOOL*/ },
             { no: 4, name: "acknowledgement", kind: "message", oneof: "packet", T: () => Acknowledgement },
             { no: 5, name: "forwarding_packet", kind: "message", oneof: "packet", T: () => ForwardingPacket },
             { no: 6, name: "command", kind: "message", oneof: "packet", T: () => Command },
@@ -262,6 +269,12 @@ class Packet$Type extends MessageType<Packet> {
                     break;
                 case /* string from */ 3:
                     message.from = reader.string();
+                    break;
+                case /* bool heartbeat */ 11:
+                    message.packet = {
+                        oneofKind: "heartbeat",
+                        heartbeat: reader.bool()
+                    };
                     break;
                 case /* proto.packets.Acknowledgement acknowledgement */ 4:
                     message.packet = {
@@ -326,6 +339,9 @@ class Packet$Type extends MessageType<Packet> {
         /* string from = 3; */
         if (message.from !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.from);
+        /* bool heartbeat = 11; */
+        if (message.packet.oneofKind === "heartbeat")
+            writer.tag(11, WireType.Varint).bool(message.packet.heartbeat);
         /* proto.packets.Acknowledgement acknowledgement = 4; */
         if (message.packet.oneofKind === "acknowledgement")
             Acknowledgement.internalBinaryWrite(message.packet.acknowledgement, writer.tag(4, WireType.LengthDelimited).fork(), options).join();

@@ -1040,15 +1040,13 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     qualifierId: string,
     qualifierImage: Uint8Array
   ) => {
-    const qualifierImageId = await this.uploadImage(qualifierImage);
-
     const response = await this.sendRequest({
       type: {
         oneofKind: "setQualifierImage",
         setQualifierImage: {
           tournamentId,
           qualifierId,
-          qualifierImage: qualifierImageId,
+          qualifierImage: await this.uploadImage(qualifierImage),
         },
       },
     });
@@ -1434,14 +1432,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     tournamentId: string,
     tournamentImage: Uint8Array
   ) => {
-    const tournamentImageId = await this.uploadImage(tournamentImage);
-
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentImage",
         setTournamentImage: {
           tournamentId,
-          tournamentImage: tournamentImageId,
+          tournamentImage: await this.uploadImage(tournamentImage),
         },
       },
     });
@@ -1687,14 +1683,19 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
   public addTournamentTeam = async (
     tournamentId: string,
-    team: Tournament_TournamentSettings_Team
+    name: string,
+    image: Uint8Array
   ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addTournamentTeam",
         addTournamentTeam: {
           tournamentId,
-          team,
+          team: {
+            guid: uuidv4(), // will be overridden on server side
+            name,
+            image: await this.uploadImage(image),
+          },
         },
       },
     });
@@ -1734,15 +1735,13 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     teamId: string,
     teamImage: Uint8Array
   ) => {
-    const teamImageId = await this.uploadImage(teamImage);
-
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentTeamImage",
         setTournamentTeamImage: {
           tournamentId,
           teamId,
-          teamImage: teamImageId,
+          teamImage: await this.uploadImage(teamImage),
         },
       },
     });
@@ -1777,14 +1776,21 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
   public addTournamentPool = async (
     tournamentId: string,
-    pool: Tournament_TournamentSettings_Pool
+    name: string,
+    image: Uint8Array,
+    maps: Map[]
   ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addTournamentPool",
         addTournamentPool: {
           tournamentId,
-          pool,
+          pool: {
+            guid: uuidv4(), // Will be overridden on server side
+            name,
+            image: await this.uploadImage(image),
+            maps,
+          },
         },
       },
     });
@@ -1808,6 +1814,29 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           tournamentId,
           poolId,
           poolName,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public setTournamentPoolImage = async (
+    tournamentId: string,
+    poolId: string,
+    image: Uint8Array
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentPoolImage",
+        setTournamentPoolImage: {
+          tournamentId,
+          poolId,
+          poolImage: await this.uploadImage(image),
         },
       },
     });

@@ -263,6 +263,12 @@ export interface Request {
          */
         setTournamentPoolName: Request_SetTournamentPoolName;
     } | {
+        oneofKind: "setTournamentPoolImage";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetTournamentPoolImage set_tournament_pool_image = 63;
+         */
+        setTournamentPoolImage: Request_SetTournamentPoolImage;
+    } | {
         oneofKind: "addTournamentPoolMaps";
         /**
          * @generated from protobuf field: proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps = 30;
@@ -961,6 +967,23 @@ export interface Request_SetTournamentPoolName {
     poolName: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Request.SetTournamentPoolImage
+ */
+export interface Request_SetTournamentPoolImage {
+    /**
+     * @generated from protobuf field: string tournament_id = 1;
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string pool_id = 2;
+     */
+    poolId: string;
+    /**
+     * @generated from protobuf field: string pool_image = 3;
+     */
+    poolImage: string;
+}
+/**
  * @generated from protobuf message proto.packets.Request.AddTournamentPoolMaps
  */
 export interface Request_AddTournamentPoolMaps {
@@ -1391,6 +1414,7 @@ class Request$Type extends MessageType<Request> {
             { no: 27, name: "remove_tournament_team", kind: "message", oneof: "type", T: () => Request_RemoveTournamentTeam },
             { no: 28, name: "add_tournament_pool", kind: "message", oneof: "type", T: () => Request_AddTournamentPool },
             { no: 29, name: "set_tournament_pool_name", kind: "message", oneof: "type", T: () => Request_SetTournamentPoolName },
+            { no: 63, name: "set_tournament_pool_image", kind: "message", oneof: "type", T: () => Request_SetTournamentPoolImage },
             { no: 30, name: "add_tournament_pool_maps", kind: "message", oneof: "type", T: () => Request_AddTournamentPoolMaps },
             { no: 31, name: "update_tournament_pool_map", kind: "message", oneof: "type", T: () => Request_UpdateTournamentPoolMap },
             { no: 32, name: "remove_tournament_pool_map", kind: "message", oneof: "type", T: () => Request_RemoveTournamentPoolMap },
@@ -1655,6 +1679,12 @@ class Request$Type extends MessageType<Request> {
                         setTournamentPoolName: Request_SetTournamentPoolName.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentPoolName)
                     };
                     break;
+                case /* proto.packets.Request.SetTournamentPoolImage set_tournament_pool_image */ 63:
+                    message.type = {
+                        oneofKind: "setTournamentPoolImage",
+                        setTournamentPoolImage: Request_SetTournamentPoolImage.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentPoolImage)
+                    };
+                    break;
                 case /* proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps */ 30:
                     message.type = {
                         oneofKind: "addTournamentPoolMaps",
@@ -1913,6 +1943,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.SetTournamentPoolName set_tournament_pool_name = 29; */
         if (message.type.oneofKind === "setTournamentPoolName")
             Request_SetTournamentPoolName.internalBinaryWrite(message.type.setTournamentPoolName, writer.tag(29, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetTournamentPoolImage set_tournament_pool_image = 63; */
+        if (message.type.oneofKind === "setTournamentPoolImage")
+            Request_SetTournamentPoolImage.internalBinaryWrite(message.type.setTournamentPoolImage, writer.tag(63, WireType.LengthDelimited).fork(), options).join();
         /* proto.packets.Request.AddTournamentPoolMaps add_tournament_pool_maps = 30; */
         if (message.type.oneofKind === "addTournamentPoolMaps")
             Request_AddTournamentPoolMaps.internalBinaryWrite(message.type.addTournamentPoolMaps, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
@@ -4146,6 +4179,67 @@ class Request_SetTournamentPoolName$Type extends MessageType<Request_SetTourname
  * @generated MessageType for protobuf message proto.packets.Request.SetTournamentPoolName
  */
 export const Request_SetTournamentPoolName = new Request_SetTournamentPoolName$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetTournamentPoolImage$Type extends MessageType<Request_SetTournamentPoolImage> {
+    constructor() {
+        super("proto.packets.Request.SetTournamentPoolImage", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "pool_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "pool_image", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetTournamentPoolImage>): Request_SetTournamentPoolImage {
+        const message = { tournamentId: "", poolId: "", poolImage: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetTournamentPoolImage>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetTournamentPoolImage): Request_SetTournamentPoolImage {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string pool_id */ 2:
+                    message.poolId = reader.string();
+                    break;
+                case /* string pool_image */ 3:
+                    message.poolImage = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetTournamentPoolImage, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string pool_id = 2; */
+        if (message.poolId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.poolId);
+        /* string pool_image = 3; */
+        if (message.poolImage !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.poolImage);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetTournamentPoolImage
+ */
+export const Request_SetTournamentPoolImage = new Request_SetTournamentPoolImage$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_AddTournamentPoolMaps$Type extends MessageType<Request_AddTournamentPoolMaps> {
     constructor() {

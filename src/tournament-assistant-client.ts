@@ -27,7 +27,7 @@ import {
   Request_ShowPrompt_PromptOption,
 } from "./models/requests.js";
 import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
-import { masterAddress, versionCode } from "./constants.js";
+import { masterAddress, masterApiPort, versionCode } from "./constants.js";
 import {
   Channel,
   Push_QualifierScoreSubmitted,
@@ -84,7 +84,7 @@ type TAClientEvents = {
 };
 
 export class TAClient extends CustomEventEmitter<TAClientEvents> {
-  private _imageServer = `https://${masterAddress}:8678`;
+  private _imageServer = `https://${masterAddress}:${masterApiPort}`;
 
   public stateManager: StateManager;
 
@@ -201,15 +201,21 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   }
 
   private async uploadImage(bytes: Uint8Array): Promise<string> {
-    const blob = new Blob([bytes], { type: "application/octet-stream" });
-    const file = new File([blob], "dummy", {
-      type: "application/octet-stream",
+    // If the image is one byte, assume we are uploading no image.
+    // This is related to the way I am forced to represent empty Uint8Arrays
+    if (bytes.length < 3) {
+      return "";
+    }
+
+    const blob = new Blob([bytes], { type: "image/png" });
+    const file = new File([blob], "dummy.png", {
+      type: "image/png",
     });
 
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(`${this._imageServer}/file/upload`, {
+    const response = await fetch(`${this._imageServer}/api/file/upload`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -1344,6 +1350,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   };
 
   public createTournament = async (
+    serverAddress: string,
+    serverName: string,
+    serverPort: string,
+    serverWebsocketPort: string,
     name: string,
     tournamentImage: Uint8Array = new Uint8Array([1]),
     enableTeams: boolean = false,
@@ -1380,6 +1390,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               pools,
               allowUnauthorizedView,
               myPermissions: [],
+            },
+            server: {
+              address: serverAddress,
+              name: serverName,
+              port: +serverPort,
+              websocketPort: +serverWebsocketPort,
             },
           },
         },

@@ -411,10 +411,6 @@ export interface User {
      * @generated from protobuf field: proto.models.User.DiscordInfo discord_info = 12;
      */
     discordInfo?: User_DiscordInfo;
-    /**
-     * @generated from protobuf field: bytes user_image = 13;
-     */
-    userImage: Uint8Array;
 }
 /**
  * @generated from protobuf message proto.models.User.DiscordInfo
@@ -535,9 +531,9 @@ export interface QualifierEvent {
      */
     name: string;
     /**
-     * @generated from protobuf field: bytes image = 3;
+     * @generated from protobuf field: string image = 3;
      */
-    image: Uint8Array;
+    image: string;
     /**
      * @generated from protobuf field: proto.discord.Channel info_channel = 4;
      */
@@ -704,9 +700,9 @@ export interface Tournament_TournamentSettings {
      */
     tournamentName: string;
     /**
-     * @generated from protobuf field: bytes tournament_image = 2;
+     * @generated from protobuf field: string tournament_image = 2;
      */
-    tournamentImage: Uint8Array;
+    tournamentImage: string;
     /**
      * @generated from protobuf field: bool enable_teams = 3;
      */
@@ -765,9 +761,9 @@ export interface Tournament_TournamentSettings_Pool {
      */
     name: string;
     /**
-     * @generated from protobuf field: bytes image = 3;
+     * @generated from protobuf field: string image = 3;
      */
-    image: Uint8Array;
+    image: string;
     /**
      * @generated from protobuf field: repeated proto.models.Map maps = 4;
      */
@@ -786,9 +782,9 @@ export interface Tournament_TournamentSettings_Team {
      */
     name: string;
     /**
-     * @generated from protobuf field: bytes image = 3;
+     * @generated from protobuf field: string image = 3;
      */
-    image: Uint8Array;
+    image: string;
 }
 /**
  * @generated from protobuf message proto.models.State
@@ -1492,12 +1488,11 @@ class User$Type extends MessageType<User> {
             { no: 9, name: "stream_screen_coordinates", kind: "message", T: () => User_Point },
             { no: 10, name: "stream_delay_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 11, name: "stream_sync_start_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 12, name: "discord_info", kind: "message", T: () => User_DiscordInfo },
-            { no: 13, name: "user_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 12, name: "discord_info", kind: "message", T: () => User_DiscordInfo }
         ]);
     }
     create(value?: PartialMessage<User>): User {
-        const message = { guid: "", name: "", platformId: "", clientType: 0, teamId: "", playState: 0, downloadState: 0, modList: [], streamDelayMs: 0n, streamSyncStartMs: 0n, userImage: new Uint8Array(0) };
+        const message = { guid: "", name: "", platformId: "", clientType: 0, teamId: "", playState: 0, downloadState: 0, modList: [], streamDelayMs: 0n, streamSyncStartMs: 0n };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<User>(this, message, value);
@@ -1543,9 +1538,6 @@ class User$Type extends MessageType<User> {
                     break;
                 case /* proto.models.User.DiscordInfo discord_info */ 12:
                     message.discordInfo = User_DiscordInfo.internalBinaryRead(reader, reader.uint32(), options, message.discordInfo);
-                    break;
-                case /* bytes user_image */ 13:
-                    message.userImage = reader.bytes();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1595,9 +1587,6 @@ class User$Type extends MessageType<User> {
         /* proto.models.User.DiscordInfo discord_info = 12; */
         if (message.discordInfo)
             User_DiscordInfo.internalBinaryWrite(message.discordInfo, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
-        /* bytes user_image = 13; */
-        if (message.userImage.length)
-            writer.tag(13, WireType.LengthDelimited).bytes(message.userImage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1797,7 +1786,7 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
         super("proto.models.QualifierEvent", [
             { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 3, name: "image", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "info_channel", kind: "message", T: () => Channel },
             { no: 5, name: "qualifier_maps", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Map },
             { no: 6, name: "flags", kind: "enum", T: () => ["proto.models.QualifierEvent.EventSettings", QualifierEvent_EventSettings] },
@@ -1805,7 +1794,7 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
         ]);
     }
     create(value?: PartialMessage<QualifierEvent>): QualifierEvent {
-        const message = { guid: "", name: "", image: new Uint8Array(0), qualifierMaps: [], flags: 0, sort: 0 };
+        const message = { guid: "", name: "", image: "", qualifierMaps: [], flags: 0, sort: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<QualifierEvent>(this, message, value);
@@ -1822,8 +1811,8 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
                 case /* string name */ 2:
                     message.name = reader.string();
                     break;
-                case /* bytes image */ 3:
-                    message.image = reader.bytes();
+                case /* string image */ 3:
+                    message.image = reader.string();
                     break;
                 case /* proto.discord.Channel info_channel */ 4:
                     message.infoChannel = Channel.internalBinaryRead(reader, reader.uint32(), options, message.infoChannel);
@@ -1855,9 +1844,9 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
         /* string name = 2; */
         if (message.name !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.name);
-        /* bytes image = 3; */
-        if (message.image.length)
-            writer.tag(3, WireType.LengthDelimited).bytes(message.image);
+        /* string image = 3; */
+        if (message.image !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.image);
         /* proto.discord.Channel info_channel = 4; */
         if (message.infoChannel)
             Channel.internalBinaryWrite(message.infoChannel, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
@@ -2035,7 +2024,7 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
     constructor() {
         super("proto.models.Tournament.TournamentSettings", [
             { no: 1, name: "tournament_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "tournament_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 2, name: "tournament_image", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "enable_teams", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 4, name: "enable_pools", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 5, name: "teams", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Tournament_TournamentSettings_Team },
@@ -2050,7 +2039,7 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings>): Tournament_TournamentSettings {
-        const message = { tournamentName: "", tournamentImage: new Uint8Array(0), enableTeams: false, enablePools: false, teams: [], scoreUpdateFrequency: 0, bannedMods: [], pools: [], showTournamentButton: false, showQualifierButton: false, allowUnauthorizedView: false, roles: [], myPermissions: [] };
+        const message = { tournamentName: "", tournamentImage: "", enableTeams: false, enablePools: false, teams: [], scoreUpdateFrequency: 0, bannedMods: [], pools: [], showTournamentButton: false, showQualifierButton: false, allowUnauthorizedView: false, roles: [], myPermissions: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings>(this, message, value);
@@ -2064,8 +2053,8 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
                 case /* string tournament_name */ 1:
                     message.tournamentName = reader.string();
                     break;
-                case /* bytes tournament_image */ 2:
-                    message.tournamentImage = reader.bytes();
+                case /* string tournament_image */ 2:
+                    message.tournamentImage = reader.string();
                     break;
                 case /* bool enable_teams */ 3:
                     message.enableTeams = reader.bool();
@@ -2115,9 +2104,9 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         /* string tournament_name = 1; */
         if (message.tournamentName !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.tournamentName);
-        /* bytes tournament_image = 2; */
-        if (message.tournamentImage.length)
-            writer.tag(2, WireType.LengthDelimited).bytes(message.tournamentImage);
+        /* string tournament_image = 2; */
+        if (message.tournamentImage !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.tournamentImage);
         /* bool enable_teams = 3; */
         if (message.enableTeams !== false)
             writer.tag(3, WireType.Varint).bool(message.enableTeams);
@@ -2167,12 +2156,12 @@ class Tournament_TournamentSettings_Pool$Type extends MessageType<Tournament_Tou
         super("proto.models.Tournament.TournamentSettings.Pool", [
             { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 3, name: "image", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "maps", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Map }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings_Pool>): Tournament_TournamentSettings_Pool {
-        const message = { guid: "", name: "", image: new Uint8Array(0), maps: [] };
+        const message = { guid: "", name: "", image: "", maps: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings_Pool>(this, message, value);
@@ -2189,8 +2178,8 @@ class Tournament_TournamentSettings_Pool$Type extends MessageType<Tournament_Tou
                 case /* string name */ 2:
                     message.name = reader.string();
                     break;
-                case /* bytes image */ 3:
-                    message.image = reader.bytes();
+                case /* string image */ 3:
+                    message.image = reader.string();
                     break;
                 case /* repeated proto.models.Map maps */ 4:
                     message.maps.push(Map.internalBinaryRead(reader, reader.uint32(), options));
@@ -2213,9 +2202,9 @@ class Tournament_TournamentSettings_Pool$Type extends MessageType<Tournament_Tou
         /* string name = 2; */
         if (message.name !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.name);
-        /* bytes image = 3; */
-        if (message.image.length)
-            writer.tag(3, WireType.LengthDelimited).bytes(message.image);
+        /* string image = 3; */
+        if (message.image !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.image);
         /* repeated proto.models.Map maps = 4; */
         for (let i = 0; i < message.maps.length; i++)
             Map.internalBinaryWrite(message.maps[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
@@ -2235,11 +2224,11 @@ class Tournament_TournamentSettings_Team$Type extends MessageType<Tournament_Tou
         super("proto.models.Tournament.TournamentSettings.Team", [
             { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 3, name: "image", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings_Team>): Tournament_TournamentSettings_Team {
-        const message = { guid: "", name: "", image: new Uint8Array(0) };
+        const message = { guid: "", name: "", image: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings_Team>(this, message, value);
@@ -2256,8 +2245,8 @@ class Tournament_TournamentSettings_Team$Type extends MessageType<Tournament_Tou
                 case /* string name */ 2:
                     message.name = reader.string();
                     break;
-                case /* bytes image */ 3:
-                    message.image = reader.bytes();
+                case /* string image */ 3:
+                    message.image = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2277,9 +2266,9 @@ class Tournament_TournamentSettings_Team$Type extends MessageType<Tournament_Tou
         /* string name = 2; */
         if (message.name !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.name);
-        /* bytes image = 3; */
-        if (message.image.length)
-            writer.tag(3, WireType.LengthDelimited).bytes(message.image);
+        /* string image = 3; */
+        if (message.image !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.image);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

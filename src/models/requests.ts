@@ -554,9 +554,9 @@ export interface Request_SetQualifierImage {
      */
     qualifierId: string;
     /**
-     * @generated from protobuf field: bytes qualifier_image = 3;
+     * @generated from protobuf field: string qualifier_image = 3;
      */
-    qualifierImage: Uint8Array;
+    qualifierImage: string;
 }
 /**
  * @generated from protobuf message proto.packets.Request.SetQualifierInfoChannel
@@ -775,9 +775,9 @@ export interface Request_SetTournamentImage {
      */
     tournamentId: string;
     /**
-     * @generated from protobuf field: bytes tournament_image = 2;
+     * @generated from protobuf field: string tournament_image = 2;
      */
-    tournamentImage: Uint8Array;
+    tournamentImage: string;
 }
 /**
  * @generated from protobuf message proto.packets.Request.SetTournamentEnableTeams
@@ -913,9 +913,9 @@ export interface Request_SetTournamentTeamImage {
      */
     teamId: string;
     /**
-     * @generated from protobuf field: bytes team_image = 3;
+     * @generated from protobuf field: string team_image = 3;
      */
-    teamImage: Uint8Array;
+    teamImage: string;
 }
 /**
  * @generated from protobuf message proto.packets.Request.RemoveTournamentTeam
@@ -2516,11 +2516,11 @@ class Request_SetQualifierImage$Type extends MessageType<Request_SetQualifierIma
         super("proto.packets.Request.SetQualifierImage", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "qualifier_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "qualifier_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 3, name: "qualifier_image", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_SetQualifierImage>): Request_SetQualifierImage {
-        const message = { tournamentId: "", qualifierId: "", qualifierImage: new Uint8Array(0) };
+        const message = { tournamentId: "", qualifierId: "", qualifierImage: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_SetQualifierImage>(this, message, value);
@@ -2537,8 +2537,8 @@ class Request_SetQualifierImage$Type extends MessageType<Request_SetQualifierIma
                 case /* string qualifier_id */ 2:
                     message.qualifierId = reader.string();
                     break;
-                case /* bytes qualifier_image */ 3:
-                    message.qualifierImage = reader.bytes();
+                case /* string qualifier_image */ 3:
+                    message.qualifierImage = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2558,9 +2558,9 @@ class Request_SetQualifierImage$Type extends MessageType<Request_SetQualifierIma
         /* string qualifier_id = 2; */
         if (message.qualifierId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.qualifierId);
-        /* bytes qualifier_image = 3; */
-        if (message.qualifierImage.length)
-            writer.tag(3, WireType.LengthDelimited).bytes(message.qualifierImage);
+        /* string qualifier_image = 3; */
+        if (message.qualifierImage !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.qualifierImage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3374,11 +3374,11 @@ class Request_SetTournamentImage$Type extends MessageType<Request_SetTournamentI
     constructor() {
         super("proto.packets.Request.SetTournamentImage", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "tournament_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 2, name: "tournament_image", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_SetTournamentImage>): Request_SetTournamentImage {
-        const message = { tournamentId: "", tournamentImage: new Uint8Array(0) };
+        const message = { tournamentId: "", tournamentImage: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_SetTournamentImage>(this, message, value);
@@ -3392,8 +3392,8 @@ class Request_SetTournamentImage$Type extends MessageType<Request_SetTournamentI
                 case /* string tournament_id */ 1:
                     message.tournamentId = reader.string();
                     break;
-                case /* bytes tournament_image */ 2:
-                    message.tournamentImage = reader.bytes();
+                case /* string tournament_image */ 2:
+                    message.tournamentImage = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3410,9 +3410,9 @@ class Request_SetTournamentImage$Type extends MessageType<Request_SetTournamentI
         /* string tournament_id = 1; */
         if (message.tournamentId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
-        /* bytes tournament_image = 2; */
-        if (message.tournamentImage.length)
-            writer.tag(2, WireType.LengthDelimited).bytes(message.tournamentImage);
+        /* string tournament_image = 2; */
+        if (message.tournamentImage !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.tournamentImage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3922,11 +3922,11 @@ class Request_SetTournamentTeamImage$Type extends MessageType<Request_SetTournam
         super("proto.packets.Request.SetTournamentTeamImage", [
             { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "team_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "team_image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 3, name: "team_image", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Request_SetTournamentTeamImage>): Request_SetTournamentTeamImage {
-        const message = { tournamentId: "", teamId: "", teamImage: new Uint8Array(0) };
+        const message = { tournamentId: "", teamId: "", teamImage: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Request_SetTournamentTeamImage>(this, message, value);
@@ -3943,8 +3943,8 @@ class Request_SetTournamentTeamImage$Type extends MessageType<Request_SetTournam
                 case /* string team_id */ 2:
                     message.teamId = reader.string();
                     break;
-                case /* bytes team_image */ 3:
-                    message.teamImage = reader.bytes();
+                case /* string team_image */ 3:
+                    message.teamImage = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3964,9 +3964,9 @@ class Request_SetTournamentTeamImage$Type extends MessageType<Request_SetTournam
         /* string team_id = 2; */
         if (message.teamId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.teamId);
-        /* bytes team_image = 3; */
-        if (message.teamImage.length)
-            writer.tag(3, WireType.LengthDelimited).bytes(message.teamImage);
+        /* string team_image = 3; */
+        if (message.teamImage !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.teamImage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

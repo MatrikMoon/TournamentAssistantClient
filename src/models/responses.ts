@@ -531,6 +531,10 @@ export interface Response_LoadSong {
      * @generated from protobuf field: string level_id = 1;
      */
     levelId: string;
+    /**
+     * @generated from protobuf field: string message = 2;
+     */
+    message: string;
 }
 /**
  * @generated from protobuf message proto.packets.Response.PreloadImageForStreamSync
@@ -2103,11 +2107,12 @@ export const Response_LeaderboardEntries = new Response_LeaderboardEntries$Type(
 class Response_LoadSong$Type extends MessageType<Response_LoadSong> {
     constructor() {
         super("proto.packets.Response.LoadSong", [
-            { no: 1, name: "level_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "level_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Response_LoadSong>): Response_LoadSong {
-        const message = { levelId: "" };
+        const message = { levelId: "", message: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Response_LoadSong>(this, message, value);
@@ -2120,6 +2125,9 @@ class Response_LoadSong$Type extends MessageType<Response_LoadSong> {
             switch (fieldNo) {
                 case /* string level_id */ 1:
                     message.levelId = reader.string();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2136,6 +2144,9 @@ class Response_LoadSong$Type extends MessageType<Response_LoadSong> {
         /* string level_id = 1; */
         if (message.levelId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.levelId);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

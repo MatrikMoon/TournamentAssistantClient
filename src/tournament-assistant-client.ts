@@ -4,9 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   User,
   Match,
-  QualifierEvent,
   CoreServer,
-  Tournament,
   GameplayParameters,
   Map,
   QualifierEvent_EventSettings,
@@ -29,7 +27,7 @@ import {
   Request_ShowPrompt_PromptOption,
 } from "./models/requests.js";
 import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
-import { versionCode } from "./constants.js";
+import { masterAddress, versionCode } from "./constants.js";
 import {
   Channel,
   Push_QualifierScoreSubmitted,
@@ -86,6 +84,8 @@ type TAClientEvents = {
 };
 
 export class TAClient extends CustomEventEmitter<TAClientEvents> {
+  private _imageServer = `https://${masterAddress}:8678`;
+
   public stateManager: StateManager;
 
   private uiVersion: number | undefined;
@@ -200,6 +200,31 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     this.client?.setToken(token);
   }
 
+  private async uploadImage(bytes: Uint8Array): Promise<string> {
+    const blob = new Blob([bytes], { type: "application/octet-stream" });
+    const file = new File([blob], "dummy", {
+      type: "application/octet-stream",
+    });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(`${this._imageServer}/file/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error("Upload failed: " + error);
+    }
+
+    return await response.text();
+  }
+
   private sendCommand(command: Command) {
     this.client?.send({
       token: "", // Overridden in this.send()
@@ -230,98 +255,100 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     const responseDictionary: ResponseFromUser[] = [];
 
     // Create a promise that resolves when all responses are received
-    const responsesPromise = new Promise<ResponseFromUser[]>((resolve) => {
-      const addListeners = () => {
-        this.on("responseReceived", onResponseReceived);
-        this.on("authorizationRequestedFromServer", onAuthorizationRequested);
-      };
+    const responsesPromise = new Promise<ResponseFromUser[]>(
+      (resolve, reject) => {
+        const addListeners = () => {
+          this.on("responseReceived", onResponseReceived);
+          this.on("authorizationRequestedFromServer", onAuthorizationRequested);
+        };
 
-      const removeListeners = () => {
-        this.removeListener("responseReceived", onResponseReceived);
-        this.removeListener(
-          "authorizationRequestedFromServer",
-          onAuthorizationRequested
-        );
-      };
+        const removeListeners = () => {
+          this.removeListener("responseReceived", onResponseReceived);
+          this.removeListener(
+            "authorizationRequestedFromServer",
+            onAuthorizationRequested
+          );
+        };
 
-      const getUnrespondedUsers = () => {
-        const responseUsers = responseDictionary.map((x) => x.userId);
-        const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
+        const getUnrespondedUsers = () => {
+          const responseUsers = responseDictionary.map((x) => x.userId);
+          const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
-        if (responseUsers.length === expectedUsers.length) {
-          return [];
-        }
-
-        const sortedArr1 = responseUsers.slice().sort();
-        const sortedArr2 = expectedUsers.slice().sort();
-
-        let waitingForUsers = [];
-
-        for (let i = 0; i < sortedArr2.length; i++) {
-          if (i > sortedArr1.length || sortedArr2[i] !== sortedArr1[i]) {
-            waitingForUsers.push(sortedArr2[i]);
+          if (responseUsers.length === expectedUsers.length) {
+            return [];
           }
-        }
 
-        return waitingForUsers;
-      };
+          const sortedArr1 = responseUsers.slice().sort();
+          const sortedArr2 = expectedUsers.slice().sort();
 
-      // Add to the dictionary when the response is to this packet, and from an expected user
-      const onResponseReceived = (response: ResponseFromUser) => {
-        const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
+          let waitingForUsers = [];
 
-        if (
-          response.response.respondingToPacketId === packet.id &&
-          expectedUsers.includes(response.userId)
-        ) {
-          responseDictionary.push({
-            userId: response.userId,
-            response: response.response,
-          });
-
-          if (getUnrespondedUsers().length === 0) {
-            // All responses are received, clean up and resolve
-            removeListeners();
-            clearTimeout(timeoutTimer);
-            resolve(responseDictionary);
+          for (let i = 0; i < sortedArr2.length; i++) {
+            if (i > sortedArr1.length || sortedArr2[i] !== sortedArr1[i]) {
+              waitingForUsers.push(sortedArr2[i]);
+            }
           }
-        }
-      };
 
-      // Return what we have after 30 seconds, inject errors for users that haven't responded yet
-      const createTimeout = (time: number) => {
-        return setTimeout(() => {
-          const unrespondedUsers = getUnrespondedUsers();
+          return waitingForUsers;
+        };
 
-          for (let user of unrespondedUsers) {
+        // Add to the dictionary when the response is to this packet, and from an expected user
+        const onResponseReceived = (response: ResponseFromUser) => {
+          const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
+
+          if (
+            response.response.respondingToPacketId === packet.id &&
+            expectedUsers.includes(response.userId)
+          ) {
             responseDictionary.push({
-              userId: user,
-              response: {
-                type: Response_ResponseType.Fail,
-                respondingToPacketId: packet.id,
-                details: {
-                  oneofKind: undefined,
-                },
-              },
+              userId: response.userId,
+              response: response.response,
             });
+
+            if (getUnrespondedUsers().length === 0) {
+              // All responses are received, clean up and resolve
+              removeListeners();
+              clearTimeout(timeoutTimer);
+              resolve(responseDictionary);
+            }
           }
+        };
 
-          removeListeners();
-          resolve(responseDictionary);
-        }, time);
-      };
+        // Return what we have after 30 seconds, inject errors for users that haven't responded yet
+        const createTimeout = (time: number) => {
+          return setTimeout(() => {
+            const unrespondedUsers = getUnrespondedUsers();
 
-      const timeoutTimer = createTimeout(timeout);
+            for (let user of unrespondedUsers) {
+              responseDictionary.push({
+                userId: user,
+                response: {
+                  type: Response_ResponseType.Fail,
+                  respondingToPacketId: packet.id,
+                  details: {
+                    oneofKind: undefined,
+                  },
+                },
+              });
+            }
 
-      // If authorization is requested, we're assuming an external application failed
-      // to provide a valid token, so we will combust
-      const onAuthorizationRequested = () => {
-        clearTimeout(timeoutTimer);
-        throw "Authorization token invalid or not provided";
-      };
+            removeListeners();
+            resolve(responseDictionary);
+          }, time);
+        };
 
-      addListeners();
-    });
+        const timeoutTimer = createTimeout(timeout);
+
+        // If authorization is requested, we're assuming an external application failed
+        // to provide a valid token, so we will combust
+        const onAuthorizationRequested = () => {
+          clearTimeout(timeoutTimer);
+          reject("Authorization token invalid or not provided");
+        };
+
+        addListeners();
+      }
+    );
 
     this.client?.send(packet);
 
@@ -944,14 +971,30 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
   public createQualifierEvent = async (
     tournamentId: string,
-    event: QualifierEvent
+    name: string,
+    infoChannelId: string,
+    maps: Map[],
+    flags: QualifierEvent_EventSettings,
+    sort: QualifierEvent_LeaderboardSort,
+    qualifierImage: Uint8Array
   ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "createQualifierEvent",
         createQualifierEvent: {
           tournamentId,
-          event,
+          event: {
+            guid: "",
+            name,
+            infoChannel: {
+              id: infoChannelId,
+              name: "dummy",
+            },
+            qualifierMaps: maps,
+            flags,
+            sort,
+            image: await this.uploadImage(qualifierImage),
+          },
         },
       },
     });
@@ -991,13 +1034,15 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     qualifierId: string,
     qualifierImage: Uint8Array
   ) => {
+    const qualifierImageId = await this.uploadImage(qualifierImage);
+
     const response = await this.sendRequest({
       type: {
         oneofKind: "setQualifierImage",
         setQualifierImage: {
           tournamentId,
           qualifierId,
-          qualifierImage,
+          qualifierImage: qualifierImageId,
         },
       },
     });
@@ -1298,12 +1343,45 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public createTournament = async (tournament: Tournament) => {
+  public createTournament = async (
+    name: string,
+    tournamentImage: Uint8Array = new Uint8Array([1]),
+    enableTeams: boolean = false,
+    enablePools: boolean = false,
+    showTournamentButton: boolean = true,
+    showQualifierButton: boolean = true,
+    roles: Role[] = [],
+    teams: Tournament_TournamentSettings_Team[] = [],
+    scoreUpdateFrequency: number = 30,
+    bannedMods: string[] = [],
+    pools: Tournament_TournamentSettings_Pool[] = [],
+    allowUnauthorizedView: boolean = false
+  ) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "createTournament",
         createTournament: {
-          tournament,
+          tournament: {
+            guid: uuidv4(), // will be overridden on server side
+            users: [],
+            matches: [],
+            qualifiers: [],
+            settings: {
+              tournamentName: name,
+              tournamentImage: await this.uploadImage(tournamentImage),
+              enableTeams,
+              enablePools,
+              showTournamentButton,
+              showQualifierButton,
+              roles,
+              teams,
+              scoreUpdateFrequency,
+              bannedMods,
+              pools,
+              allowUnauthorizedView,
+              myPermissions: [],
+            },
+          },
         },
       },
     });
@@ -1340,12 +1418,14 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     tournamentId: string,
     tournamentImage: Uint8Array
   ) => {
+    const tournamentImageId = await this.uploadImage(tournamentImage);
+
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentImage",
         setTournamentImage: {
           tournamentId,
-          tournamentImage,
+          tournamentImage: tournamentImageId,
         },
       },
     });
@@ -1638,13 +1718,15 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     teamId: string,
     teamImage: Uint8Array
   ) => {
+    const teamImageId = await this.uploadImage(teamImage);
+
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentTeamImage",
         setTournamentTeamImage: {
           tournamentId,
           teamId,
-          teamImage,
+          teamImage: teamImageId,
         },
       },
     });

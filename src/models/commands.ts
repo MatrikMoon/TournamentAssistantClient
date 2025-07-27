@@ -104,7 +104,15 @@ export enum Command_ModifyGameplay_Modifier {
     /**
      * @generated from protobuf enum value: InvertHandedness = 1;
      */
-    InvertHandedness = 1
+    InvertHandedness = 1,
+    /**
+     * @generated from protobuf enum value: DisableBlueNotes = 2;
+     */
+    DisableBlueNotes = 2,
+    /**
+     * @generated from protobuf enum value: DisableRedNotes = 3;
+     */
+    DisableRedNotes = 3
 }
 /**
  * @generated from protobuf message proto.packets.Command.ShowColorForStreamSync

@@ -430,6 +430,32 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     });
   };
 
+  public disableBlueNotes = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.DisableBlueNotes,
+        },
+      },
+    });
+  };
+
+  public disableRedNotes = (tournamentId: string, userIds: string[]) => {
+    this.sendCommand({
+      tournamentId,
+      forwardTo: userIds,
+      type: {
+        oneofKind: "modifyGameplay",
+        modifyGameplay: {
+          modifier: Command_ModifyGameplay_Modifier.DisableRedNotes,
+        },
+      },
+    });
+  };
+
   public showLoadedImage = (
     tournamentId: string,
     userIds: string[],

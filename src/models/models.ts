@@ -897,7 +897,7 @@ export interface RealtimeScore {
      */
     playerHealth: number;
     /**
-     * @generated from protobuf field: float accuracy = 8;
+     * @generated from protobuf field: double accuracy = 8;
      */
     accuracy: number;
     /**
@@ -2489,7 +2489,7 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
             { no: 5, name: "max_score_with_modifiers", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 6, name: "combo", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 7, name: "player_health", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
-            { no: 8, name: "accuracy", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 8, name: "accuracy", kind: "scalar", T: 1 /*ScalarType.DOUBLE*/ },
             { no: 9, name: "song_position", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 10, name: "notes_missed", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 11, name: "bad_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
@@ -2533,8 +2533,8 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
                 case /* float player_health */ 7:
                     message.playerHealth = reader.float();
                     break;
-                case /* float accuracy */ 8:
-                    message.accuracy = reader.float();
+                case /* double accuracy */ 8:
+                    message.accuracy = reader.double();
                     break;
                 case /* float song_position */ 9:
                     message.songPosition = reader.float();
@@ -2593,9 +2593,9 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
         /* float player_health = 7; */
         if (message.playerHealth !== 0)
             writer.tag(7, WireType.Bit32).float(message.playerHealth);
-        /* float accuracy = 8; */
+        /* double accuracy = 8; */
         if (message.accuracy !== 0)
-            writer.tag(8, WireType.Bit32).float(message.accuracy);
+            writer.tag(8, WireType.Bit64).double(message.accuracy);
         /* float song_position = 9; */
         if (message.songPosition !== 0)
             writer.tag(9, WireType.Bit32).float(message.songPosition);

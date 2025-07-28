@@ -92,6 +92,14 @@ export interface Push_SongFinished {
      * @generated from protobuf field: string match_id = 10;
      */
     matchId: string;
+    /**
+     * @generated from protobuf field: int32 max_score = 11;
+     */
+    maxScore: number;
+    /**
+     * @generated from protobuf field: double accuracy = 12;
+     */
+    accuracy: number;
 }
 /**
  * @generated from protobuf enum proto.packets.Push.SongFinished.CompletionType
@@ -214,11 +222,13 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
             { no: 7, name: "good_cuts", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 8, name: "end_time", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 9, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 10, name: "match_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "match_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "max_score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 12, name: "accuracy", kind: "scalar", T: 1 /*ScalarType.DOUBLE*/ }
         ]);
     }
     create(value?: PartialMessage<Push_SongFinished>): Push_SongFinished {
-        const message = { type: 0, score: 0, misses: 0, badCuts: 0, goodCuts: 0, endTime: 0, tournamentId: "", matchId: "" };
+        const message = { type: 0, score: 0, misses: 0, badCuts: 0, goodCuts: 0, endTime: 0, tournamentId: "", matchId: "", maxScore: 0, accuracy: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Push_SongFinished>(this, message, value);
@@ -258,6 +268,12 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
                     break;
                 case /* string match_id */ 10:
                     message.matchId = reader.string();
+                    break;
+                case /* int32 max_score */ 11:
+                    message.maxScore = reader.int32();
+                    break;
+                case /* double accuracy */ 12:
+                    message.accuracy = reader.double();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -301,6 +317,12 @@ class Push_SongFinished$Type extends MessageType<Push_SongFinished> {
         /* string match_id = 10; */
         if (message.matchId !== "")
             writer.tag(10, WireType.LengthDelimited).string(message.matchId);
+        /* int32 max_score = 11; */
+        if (message.maxScore !== 0)
+            writer.tag(11, WireType.Varint).int32(message.maxScore);
+        /* double accuracy = 12; */
+        if (message.accuracy !== 0)
+            writer.tag(12, WireType.Bit64).double(message.accuracy);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

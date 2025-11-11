@@ -41,6 +41,7 @@ export * from "./scraper.js";
 export * from "./models/models.js";
 
 export type ResponseFromUser = { userId: string; response: Response };
+export type LogLevel = "Quiet" | "Info";
 
 type TAClientEvents = {
   connectedToServer: Response_Connect;
@@ -89,16 +90,32 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   public stateManager: StateManager;
 
   private uiVersion: number | undefined;
+  private logLevel: LogLevel;
   private client?: Client;
   private token = "";
 
   private shouldHeartbeat = false;
   private heartbeatInterval: NodeJS.Timeout | undefined;
 
-  constructor(uiVersion: number | undefined = undefined) {
+  constructor(
+    uiVersion: number | undefined = undefined,
+    logLevel: LogLevel = "Quiet"
+  ) {
     super();
     this.stateManager = new StateManager();
     this.uiVersion = uiVersion;
+    this.logLevel = logLevel;
+  }
+
+  // --- Logging --- //
+  private logInfo(object: unknown) {
+    if (this.logLevel === "Info") {
+      console.log(object);
+    }
+  }
+
+  private logError(object: unknown) {
+    this.logError(object);
   }
 
   // --- State helpers --- //
@@ -121,12 +138,12 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     this.client.on("disconnectedFromServer", () => {
       clearInterval(this.heartbeatInterval!);
 
-      console.info("Disconnected from server!");
+      this.logInfo("Disconnected from server!");
       this.emit("disconnectedFromServer", {});
     });
 
     this.client.on("failedToConnectToServer", () => {
-      console.error("Failed to connect to server!");
+      this.logError("Failed to connect to server!");
       this.emit("failedToConnectToServer", {});
     });
 
@@ -191,7 +208,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   public disconnect() {
     this.shouldHeartbeat = false;
 
-    console.info(`Disconnecting from server!`);
+    this.logInfo(`Disconnecting from server!`);
     this.client?.disconnect();
   }
 
@@ -207,7 +224,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       return "";
     }
 
-    const blob = new Blob([bytes], { type: "image/png" });
+    const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" });
     const file = new File([blob], "dummy.png", {
       type: "image/png",
     });
@@ -258,6 +275,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       },
     };
 
+    console.log(`Will expect response from: ${packet.id}`);
+
     const responseDictionary: ResponseFromUser[] = [];
 
     // Create a promise that resolves when all responses are received
@@ -302,6 +321,14 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const onResponseReceived = (response: ResponseFromUser) => {
           const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
+          console.log(
+            `Response recieved from user: ${response.userId} (${expectedUsers[0]})`
+          );
+          console.log(
+            `Response recieved for packet: ${response.response.respondingToPacketId} (${packet.id})`
+          );
+          console.log({ response });
+
           if (
             response.response.respondingToPacketId === packet.id &&
             expectedUsers.includes(response.userId)
@@ -312,6 +339,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             });
 
             if (getUnrespondedUsers().length === 0) {
+              console.log("Closing out request");
+
               // All responses are received, clean up and resolve
               removeListeners();
               clearTimeout(timeoutTimer);
@@ -715,10 +744,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const connect = response.details.connect;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully connected to server!`);
+          this.logInfo(`Successfully connected to server!`);
           this.emit("connectedToServer", connect);
         } else {
-          console.error(
+          this.logError(
             `Failed to connect to server. Message: ${connect.message}`
           );
           this.emit("failedToConnectToServer", {});
@@ -727,20 +756,20 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const join = response.details.join;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully joined tournament!`);
+          this.logInfo(`Successfully joined tournament!`);
           this.emit("joinedTournament", {});
         } else {
-          console.error(`Failed to join server. Message: ${join.message}`);
+          this.logError(`Failed to join server. Message: ${join.message}`);
           this.emit("failedToJoinTournament", {});
         }
       } else if (response.details.oneofKind === "createTournament") {
         const createTournament = response.details.createTournament;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully created tournament!`);
+          this.logInfo(`Successfully created tournament!`);
           this.emit("createdTournament", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to create tournament. Message: ${createTournament.message}`
           );
           this.emit("failedToCreateTournament", {});
@@ -749,10 +778,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const updateTournament = response.details.updateTournament;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully modified tournament!`);
+          this.logInfo(`Successfully modified tournament!`);
           this.emit("updatedTournament", {});
         } else {
-          console.error(
+          this.logError(
             `Failed update tournament. Message: ${updateTournament.message}`
           );
           this.emit("failedToUpdateTournament", {});
@@ -761,10 +790,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const deleteTournament = response.details.deleteTournament;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully deleted tournament!`);
+          this.logInfo(`Successfully deleted tournament!`);
           this.emit("deletedTournament", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to delete tournament. Message: ${deleteTournament.message}`
           );
           this.emit("failedToDeleteTournament", {});
@@ -773,10 +802,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const createMatch = response.details.createMatch;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully created match!`);
+          this.logInfo(`Successfully created match!`);
           this.emit("createdMatch", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to create Match. Message: ${createMatch.message}`
           );
           this.emit("failedToCreateMatch", {});
@@ -785,20 +814,20 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const updateMatch = response.details.updateMatch;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully modified match!`);
+          this.logInfo(`Successfully modified match!`);
           this.emit("updatedMatch", {});
         } else {
-          console.error(`Failed update Match. Message: ${updateMatch.message}`);
+          this.logError(`Failed update Match. Message: ${updateMatch.message}`);
           this.emit("failedToUpdateMatch", {});
         }
       } else if (response.details.oneofKind === "deleteMatch") {
         const deleteMatch = response.details.deleteMatch;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully deleted match!`);
+          this.logInfo(`Successfully deleted match!`);
           this.emit("deletedMatch", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to delete Match. Message: ${deleteMatch.message}`
           );
           this.emit("failedToDeleteMatch", {});
@@ -807,10 +836,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const createQualifierEvent = response.details.createQualifierEvent;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully created qualifier!`);
+          this.logInfo(`Successfully created qualifier!`);
           this.emit("createdQualifier", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to create qualifier. Message: ${createQualifierEvent.message}`
           );
           this.emit("failedToCreateQualifier", {});
@@ -819,10 +848,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const modifyQualifier = response.details.updateQualifierEvent;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully modified qualifier!`);
+          this.logInfo(`Successfully modified qualifier!`);
           this.emit("updatedQualifier", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to update qualifier. Message: ${modifyQualifier.message}`
           );
           this.emit("failedToUpdateQualifier", {});
@@ -831,10 +860,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const deleteQualifierEvent = response.details.deleteQualifierEvent;
 
         if (response.type === Response_ResponseType.Success) {
-          console.info(`Successfully deleted qualifier!`);
+          this.logInfo(`Successfully deleted qualifier!`);
           this.emit("deletedQualifier", {});
         } else {
-          console.error(
+          this.logError(
             `Failed to delete qualifier. Message: ${deleteQualifierEvent.message}`
           );
           this.emit("failedToDeleteQualifier", {});

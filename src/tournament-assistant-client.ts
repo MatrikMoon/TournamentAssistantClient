@@ -275,8 +275,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       },
     };
 
-    console.log(`Will expect response from: ${packet.id}`);
-
     const responseDictionary: ResponseFromUser[] = [];
 
     // Create a promise that resolves when all responses are received
@@ -321,14 +319,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         const onResponseReceived = (response: ResponseFromUser) => {
           const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
-          console.log(
-            `Response recieved from user: ${response.userId} (${expectedUsers[0]})`
-          );
-          console.log(
-            `Response recieved for packet: ${response.response.respondingToPacketId} (${packet.id})`
-          );
-          console.log({ response });
-
           if (
             response.response.respondingToPacketId === packet.id &&
             expectedUsers.includes(response.userId)
@@ -339,8 +329,6 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             });
 
             if (getUnrespondedUsers().length === 0) {
-              console.log("Closing out request");
-
               // All responses are received, clean up and resolve
               removeListeners();
               clearTimeout(timeoutTimer);

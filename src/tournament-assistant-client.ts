@@ -16,23 +16,11 @@ import {
 } from "./models/models.js";
 import { Packet } from "./models/packets.js";
 import { StateManager } from "./state-manager.js";
-import {
-  Response,
-  Response_Connect,
-  Response_ResponseType,
-} from "./models/responses.js";
-import {
-  Request,
-  Request_LoadSong,
-  Request_ShowPrompt_PromptOption,
-} from "./models/requests.js";
+import { Response, Response_Connect, Response_ResponseType } from "./models/responses.js";
+import { Request, Request_LoadSong, Request_ShowPrompt_PromptOption } from "./models/requests.js";
 import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
 import { masterAddress, masterApiPort, versionCode } from "./constants.js";
-import {
-  Channel,
-  Push_QualifierScoreSubmitted,
-  Push_SongFinished,
-} from "./models/index.js";
+import { Channel, Push_QualifierScoreSubmitted, Push_SongFinished } from "./models/index.js";
 import WebSocket from "ws";
 
 // Created by Moon on 6/12/2022
@@ -41,7 +29,11 @@ export * from "./scraper.js";
 export * from "./models/models.js";
 
 export type ResponseFromUser = { userId: string; response: Response };
-export type LogLevel = "Quiet" | "Info";
+export enum LogLevel {
+  Quiet = 0,
+  Debug = 1,
+  Info = 2,
+}
 
 type TAClientEvents = {
   connectedToServer: Response_Connect;
@@ -97,10 +89,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   private shouldHeartbeat = false;
   private heartbeatInterval: NodeJS.Timeout | undefined;
 
-  constructor(
-    uiVersion: number | undefined = undefined,
-    logLevel: LogLevel = "Quiet"
-  ) {
+  constructor(uiVersion: number | undefined = undefined, logLevel: LogLevel = LogLevel.Quiet) {
     super();
     this.stateManager = new StateManager();
     this.uiVersion = uiVersion;
@@ -109,13 +98,15 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
 
   // --- Logging --- //
   private logInfo(object: unknown) {
-    if (this.logLevel === "Info") {
+    if (this.logLevel >= LogLevel.Info) {
       console.log(object);
     }
   }
 
   private logError(object: unknown) {
-    this.logError(object);
+    if (this.logLevel >= LogLevel.Debug) {
+      console.error(object);
+    }
   }
 
   // --- State helpers --- //
@@ -260,11 +251,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     });
   }
 
-  private async sendRequest(
-    request: Request,
-    to?: string[],
-    timeout: number = 30000
-  ): Promise<ResponseFromUser[]> {
+  private async sendRequest(request: Request, to?: string[], timeout: number = 30000): Promise<ResponseFromUser[]> {
     const packet: Packet = {
       token: "", // Overridden in this.send()
       from: this.stateManager.getSelfGuid(),
@@ -278,100 +265,92 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     const responseDictionary: ResponseFromUser[] = [];
 
     // Create a promise that resolves when all responses are received
-    const responsesPromise = new Promise<ResponseFromUser[]>(
-      (resolve, reject) => {
-        const addListeners = () => {
-          this.on("responseReceived", onResponseReceived);
-          this.on("authorizationRequestedFromServer", onAuthorizationRequested);
-        };
+    const responsesPromise = new Promise<ResponseFromUser[]>((resolve, reject) => {
+      const addListeners = () => {
+        this.on("responseReceived", onResponseReceived);
+        this.on("authorizationRequestedFromServer", onAuthorizationRequested);
+      };
 
-        const removeListeners = () => {
-          this.removeListener("responseReceived", onResponseReceived);
-          this.removeListener(
-            "authorizationRequestedFromServer",
-            onAuthorizationRequested
-          );
-        };
+      const removeListeners = () => {
+        this.removeListener("responseReceived", onResponseReceived);
+        this.removeListener("authorizationRequestedFromServer", onAuthorizationRequested);
+      };
 
-        const getUnrespondedUsers = () => {
-          const responseUsers = responseDictionary.map((x) => x.userId);
-          const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
+      const getUnrespondedUsers = () => {
+        const responseUsers = responseDictionary.map((x) => x.userId);
+        const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
-          if (responseUsers.length === expectedUsers.length) {
-            return [];
+        if (responseUsers.length === expectedUsers.length) {
+          return [];
+        }
+
+        const sortedArr1 = responseUsers.slice().sort();
+        const sortedArr2 = expectedUsers.slice().sort();
+
+        let waitingForUsers = [];
+
+        for (let i = 0; i < sortedArr2.length; i++) {
+          if (i > sortedArr1.length || sortedArr2[i] !== sortedArr1[i]) {
+            waitingForUsers.push(sortedArr2[i]);
           }
+        }
 
-          const sortedArr1 = responseUsers.slice().sort();
-          const sortedArr2 = expectedUsers.slice().sort();
+        return waitingForUsers;
+      };
 
-          let waitingForUsers = [];
+      // Add to the dictionary when the response is to this packet, and from an expected user
+      const onResponseReceived = (response: ResponseFromUser) => {
+        const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
 
-          for (let i = 0; i < sortedArr2.length; i++) {
-            if (i > sortedArr1.length || sortedArr2[i] !== sortedArr1[i]) {
-              waitingForUsers.push(sortedArr2[i]);
-            }
-          }
+        if (response.response.respondingToPacketId === packet.id && expectedUsers.includes(response.userId)) {
+          responseDictionary.push({
+            userId: response.userId,
+            response: response.response,
+          });
 
-          return waitingForUsers;
-        };
-
-        // Add to the dictionary when the response is to this packet, and from an expected user
-        const onResponseReceived = (response: ResponseFromUser) => {
-          const expectedUsers = to ?? ["00000000-0000-0000-0000-000000000000"]; // If we didn't forward this to any users, we should expect a response from the server
-
-          if (
-            response.response.respondingToPacketId === packet.id &&
-            expectedUsers.includes(response.userId)
-          ) {
-            responseDictionary.push({
-              userId: response.userId,
-              response: response.response,
-            });
-
-            if (getUnrespondedUsers().length === 0) {
-              // All responses are received, clean up and resolve
-              removeListeners();
-              clearTimeout(timeoutTimer);
-              resolve(responseDictionary);
-            }
-          }
-        };
-
-        // Return what we have after 30 seconds, inject errors for users that haven't responded yet
-        const createTimeout = (time: number) => {
-          return setTimeout(() => {
-            const unrespondedUsers = getUnrespondedUsers();
-
-            for (let user of unrespondedUsers) {
-              responseDictionary.push({
-                userId: user,
-                response: {
-                  type: Response_ResponseType.Fail,
-                  respondingToPacketId: packet.id,
-                  details: {
-                    oneofKind: undefined,
-                  },
-                },
-              });
-            }
-
+          if (getUnrespondedUsers().length === 0) {
+            // All responses are received, clean up and resolve
             removeListeners();
+            clearTimeout(timeoutTimer);
             resolve(responseDictionary);
-          }, time);
-        };
+          }
+        }
+      };
 
-        const timeoutTimer = createTimeout(timeout);
+      // Return what we have after 30 seconds, inject errors for users that haven't responded yet
+      const createTimeout = (time: number) => {
+        return setTimeout(() => {
+          const unrespondedUsers = getUnrespondedUsers();
 
-        // If authorization is requested, we're assuming an external application failed
-        // to provide a valid token, so we will combust
-        const onAuthorizationRequested = () => {
-          clearTimeout(timeoutTimer);
-          reject("Authorization token invalid or not provided");
-        };
+          for (let user of unrespondedUsers) {
+            responseDictionary.push({
+              userId: user,
+              response: {
+                type: Response_ResponseType.Fail,
+                respondingToPacketId: packet.id,
+                details: {
+                  oneofKind: undefined,
+                },
+              },
+            });
+          }
 
-        addListeners();
-      }
-    );
+          removeListeners();
+          resolve(responseDictionary);
+        }, time);
+      };
+
+      const timeoutTimer = createTimeout(timeout);
+
+      // If authorization is requested, we're assuming an external application failed
+      // to provide a valid token, so we will combust
+      const onAuthorizationRequested = () => {
+        clearTimeout(timeoutTimer);
+        reject("Authorization token invalid or not provided");
+      };
+
+      addListeners();
+    });
 
     this.client?.send(packet);
 
@@ -393,11 +372,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
   }
 
   // --- Commands --- //
-  public playSong = (
-    tournamentId: string,
-    gameplayParameters: GameplayParameters,
-    userIds: string[]
-  ) => {
+  public playSong = (tournamentId: string, gameplayParameters: GameplayParameters, userIds: string[]) => {
     this.sendCommand({
       tournamentId,
       forwardTo: userIds,
@@ -473,11 +448,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     });
   };
 
-  public showLoadedImage = (
-    tournamentId: string,
-    userIds: string[],
-    show = true
-  ) => {
+  public showLoadedImage = (tournamentId: string, userIds: string[], show = true) => {
     this.sendCommand({
       tournamentId,
       forwardTo: userIds,
@@ -488,11 +459,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     });
   };
 
-  public showColor = (
-    tournamentId: string,
-    color: string,
-    userIds: string[]
-  ) => {
+  public showColor = (tournamentId: string, color: string, userIds: string[]) => {
     this.sendCommand({
       tournamentId,
       forwardTo: userIds,
@@ -536,11 +503,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public getLeaderboard = async (
-    tournamentId: string,
-    qualifierId: string,
-    mapId: string
-  ) => {
+  public getLeaderboard = async (tournamentId: string, qualifierId: string, mapId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "qualifierScores",
@@ -559,12 +522,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public loadSong = async (
-    tournamentId: string,
-    levelId: string,
-    userIds: string[],
-    timeout?: number
-  ) => {
+  public loadSong = async (tournamentId: string, levelId: string, userIds: string[], timeout?: number) => {
     const response = await this.sendRequest(
       {
         type: {
@@ -588,11 +546,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response;
   };
 
-  public loadImage = async (
-    tournamentId: string,
-    bitmap: Uint8Array,
-    userIds: string[]
-  ) => {
+  public loadImage = async (tournamentId: string, bitmap: Uint8Array, userIds: string[]) => {
     const response = await this.sendRequest(
       {
         type: {
@@ -705,20 +659,13 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       const command = packet.packet.command;
 
       if (command.type.oneofKind === "discordAuthorize") {
-        this.emit(
-          "authorizationRequestedFromServer",
-          command.type.discordAuthorize
-        );
+        this.emit("authorizationRequestedFromServer", command.type.discordAuthorize);
       }
     } else if (packet.packet.oneofKind === "request") {
       const request = packet.packet.request;
 
       if (request.type.oneofKind === "loadSong") {
-        this.emit("loadSongRequested", [
-          packet.id,
-          packet.from,
-          request.type.loadSong,
-        ]);
+        this.emit("loadSongRequested", [packet.id, packet.from, request.type.loadSong]);
       }
     } else if (packet.packet.oneofKind === "response") {
       const response = packet.packet.response;
@@ -735,9 +682,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully connected to server!`);
           this.emit("connectedToServer", connect);
         } else {
-          this.logError(
-            `Failed to connect to server. Message: ${connect.message}`
-          );
+          this.logError(`Failed to connect to server. Message: ${connect.message}`);
           this.emit("failedToConnectToServer", {});
         }
       } else if (response.details.oneofKind === "join") {
@@ -757,9 +702,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully created tournament!`);
           this.emit("createdTournament", {});
         } else {
-          this.logError(
-            `Failed to create tournament. Message: ${createTournament.message}`
-          );
+          this.logError(`Failed to create tournament. Message: ${createTournament.message}`);
           this.emit("failedToCreateTournament", {});
         }
       } else if (response.details.oneofKind === "updateTournament") {
@@ -769,9 +712,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully modified tournament!`);
           this.emit("updatedTournament", {});
         } else {
-          this.logError(
-            `Failed update tournament. Message: ${updateTournament.message}`
-          );
+          this.logError(`Failed update tournament. Message: ${updateTournament.message}`);
           this.emit("failedToUpdateTournament", {});
         }
       } else if (response.details.oneofKind === "deleteTournament") {
@@ -781,9 +722,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully deleted tournament!`);
           this.emit("deletedTournament", {});
         } else {
-          this.logError(
-            `Failed to delete tournament. Message: ${deleteTournament.message}`
-          );
+          this.logError(`Failed to delete tournament. Message: ${deleteTournament.message}`);
           this.emit("failedToDeleteTournament", {});
         }
       } else if (response.details.oneofKind === "createMatch") {
@@ -793,9 +732,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully created match!`);
           this.emit("createdMatch", {});
         } else {
-          this.logError(
-            `Failed to create Match. Message: ${createMatch.message}`
-          );
+          this.logError(`Failed to create Match. Message: ${createMatch.message}`);
           this.emit("failedToCreateMatch", {});
         }
       } else if (response.details.oneofKind === "updateMatch") {
@@ -815,9 +752,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully deleted match!`);
           this.emit("deletedMatch", {});
         } else {
-          this.logError(
-            `Failed to delete Match. Message: ${deleteMatch.message}`
-          );
+          this.logError(`Failed to delete Match. Message: ${deleteMatch.message}`);
           this.emit("failedToDeleteMatch", {});
         }
       } else if (response.details.oneofKind === "createQualifierEvent") {
@@ -827,9 +762,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully created qualifier!`);
           this.emit("createdQualifier", {});
         } else {
-          this.logError(
-            `Failed to create qualifier. Message: ${createQualifierEvent.message}`
-          );
+          this.logError(`Failed to create qualifier. Message: ${createQualifierEvent.message}`);
           this.emit("failedToCreateQualifier", {});
         }
       } else if (response.details.oneofKind === "updateQualifierEvent") {
@@ -839,9 +772,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully modified qualifier!`);
           this.emit("updatedQualifier", {});
         } else {
-          this.logError(
-            `Failed to update qualifier. Message: ${modifyQualifier.message}`
-          );
+          this.logError(`Failed to update qualifier. Message: ${modifyQualifier.message}`);
           this.emit("failedToUpdateQualifier", {});
         }
       } else if (response.details.oneofKind === "deleteQualifierEvent") {
@@ -851,9 +782,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
           this.logInfo(`Successfully deleted qualifier!`);
           this.emit("deletedQualifier", {});
         } else {
-          this.logError(
-            `Failed to delete qualifier. Message: ${deleteQualifierEvent.message}`
-          );
+          this.logError(`Failed to delete qualifier. Message: ${deleteQualifierEvent.message}`);
           this.emit("failedToDeleteQualifier", {});
         }
       }
@@ -908,11 +837,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addUserToMatch = async (
-    tournamentId: string,
-    matchId: string,
-    userId: string
-  ) => {
+  public addUserToMatch = async (tournamentId: string, matchId: string, userId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addUserToMatch",
@@ -931,11 +856,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeUserFromMatch = async (
-    tournamentId: string,
-    matchId: string,
-    userId: string
-  ) => {
+  public removeUserFromMatch = async (tournamentId: string, matchId: string, userId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeUserFromMatch",
@@ -954,11 +875,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setMatchLeader = async (
-    tournamentId: string,
-    matchId: string,
-    userId: string
-  ) => {
+  public setMatchLeader = async (tournamentId: string, matchId: string, userId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setMatchLeader",
@@ -977,11 +894,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setMatchMap = async (
-    tournamentId: string,
-    matchId: string,
-    map: Map
-  ) => {
+  public setMatchMap = async (tournamentId: string, matchId: string, map: Map) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setMatchMap",
@@ -1055,11 +968,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setQualifierName = async (
-    tournamentId: string,
-    qualifierId: string,
-    qualifierName: string
-  ) => {
+  public setQualifierName = async (tournamentId: string, qualifierId: string, qualifierName: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setQualifierName",
@@ -1078,11 +987,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setQualifierImage = async (
-    tournamentId: string,
-    qualifierId: string,
-    qualifierImage: Uint8Array
-  ) => {
+  public setQualifierImage = async (tournamentId: string, qualifierId: string, qualifierImage: Uint8Array) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setQualifierImage",
@@ -1101,11 +1006,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setQualifierInfoChannel = async (
-    tournamentId: string,
-    qualifierId: string,
-    infoChannel: Channel
-  ) => {
+  public setQualifierInfoChannel = async (tournamentId: string, qualifierId: string, infoChannel: Channel) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setQualifierInfoChannel",
@@ -1170,11 +1071,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addQualifierMaps = async (
-    tournamentId: string,
-    qualifierId: string,
-    maps: Map[]
-  ) => {
+  public addQualifierMaps = async (tournamentId: string, qualifierId: string, maps: Map[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addQualifierMaps",
@@ -1193,11 +1090,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public updateQualifierMap = async (
-    tournamentId: string,
-    qualifierId: string,
-    map: Map
-  ) => {
+  public updateQualifierMap = async (tournamentId: string, qualifierId: string, map: Map) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "updateQualifierMap",
@@ -1216,11 +1109,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeQualifierMap = async (
-    tournamentId: string,
-    qualifierId: string,
-    mapId: string
-  ) => {
+  public removeQualifierMap = async (tournamentId: string, qualifierId: string, mapId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeQualifierMap",
@@ -1239,10 +1128,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public deleteQualifierEvent = async (
-    tournamentId: string,
-    qualifierId: string
-  ) => {
+  public deleteQualifierEvent = async (tournamentId: string, qualifierId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "deleteQualifierEvent",
@@ -1260,11 +1146,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addAuthorizedUser = async (
-    tournamentId: string,
-    discordId: string,
-    roleIds: string[]
-  ) => {
+  public addAuthorizedUser = async (tournamentId: string, discordId: string, roleIds: string[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addAuthorizedUser",
@@ -1283,10 +1165,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeAuthorizedUser = async (
-    tournamentId: string,
-    discordId: string
-  ) => {
+  public removeAuthorizedUser = async (tournamentId: string, discordId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeAuthorizedUser",
@@ -1450,10 +1329,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentName = async (
-    tournamentId: string,
-    tournamentName: string
-  ) => {
+  public setTournamentName = async (tournamentId: string, tournamentName: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentName",
@@ -1471,10 +1347,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentImage = async (
-    tournamentId: string,
-    tournamentImage: Uint8Array
-  ) => {
+  public setTournamentImage = async (tournamentId: string, tournamentImage: Uint8Array) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentImage",
@@ -1492,10 +1365,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentEnableTeams = async (
-    tournamentId: string,
-    enableTeams: boolean
-  ) => {
+  public setTournamentEnableTeams = async (tournamentId: string, enableTeams: boolean) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentEnableTeams",
@@ -1513,10 +1383,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentEnablePools = async (
-    tournamentId: string,
-    enablePools: boolean
-  ) => {
+  public setTournamentEnablePools = async (tournamentId: string, enablePools: boolean) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentEnablePools",
@@ -1534,10 +1401,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentShowTournamentButton = async (
-    tournamentId: string,
-    showTournamentButton: boolean
-  ) => {
+  public setTournamentShowTournamentButton = async (tournamentId: string, showTournamentButton: boolean) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentShowTournamentButton",
@@ -1555,10 +1419,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentShowQualifierButton = async (
-    tournamentId: string,
-    showQualifierButton: boolean
-  ) => {
+  public setTournamentShowQualifierButton = async (tournamentId: string, showQualifierButton: boolean) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentShowQualifierButton",
@@ -1576,10 +1437,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentAllowUnauthorizedView = async (
-    tournamentId: string,
-    allowUnauthorizedView: boolean
-  ) => {
+  public setTournamentAllowUnauthorizedView = async (tournamentId: string, allowUnauthorizedView: boolean) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentAllowUnauthorizedView",
@@ -1597,10 +1455,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentScoreUpdateFrequency = async (
-    tournamentId: string,
-    scoreUpdateFrequency: number
-  ) => {
+  public setTournamentScoreUpdateFrequency = async (tournamentId: string, scoreUpdateFrequency: number) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentScoreUpdateFrequency",
@@ -1618,10 +1473,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentBannedMods = async (
-    tournamentId: string,
-    bannedMods: string[]
-  ) => {
+  public setTournamentBannedMods = async (tournamentId: string, bannedMods: string[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentBannedMods",
@@ -1657,11 +1509,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentRoleName = async (
-    tournamentId: string,
-    roleId: string,
-    roleName: string
-  ) => {
+  public setTournamentRoleName = async (tournamentId: string, roleId: string, roleName: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentRoleName",
@@ -1680,11 +1528,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentRolePermissions = async (
-    tournamentId: string,
-    roleId: string,
-    permissions: string[]
-  ) => {
+  public setTournamentRolePermissions = async (tournamentId: string, roleId: string, permissions: string[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentRolePermissions",
@@ -1703,10 +1547,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeTournamentRole = async (
-    tournamentId: string,
-    roleId: string
-  ) => {
+  public removeTournamentRole = async (tournamentId: string, roleId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeTournamentRole",
@@ -1724,11 +1565,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addTournamentTeam = async (
-    tournamentId: string,
-    name: string,
-    image: Uint8Array
-  ) => {
+  public addTournamentTeam = async (tournamentId: string, name: string, image: Uint8Array) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addTournamentTeam",
@@ -1750,11 +1587,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentTeamName = async (
-    tournamentId: string,
-    teamId: string,
-    teamName: string
-  ) => {
+  public setTournamentTeamName = async (tournamentId: string, teamId: string, teamName: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentTeamName",
@@ -1773,11 +1606,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentTeamImage = async (
-    tournamentId: string,
-    teamId: string,
-    teamImage: Uint8Array
-  ) => {
+  public setTournamentTeamImage = async (tournamentId: string, teamId: string, teamImage: Uint8Array) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentTeamImage",
@@ -1796,10 +1625,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeTournamentTeam = async (
-    tournamentId: string,
-    teamId: string
-  ) => {
+  public removeTournamentTeam = async (tournamentId: string, teamId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeTournamentTeam",
@@ -1817,12 +1643,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addTournamentPool = async (
-    tournamentId: string,
-    name: string,
-    image: Uint8Array,
-    maps: Map[]
-  ) => {
+  public addTournamentPool = async (tournamentId: string, name: string, image: Uint8Array, maps: Map[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addTournamentPool",
@@ -1845,11 +1666,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentPoolName = async (
-    tournamentId: string,
-    poolId: string,
-    poolName: string
-  ) => {
+  public setTournamentPoolName = async (tournamentId: string, poolId: string, poolName: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentPoolName",
@@ -1868,11 +1685,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public setTournamentPoolImage = async (
-    tournamentId: string,
-    poolId: string,
-    image: Uint8Array
-  ) => {
+  public setTournamentPoolImage = async (tournamentId: string, poolId: string, image: Uint8Array) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "setTournamentPoolImage",
@@ -1891,11 +1704,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public addTournamentPoolMaps = async (
-    tournamentId: string,
-    poolId: string,
-    maps: Map[]
-  ) => {
+  public addTournamentPoolMaps = async (tournamentId: string, poolId: string, maps: Map[]) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "addTournamentPoolMaps",
@@ -1914,11 +1723,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public updateTournamentPoolMap = async (
-    tournamentId: string,
-    poolId: string,
-    map: Map
-  ) => {
+  public updateTournamentPoolMap = async (tournamentId: string, poolId: string, map: Map) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "updateTournamentPoolMap",
@@ -1937,11 +1742,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeTournamentPoolMap = async (
-    tournamentId: string,
-    poolId: string,
-    mapId: string
-  ) => {
+  public removeTournamentPoolMap = async (tournamentId: string, poolId: string, mapId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeTournamentPoolMap",
@@ -1960,10 +1761,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
-  public removeTournamentPool = async (
-    tournamentId: string,
-    poolId: string
-  ) => {
+  public removeTournamentPool = async (tournamentId: string, poolId: string) => {
     const response = await this.sendRequest({
       type: {
         oneofKind: "removeTournamentPool",

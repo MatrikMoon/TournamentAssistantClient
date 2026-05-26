@@ -22,6 +22,7 @@ export type Permission =
   | "tournament:player:play_with_stream_sync"
   | "tournament:player:modify_gameplay"
   | "tournament:player:load_song"
+  | "tournament:player:show_prompt"
   | "tournament:match:create_match"
   | "tournament:match:add_user_to_match"
   | "tournament:match:remove_user_from_match"

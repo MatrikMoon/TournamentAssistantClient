@@ -198,6 +198,12 @@ export interface Response {
          */
         refundAttempts: Response_RefundAttempts;
     } | {
+        oneofKind: "permissionError";
+        /**
+         * @generated from protobuf field: proto.packets.Response.PermissionError permission_error = 30;
+         */
+        permissionError: Response_PermissionError;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -617,6 +623,23 @@ export interface Response_RefundAttempts {
     message: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Response.PermissionError
+ */
+export interface Response_PermissionError {
+    /**
+     * @generated from protobuf field: string required_permission = 1;
+     */
+    requiredPermission: string;
+    /**
+     * @generated from protobuf field: string current_roles = 2;
+     */
+    currentRoles: string;
+    /**
+     * @generated from protobuf field: string current_permissions = 3;
+     */
+    currentPermissions: string;
+}
+/**
  * @generated from protobuf enum proto.packets.Response.ResponseType
  */
 export enum Response_ResponseType {
@@ -661,7 +684,8 @@ class Response$Type extends MessageType<Response> {
             { no: 26, name: "get_bot_tokens_for_user", kind: "message", oneof: "details", T: () => Response_GetBotTokensForUser },
             { no: 27, name: "generate_bot_token", kind: "message", oneof: "details", T: () => Response_GenerateBotToken },
             { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken },
-            { no: 29, name: "refund_attempts", kind: "message", oneof: "details", T: () => Response_RefundAttempts }
+            { no: 29, name: "refund_attempts", kind: "message", oneof: "details", T: () => Response_RefundAttempts },
+            { no: 30, name: "permission_error", kind: "message", oneof: "details", T: () => Response_PermissionError }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -844,6 +868,12 @@ class Response$Type extends MessageType<Response> {
                         refundAttempts: Response_RefundAttempts.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).refundAttempts)
                     };
                     break;
+                case /* proto.packets.Response.PermissionError permission_error */ 30:
+                    message.details = {
+                        oneofKind: "permissionError",
+                        permissionError: Response_PermissionError.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).permissionError)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -943,6 +973,9 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.RefundAttempts refund_attempts = 29; */
         if (message.details.oneofKind === "refundAttempts")
             Response_RefundAttempts.internalBinaryWrite(message.details.refundAttempts, writer.tag(29, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.PermissionError permission_error = 30; */
+        if (message.details.oneofKind === "permissionError")
+            Response_PermissionError.internalBinaryWrite(message.details.permissionError, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2547,3 +2580,64 @@ class Response_RefundAttempts$Type extends MessageType<Response_RefundAttempts> 
  * @generated MessageType for protobuf message proto.packets.Response.RefundAttempts
  */
 export const Response_RefundAttempts = new Response_RefundAttempts$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_PermissionError$Type extends MessageType<Response_PermissionError> {
+    constructor() {
+        super("proto.packets.Response.PermissionError", [
+            { no: 1, name: "required_permission", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "current_roles", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "current_permissions", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_PermissionError>): Response_PermissionError {
+        const message = { requiredPermission: "", currentRoles: "", currentPermissions: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Response_PermissionError>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_PermissionError): Response_PermissionError {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string required_permission */ 1:
+                    message.requiredPermission = reader.string();
+                    break;
+                case /* string current_roles */ 2:
+                    message.currentRoles = reader.string();
+                    break;
+                case /* string current_permissions */ 3:
+                    message.currentPermissions = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_PermissionError, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string required_permission = 1; */
+        if (message.requiredPermission !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.requiredPermission);
+        /* string current_roles = 2; */
+        if (message.currentRoles !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.currentRoles);
+        /* string current_permissions = 3; */
+        if (message.currentPermissions !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.currentPermissions);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.PermissionError
+ */
+export const Response_PermissionError = new Response_PermissionError$Type();

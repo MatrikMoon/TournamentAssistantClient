@@ -11,6 +11,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Timestamp } from './google/protobuf/timestamp.js';
 import { Channel } from './discord.js';
 /**
  * @generated from protobuf message proto.models.Characteristic
@@ -932,6 +933,14 @@ export interface RealtimeScore {
      * @generated from protobuf field: proto.models.ScoreTrackerHand right_hand = 16;
      */
     rightHand?: ScoreTrackerHand;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp timestamp = 17;
+     */
+    timestamp?: Timestamp;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp song_start_time = 18;
+     */
+    songStartTime?: Timestamp;
 }
 /**
  * @generated from protobuf message proto.models.ScoreTrackerHand
@@ -2497,7 +2506,9 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
             { no: 13, name: "wall_hits", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 14, name: "max_combo", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 15, name: "left_hand", kind: "message", T: () => ScoreTrackerHand },
-            { no: 16, name: "right_hand", kind: "message", T: () => ScoreTrackerHand }
+            { no: 16, name: "right_hand", kind: "message", T: () => ScoreTrackerHand },
+            { no: 17, name: "timestamp", kind: "message", T: () => Timestamp },
+            { no: 18, name: "song_start_time", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<RealtimeScore>): RealtimeScore {
@@ -2560,6 +2571,12 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
                 case /* proto.models.ScoreTrackerHand right_hand */ 16:
                     message.rightHand = ScoreTrackerHand.internalBinaryRead(reader, reader.uint32(), options, message.rightHand);
                     break;
+                case /* google.protobuf.Timestamp timestamp */ 17:
+                    message.timestamp = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.timestamp);
+                    break;
+                case /* google.protobuf.Timestamp song_start_time */ 18:
+                    message.songStartTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.songStartTime);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2620,6 +2637,12 @@ class RealtimeScore$Type extends MessageType<RealtimeScore> {
         /* proto.models.ScoreTrackerHand right_hand = 16; */
         if (message.rightHand)
             ScoreTrackerHand.internalBinaryWrite(message.rightHand, writer.tag(16, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp timestamp = 17; */
+        if (message.timestamp)
+            Timestamp.internalBinaryWrite(message.timestamp, writer.tag(17, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp song_start_time = 18; */
+        if (message.songStartTime)
+            Timestamp.internalBinaryWrite(message.songStartTime, writer.tag(18, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

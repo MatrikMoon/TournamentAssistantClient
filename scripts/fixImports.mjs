@@ -14,6 +14,10 @@ fs.readdir(directoryPath, (err, files) => {
     files.forEach((file) => {
         const filePath = path.join(directoryPath, file);
 
+        if (!fs.statSync(filePath).isFile()) {
+            return;
+        }
+
         fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
                 return console.error('Unable to read file: ' + err);

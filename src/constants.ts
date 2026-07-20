@@ -1,4 +1,4 @@
-export const masterAddress = "server.ta.artemis.shyyluna.dev";
+export const masterAddress = "server.tournamentassistant.net";
 export const masterPort = "8676";
 export const masterApiPort = "8678";
 export const version = "1.3.0";

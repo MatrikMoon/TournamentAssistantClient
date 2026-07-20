@@ -1285,7 +1285,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     scoreUpdateFrequency: number = 30,
     bannedMods: string[] = [],
     pools: Tournament_TournamentSettings_Pool[] = [],
-    allowUnauthorizedView: boolean = false
+    allowUnauthorizedView: boolean = false,
+    enableReplayStreaming: boolean = false
   ) => {
     const response = await this.sendRequest({
       type: {
@@ -1301,6 +1302,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               tournamentImage: await this.uploadImage(tournamentImage),
               enableTeams,
               enablePools,
+              enableReplayStreaming,
               showTournamentButton,
               showQualifierButton,
               roles,
@@ -1390,6 +1392,24 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         setTournamentEnablePools: {
           tournamentId,
           enablePools,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public setTournamentEnableReplayStreaming = async (tournamentId: string, enableReplayStreaming: boolean) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentEnableReplayStreaming",
+        setTournamentEnableReplayStreaming: {
+          tournamentId,
+          enableReplayStreaming,
         },
       },
     });

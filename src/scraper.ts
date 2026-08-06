@@ -1,9 +1,7 @@
 import { CustomEventEmitter } from "./custom-event-emitter.js";
 import { CoreServer, Tournament } from "./models/models.js";
 import { TAClient } from "./tournament-assistant-client.js";
-
-const MASTER_ADDRESS = "server.tournamentassistant.net";
-const MASTER_PORT = "8676";
+import { masterAddress, masterPort } from "./constants.js";
 
 type OnProgress = {
   totalServers: number;
@@ -81,7 +79,7 @@ class Scraper extends CustomEventEmitter<ScraperEvents> {
         .filter(
           (x) =>
             `${x.address}:${x.websocketPort}` !==
-            `${MASTER_ADDRESS}:${MASTER_PORT}`
+            `${masterAddress}:${masterPort}`
         )
         .map((x) =>
           this.getTournamentsFromServer(x.address, `${x.websocketPort}`)
@@ -99,7 +97,7 @@ class Scraper extends CustomEventEmitter<ScraperEvents> {
       });
     });
 
-    masterClient.connect(MASTER_ADDRESS, MASTER_PORT);
+    masterClient.connect(masterAddress, masterPort);
   }
 
   private async getTournamentsFromServer(address: string, port: string) {

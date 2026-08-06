@@ -1,5 +1,5 @@
 import { CustomEventEmitter } from "./custom-event-emitter.js";
-import { Packet, ForwardingPacket } from "./models/packets.js";
+import { Packet } from "./models/packets.js";
 import WebSocket from "ws";
 
 // Created by Moon on 6/11/2022

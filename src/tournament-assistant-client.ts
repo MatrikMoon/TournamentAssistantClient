@@ -22,6 +22,7 @@ import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
 import { masterAddress, masterApiPort, versionCode } from "./constants.js";
 import { Channel, Push_QualifierScoreSubmitted, Push_SongFinished } from "./models/index.js";
 import WebSocket from "ws";
+import { Timestamp } from "./models/google/protobuf/timestamp.js";
 
 // Created by Moon on 6/12/2022
 
@@ -938,7 +939,9 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     maps: Map[],
     flags: QualifierEvent_EventSettings,
     sort: QualifierEvent_LeaderboardSort,
-    qualifierImage: Uint8Array
+    qualifierImage: Uint8Array,
+    startTime?: Date,
+    endTime?: Date
   ) => {
     const response = await this.sendRequest({
       type: {
@@ -956,6 +959,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
             flags,
             sort,
             image: await this.uploadImage(qualifierImage),
+            startTime: startTime ? Timestamp.fromDate(startTime) : undefined,
+            endTime: endTime ? Timestamp.fromDate(endTime) : undefined,
           },
         },
       },
@@ -1068,6 +1073,38 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       throw new Error("Server timed out");
     }
 
+    return response[0].response;
+  };
+
+  public setQualifierStartTime = async (tournamentId: string, qualifierId: string, startTime?: Date) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setQualifierStartTime",
+        setQualifierStartTime: {
+          tournamentId,
+          qualifierId,
+          startTime: startTime ? Timestamp.fromDate(startTime) : undefined,
+        },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  public setQualifierEndTime = async (tournamentId: string, qualifierId: string, endTime?: Date) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setQualifierEndTime",
+        setQualifierEndTime: {
+          tournamentId,
+          qualifierId,
+          endTime: endTime ? Timestamp.fromDate(endTime) : undefined,
+        },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
     return response[0].response;
   };
 

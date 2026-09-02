@@ -17,6 +17,7 @@ import { Role } from './models.js';
 import { Tournament_TournamentSettings_Pool } from './models.js';
 import { Tournament_TournamentSettings_Team } from './models.js';
 import { Tournament } from './models.js';
+import { Timestamp } from './google/protobuf/timestamp.js';
 import { QualifierEvent_LeaderboardSort } from './models.js';
 import { QualifierEvent_EventSettings } from './models.js';
 import { Channel } from './discord.js';
@@ -406,6 +407,18 @@ export interface Request {
          */
         setTournamentEnableReplayStreaming: Request_SetTournamentEnableReplayStreaming;
     } | {
+        oneofKind: "setQualifierStartTime";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetQualifierStartTime set_qualifier_start_time = 65
+         */
+        setQualifierStartTime: Request_SetQualifierStartTime;
+    } | {
+        oneofKind: "setQualifierEndTime";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetQualifierEndTime set_qualifier_end_time = 66
+         */
+        setQualifierEndTime: Request_SetQualifierEndTime;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -619,6 +632,40 @@ export interface Request_SetQualifierLeaderboardSort {
      * @generated from protobuf field: proto.models.QualifierEvent.LeaderboardSort qualifier_leaderboard_sort = 3
      */
     qualifierLeaderboardSort: QualifierEvent_LeaderboardSort;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.SetQualifierStartTime
+ */
+export interface Request_SetQualifierStartTime {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string qualifier_id = 2
+     */
+    qualifierId: string;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp start_time = 3
+     */
+    startTime?: Timestamp;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.SetQualifierEndTime
+ */
+export interface Request_SetQualifierEndTime {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string qualifier_id = 2
+     */
+    qualifierId: string;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp end_time = 3
+     */
+    endTime?: Timestamp;
 }
 /**
  * @generated from protobuf message proto.packets.Request.AddQualifierMaps
@@ -1455,7 +1502,9 @@ class Request$Type extends MessageType<Request> {
             { no: 60, name: "set_tournament_role_name", kind: "message", oneof: "type", T: () => Request_SetTournamentRoleName },
             { no: 61, name: "set_tournament_role_permissions", kind: "message", oneof: "type", T: () => Request_SetTournamentRolePermissions },
             { no: 62, name: "remove_tournament_role", kind: "message", oneof: "type", T: () => Request_RemoveTournamentRole },
-            { no: 64, name: "set_tournament_enable_replay_streaming", kind: "message", oneof: "type", T: () => Request_SetTournamentEnableReplayStreaming }
+            { no: 64, name: "set_tournament_enable_replay_streaming", kind: "message", oneof: "type", T: () => Request_SetTournamentEnableReplayStreaming },
+            { no: 65, name: "set_qualifier_start_time", kind: "message", oneof: "type", T: () => Request_SetQualifierStartTime },
+            { no: 66, name: "set_qualifier_end_time", kind: "message", oneof: "type", T: () => Request_SetQualifierEndTime }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1842,6 +1891,18 @@ class Request$Type extends MessageType<Request> {
                         setTournamentEnableReplayStreaming: Request_SetTournamentEnableReplayStreaming.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentEnableReplayStreaming)
                     };
                     break;
+                case /* proto.packets.Request.SetQualifierStartTime set_qualifier_start_time */ 65:
+                    message.type = {
+                        oneofKind: "setQualifierStartTime",
+                        setQualifierStartTime: Request_SetQualifierStartTime.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setQualifierStartTime)
+                    };
+                    break;
+                case /* proto.packets.Request.SetQualifierEndTime set_qualifier_end_time */ 66:
+                    message.type = {
+                        oneofKind: "setQualifierEndTime",
+                        setQualifierEndTime: Request_SetQualifierEndTime.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setQualifierEndTime)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2040,6 +2101,12 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.SetTournamentEnableReplayStreaming set_tournament_enable_replay_streaming = 64; */
         if (message.type.oneofKind === "setTournamentEnableReplayStreaming")
             Request_SetTournamentEnableReplayStreaming.internalBinaryWrite(message.type.setTournamentEnableReplayStreaming, writer.tag(64, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetQualifierStartTime set_qualifier_start_time = 65; */
+        if (message.type.oneofKind === "setQualifierStartTime")
+            Request_SetQualifierStartTime.internalBinaryWrite(message.type.setQualifierStartTime, writer.tag(65, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetQualifierEndTime set_qualifier_end_time = 66; */
+        if (message.type.oneofKind === "setQualifierEndTime")
+            Request_SetQualifierEndTime.internalBinaryWrite(message.type.setQualifierEndTime, writer.tag(66, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2832,6 +2899,130 @@ class Request_SetQualifierLeaderboardSort$Type extends MessageType<Request_SetQu
  * @generated MessageType for protobuf message proto.packets.Request.SetQualifierLeaderboardSort
  */
 export const Request_SetQualifierLeaderboardSort = new Request_SetQualifierLeaderboardSort$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetQualifierStartTime$Type extends MessageType<Request_SetQualifierStartTime> {
+    constructor() {
+        super("proto.packets.Request.SetQualifierStartTime", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "qualifier_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "start_time", kind: "message", T: () => Timestamp }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetQualifierStartTime>): Request_SetQualifierStartTime {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.qualifierId = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetQualifierStartTime>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetQualifierStartTime): Request_SetQualifierStartTime {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string qualifier_id */ 2:
+                    message.qualifierId = reader.string();
+                    break;
+                case /* google.protobuf.Timestamp start_time */ 3:
+                    message.startTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.startTime);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetQualifierStartTime, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string qualifier_id = 2; */
+        if (message.qualifierId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.qualifierId);
+        /* google.protobuf.Timestamp start_time = 3; */
+        if (message.startTime)
+            Timestamp.internalBinaryWrite(message.startTime, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetQualifierStartTime
+ */
+export const Request_SetQualifierStartTime = new Request_SetQualifierStartTime$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetQualifierEndTime$Type extends MessageType<Request_SetQualifierEndTime> {
+    constructor() {
+        super("proto.packets.Request.SetQualifierEndTime", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "qualifier_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "end_time", kind: "message", T: () => Timestamp }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetQualifierEndTime>): Request_SetQualifierEndTime {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.qualifierId = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetQualifierEndTime>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetQualifierEndTime): Request_SetQualifierEndTime {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string qualifier_id */ 2:
+                    message.qualifierId = reader.string();
+                    break;
+                case /* google.protobuf.Timestamp end_time */ 3:
+                    message.endTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.endTime);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetQualifierEndTime, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string qualifier_id = 2; */
+        if (message.qualifierId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.qualifierId);
+        /* google.protobuf.Timestamp end_time = 3; */
+        if (message.endTime)
+            Timestamp.internalBinaryWrite(message.endTime, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetQualifierEndTime
+ */
+export const Request_SetQualifierEndTime = new Request_SetQualifierEndTime$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_AddQualifierMaps$Type extends MessageType<Request_AddQualifierMaps> {
     constructor() {

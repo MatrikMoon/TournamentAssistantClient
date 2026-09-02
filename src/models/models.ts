@@ -550,6 +550,14 @@ export interface QualifierEvent {
      * @generated from protobuf field: proto.models.QualifierEvent.LeaderboardSort sort = 7
      */
     sort: QualifierEvent_LeaderboardSort;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp start_time = 8
+     */
+    startTime?: Timestamp;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp end_time = 9
+     */
+    endTime?: Timestamp;
 }
 /**
  * @generated from protobuf enum proto.models.QualifierEvent.EventSettings
@@ -1837,7 +1845,9 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
             { no: 4, name: "info_channel", kind: "message", T: () => Channel },
             { no: 5, name: "qualifier_maps", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Map },
             { no: 6, name: "flags", kind: "enum", T: () => ["proto.models.QualifierEvent.EventSettings", QualifierEvent_EventSettings] },
-            { no: 7, name: "sort", kind: "enum", T: () => ["proto.models.QualifierEvent.LeaderboardSort", QualifierEvent_LeaderboardSort] }
+            { no: 7, name: "sort", kind: "enum", T: () => ["proto.models.QualifierEvent.LeaderboardSort", QualifierEvent_LeaderboardSort] },
+            { no: 8, name: "start_time", kind: "message", T: () => Timestamp },
+            { no: 9, name: "end_time", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<QualifierEvent>): QualifierEvent {
@@ -1878,6 +1888,12 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
                 case /* proto.models.QualifierEvent.LeaderboardSort sort */ 7:
                     message.sort = reader.int32();
                     break;
+                case /* google.protobuf.Timestamp start_time */ 8:
+                    message.startTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.startTime);
+                    break;
+                case /* google.protobuf.Timestamp end_time */ 9:
+                    message.endTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.endTime);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1911,6 +1927,12 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
         /* proto.models.QualifierEvent.LeaderboardSort sort = 7; */
         if (message.sort !== 0)
             writer.tag(7, WireType.Varint).int32(message.sort);
+        /* google.protobuf.Timestamp start_time = 8; */
+        if (message.startTime)
+            Timestamp.internalBinaryWrite(message.startTime, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp end_time = 9; */
+        if (message.endTime)
+            Timestamp.internalBinaryWrite(message.endTime, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

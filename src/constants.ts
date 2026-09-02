@@ -35,6 +35,8 @@ export type Permission =
   | "tournament:qualifier:set_info_channel"
   | "tournament:qualifier:set_flags"
   | "tournament:qualifier:set_leaderboard_sort"
+  | "tournament:qualifier:set_start_time"
+  | "tournament:qualifier:set_end_time"
   | "tournament:qualifier:add_maps"
   | "tournament:qualifier:update_map"
   | "tournament:qualifier:remove_map"

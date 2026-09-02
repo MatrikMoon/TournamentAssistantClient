@@ -504,6 +504,18 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
+  public leaveTournament = async (tournamentId: string) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "leaveTournament",
+        leaveTournament: { tournamentId },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
   public getLeaderboard = async (tournamentId: string, qualifierId: string, mapId: string) => {
     const response = await this.sendRequest({
       type: {
@@ -1323,7 +1335,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     bannedMods: string[] = [],
     pools: Tournament_TournamentSettings_Pool[] = [],
     allowUnauthorizedView: boolean = false,
-    enableReplayStreaming: boolean = false
+    enableReplayStreaming: boolean = false,
+    allowMockClients: boolean = false
   ) => {
     const response = await this.sendRequest({
       type: {
@@ -1340,6 +1353,7 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               enableTeams,
               enablePools,
               enableReplayStreaming,
+              allowMockClients,
               showTournamentButton,
               showQualifierButton,
               roles,
@@ -1455,6 +1469,21 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       throw new Error("Server timed out");
     }
 
+    return response[0].response;
+  };
+
+  public setTournamentAllowMockClients = async (tournamentId: string, allowMockClients: boolean) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentAllowMockClients",
+        setTournamentAllowMockClients: {
+          tournamentId,
+          allowMockClients,
+        },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
     return response[0].response;
   };
 

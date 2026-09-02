@@ -203,6 +203,12 @@ export interface Response {
          */
         permissionError: Response_PermissionError;
     } | {
+        oneofKind: "leaveTournament";
+        /**
+         * @generated from protobuf field: proto.packets.Response.LeaveTournament leave_tournament = 31
+         */
+        leaveTournament: Response_LeaveTournament;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -520,6 +526,19 @@ export enum Response_Join_JoinFailReason {
     IncorrectPassword = 0
 }
 /**
+ * @generated from protobuf message proto.packets.Response.LeaveTournament
+ */
+export interface Response_LeaveTournament {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
  * @generated from protobuf message proto.packets.Response.LeaderboardEntries
  */
 export interface Response_LeaderboardEntries {
@@ -684,7 +703,8 @@ class Response$Type extends MessageType<Response> {
             { no: 27, name: "generate_bot_token", kind: "message", oneof: "details", T: () => Response_GenerateBotToken },
             { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken },
             { no: 29, name: "refund_attempts", kind: "message", oneof: "details", T: () => Response_RefundAttempts },
-            { no: 30, name: "permission_error", kind: "message", oneof: "details", T: () => Response_PermissionError }
+            { no: 30, name: "permission_error", kind: "message", oneof: "details", T: () => Response_PermissionError },
+            { no: 31, name: "leave_tournament", kind: "message", oneof: "details", T: () => Response_LeaveTournament }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -875,6 +895,12 @@ class Response$Type extends MessageType<Response> {
                         permissionError: Response_PermissionError.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).permissionError)
                     };
                     break;
+                case /* proto.packets.Response.LeaveTournament leave_tournament */ 31:
+                    message.details = {
+                        oneofKind: "leaveTournament",
+                        leaveTournament: Response_LeaveTournament.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).leaveTournament)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -977,6 +1003,9 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.PermissionError permission_error = 30; */
         if (message.details.oneofKind === "permissionError")
             Response_PermissionError.internalBinaryWrite(message.details.permissionError, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.LeaveTournament leave_tournament = 31; */
+        if (message.details.oneofKind === "leaveTournament")
+            Response_LeaveTournament.internalBinaryWrite(message.details.leaveTournament, writer.tag(31, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2107,6 +2136,61 @@ class Response_Join$Type extends MessageType<Response_Join> {
  * @generated MessageType for protobuf message proto.packets.Response.Join
  */
 export const Response_Join = new Response_Join$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_LeaveTournament$Type extends MessageType<Response_LeaveTournament> {
+    constructor() {
+        super("proto.packets.Response.LeaveTournament", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_LeaveTournament>): Response_LeaveTournament {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_LeaveTournament>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_LeaveTournament): Response_LeaveTournament {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_LeaveTournament, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.LeaveTournament
+ */
+export const Response_LeaveTournament = new Response_LeaveTournament$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Response_LeaderboardEntries$Type extends MessageType<Response_LeaderboardEntries> {
     constructor() {

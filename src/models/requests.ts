@@ -419,6 +419,18 @@ export interface Request {
          */
         setQualifierEndTime: Request_SetQualifierEndTime;
     } | {
+        oneofKind: "setTournamentAllowMockClients";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetTournamentAllowMockClients set_tournament_allow_mock_clients = 67
+         */
+        setTournamentAllowMockClients: Request_SetTournamentAllowMockClients;
+    } | {
+        oneofKind: "leaveTournament";
+        /**
+         * @generated from protobuf field: proto.packets.Request.LeaveTournament leave_tournament = 68
+         */
+        leaveTournament: Request_LeaveTournament;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -877,6 +889,19 @@ export interface Request_SetTournamentEnableReplayStreaming {
     enableReplayStreaming: boolean;
 }
 /**
+ * @generated from protobuf message proto.packets.Request.SetTournamentAllowMockClients
+ */
+export interface Request_SetTournamentAllowMockClients {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: bool allow_mock_clients = 2
+     */
+    allowMockClients: boolean;
+}
+/**
  * @generated from protobuf message proto.packets.Request.SetTournamentShowTournamentButton
  */
 export interface Request_SetTournamentShowTournamentButton {
@@ -1235,6 +1260,15 @@ export interface Request_Join {
     modList: string[];
 }
 /**
+ * @generated from protobuf message proto.packets.Request.LeaveTournament
+ */
+export interface Request_LeaveTournament {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+}
+/**
  * @generated from protobuf message proto.packets.Request.QualifierScores
  */
 export interface Request_QualifierScores {
@@ -1504,7 +1538,9 @@ class Request$Type extends MessageType<Request> {
             { no: 62, name: "remove_tournament_role", kind: "message", oneof: "type", T: () => Request_RemoveTournamentRole },
             { no: 64, name: "set_tournament_enable_replay_streaming", kind: "message", oneof: "type", T: () => Request_SetTournamentEnableReplayStreaming },
             { no: 65, name: "set_qualifier_start_time", kind: "message", oneof: "type", T: () => Request_SetQualifierStartTime },
-            { no: 66, name: "set_qualifier_end_time", kind: "message", oneof: "type", T: () => Request_SetQualifierEndTime }
+            { no: 66, name: "set_qualifier_end_time", kind: "message", oneof: "type", T: () => Request_SetQualifierEndTime },
+            { no: 67, name: "set_tournament_allow_mock_clients", kind: "message", oneof: "type", T: () => Request_SetTournamentAllowMockClients },
+            { no: 68, name: "leave_tournament", kind: "message", oneof: "type", T: () => Request_LeaveTournament }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1903,6 +1939,18 @@ class Request$Type extends MessageType<Request> {
                         setQualifierEndTime: Request_SetQualifierEndTime.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setQualifierEndTime)
                     };
                     break;
+                case /* proto.packets.Request.SetTournamentAllowMockClients set_tournament_allow_mock_clients */ 67:
+                    message.type = {
+                        oneofKind: "setTournamentAllowMockClients",
+                        setTournamentAllowMockClients: Request_SetTournamentAllowMockClients.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setTournamentAllowMockClients)
+                    };
+                    break;
+                case /* proto.packets.Request.LeaveTournament leave_tournament */ 68:
+                    message.type = {
+                        oneofKind: "leaveTournament",
+                        leaveTournament: Request_LeaveTournament.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).leaveTournament)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2107,6 +2155,12 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.SetQualifierEndTime set_qualifier_end_time = 66; */
         if (message.type.oneofKind === "setQualifierEndTime")
             Request_SetQualifierEndTime.internalBinaryWrite(message.type.setQualifierEndTime, writer.tag(66, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetTournamentAllowMockClients set_tournament_allow_mock_clients = 67; */
+        if (message.type.oneofKind === "setTournamentAllowMockClients")
+            Request_SetTournamentAllowMockClients.internalBinaryWrite(message.type.setTournamentAllowMockClients, writer.tag(67, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.LeaveTournament leave_tournament = 68; */
+        if (message.type.oneofKind === "leaveTournament")
+            Request_LeaveTournament.internalBinaryWrite(message.type.leaveTournament, writer.tag(68, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3871,6 +3925,61 @@ class Request_SetTournamentEnableReplayStreaming$Type extends MessageType<Reques
  */
 export const Request_SetTournamentEnableReplayStreaming = new Request_SetTournamentEnableReplayStreaming$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class Request_SetTournamentAllowMockClients$Type extends MessageType<Request_SetTournamentAllowMockClients> {
+    constructor() {
+        super("proto.packets.Request.SetTournamentAllowMockClients", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "allow_mock_clients", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetTournamentAllowMockClients>): Request_SetTournamentAllowMockClients {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.allowMockClients = false;
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetTournamentAllowMockClients>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetTournamentAllowMockClients): Request_SetTournamentAllowMockClients {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* bool allow_mock_clients */ 2:
+                    message.allowMockClients = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetTournamentAllowMockClients, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* bool allow_mock_clients = 2; */
+        if (message.allowMockClients !== false)
+            writer.tag(2, WireType.Varint).bool(message.allowMockClients);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetTournamentAllowMockClients
+ */
+export const Request_SetTournamentAllowMockClients = new Request_SetTournamentAllowMockClients$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Request_SetTournamentShowTournamentButton$Type extends MessageType<Request_SetTournamentShowTournamentButton> {
     constructor() {
         super("proto.packets.Request.SetTournamentShowTournamentButton", [
@@ -5257,6 +5366,53 @@ class Request_Join$Type extends MessageType<Request_Join> {
  * @generated MessageType for protobuf message proto.packets.Request.Join
  */
 export const Request_Join = new Request_Join$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_LeaveTournament$Type extends MessageType<Request_LeaveTournament> {
+    constructor() {
+        super("proto.packets.Request.LeaveTournament", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_LeaveTournament>): Request_LeaveTournament {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_LeaveTournament>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_LeaveTournament): Request_LeaveTournament {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_LeaveTournament, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.LeaveTournament
+ */
+export const Request_LeaveTournament = new Request_LeaveTournament$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_QualifierScores$Type extends MessageType<Request_QualifierScores> {
     constructor() {

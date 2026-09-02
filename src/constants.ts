@@ -45,6 +45,7 @@ export type Permission =
   | "tournament:settings:set_image"
   | "tournament:settings:set_enable_teams"
   | "tournament:settings:set_enable_pools"
+  | "tournament:settings:set_allow_mock_clients"
   | "tournament:settings:set_show_tournament_button"
   | "tournament:settings:set_show_qualifier_button"
   | "tournament:settings:set_allow_unauthorized_view"

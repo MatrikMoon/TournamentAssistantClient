@@ -431,6 +431,30 @@ export interface Request {
          */
         leaveTournament: Request_LeaveTournament;
     } | {
+        oneofKind: "getWebhooks";
+        /**
+         * @generated from protobuf field: proto.packets.Request.GetWebhooks get_webhooks = 69
+         */
+        getWebhooks: Request_GetWebhooks;
+    } | {
+        oneofKind: "createWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Request.CreateWebhook create_webhook = 70
+         */
+        createWebhook: Request_CreateWebhook;
+    } | {
+        oneofKind: "updateWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Request.UpdateWebhook update_webhook = 71
+         */
+        updateWebhook: Request_UpdateWebhook;
+    } | {
+        oneofKind: "deleteWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Request.DeleteWebhook delete_webhook = 72
+         */
+        deleteWebhook: Request_DeleteWebhook;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -1471,6 +1495,78 @@ export interface Request_RefundAttempts {
      */
     count: number;
 }
+/**
+ * @generated from protobuf message proto.packets.Request.GetWebhooks
+ */
+export interface Request_GetWebhooks {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.CreateWebhook
+ */
+export interface Request_CreateWebhook {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string url = 2
+     */
+    url: string;
+    /**
+     * @generated from protobuf field: int64 triggers = 3
+     */
+    triggers: bigint;
+    /**
+     * @generated from protobuf field: string signing_secret = 4
+     */
+    signingSecret: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.UpdateWebhook
+ */
+export interface Request_UpdateWebhook {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string webhook_guid = 2
+     */
+    webhookGuid: string;
+    /**
+     * @generated from protobuf field: string url = 3
+     */
+    url: string;
+    /**
+     * @generated from protobuf field: int64 triggers = 4
+     */
+    triggers: bigint;
+    /**
+     * @generated from protobuf field: bool replace_signing_secret = 5
+     */
+    replaceSigningSecret: boolean;
+    /**
+     * @generated from protobuf field: string signing_secret = 6
+     */
+    signingSecret: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.DeleteWebhook
+ */
+export interface Request_DeleteWebhook {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string webhook_guid = 2
+     */
+    webhookGuid: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Request$Type extends MessageType<Request> {
     constructor() {
@@ -1540,7 +1636,11 @@ class Request$Type extends MessageType<Request> {
             { no: 65, name: "set_qualifier_start_time", kind: "message", oneof: "type", T: () => Request_SetQualifierStartTime },
             { no: 66, name: "set_qualifier_end_time", kind: "message", oneof: "type", T: () => Request_SetQualifierEndTime },
             { no: 67, name: "set_tournament_allow_mock_clients", kind: "message", oneof: "type", T: () => Request_SetTournamentAllowMockClients },
-            { no: 68, name: "leave_tournament", kind: "message", oneof: "type", T: () => Request_LeaveTournament }
+            { no: 68, name: "leave_tournament", kind: "message", oneof: "type", T: () => Request_LeaveTournament },
+            { no: 69, name: "get_webhooks", kind: "message", oneof: "type", T: () => Request_GetWebhooks },
+            { no: 70, name: "create_webhook", kind: "message", oneof: "type", T: () => Request_CreateWebhook },
+            { no: 71, name: "update_webhook", kind: "message", oneof: "type", T: () => Request_UpdateWebhook },
+            { no: 72, name: "delete_webhook", kind: "message", oneof: "type", T: () => Request_DeleteWebhook }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -1951,6 +2051,30 @@ class Request$Type extends MessageType<Request> {
                         leaveTournament: Request_LeaveTournament.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).leaveTournament)
                     };
                     break;
+                case /* proto.packets.Request.GetWebhooks get_webhooks */ 69:
+                    message.type = {
+                        oneofKind: "getWebhooks",
+                        getWebhooks: Request_GetWebhooks.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).getWebhooks)
+                    };
+                    break;
+                case /* proto.packets.Request.CreateWebhook create_webhook */ 70:
+                    message.type = {
+                        oneofKind: "createWebhook",
+                        createWebhook: Request_CreateWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).createWebhook)
+                    };
+                    break;
+                case /* proto.packets.Request.UpdateWebhook update_webhook */ 71:
+                    message.type = {
+                        oneofKind: "updateWebhook",
+                        updateWebhook: Request_UpdateWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).updateWebhook)
+                    };
+                    break;
+                case /* proto.packets.Request.DeleteWebhook delete_webhook */ 72:
+                    message.type = {
+                        oneofKind: "deleteWebhook",
+                        deleteWebhook: Request_DeleteWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).deleteWebhook)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2161,6 +2285,18 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.LeaveTournament leave_tournament = 68; */
         if (message.type.oneofKind === "leaveTournament")
             Request_LeaveTournament.internalBinaryWrite(message.type.leaveTournament, writer.tag(68, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.GetWebhooks get_webhooks = 69; */
+        if (message.type.oneofKind === "getWebhooks")
+            Request_GetWebhooks.internalBinaryWrite(message.type.getWebhooks, writer.tag(69, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.CreateWebhook create_webhook = 70; */
+        if (message.type.oneofKind === "createWebhook")
+            Request_CreateWebhook.internalBinaryWrite(message.type.createWebhook, writer.tag(70, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.UpdateWebhook update_webhook = 71; */
+        if (message.type.oneofKind === "updateWebhook")
+            Request_UpdateWebhook.internalBinaryWrite(message.type.updateWebhook, writer.tag(71, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.DeleteWebhook delete_webhook = 72; */
+        if (message.type.oneofKind === "deleteWebhook")
+            Request_DeleteWebhook.internalBinaryWrite(message.type.deleteWebhook, writer.tag(72, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -6136,3 +6272,263 @@ class Request_RefundAttempts$Type extends MessageType<Request_RefundAttempts> {
  * @generated MessageType for protobuf message proto.packets.Request.RefundAttempts
  */
 export const Request_RefundAttempts = new Request_RefundAttempts$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_GetWebhooks$Type extends MessageType<Request_GetWebhooks> {
+    constructor() {
+        super("proto.packets.Request.GetWebhooks", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_GetWebhooks>): Request_GetWebhooks {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_GetWebhooks>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_GetWebhooks): Request_GetWebhooks {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_GetWebhooks, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.GetWebhooks
+ */
+export const Request_GetWebhooks = new Request_GetWebhooks$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_CreateWebhook$Type extends MessageType<Request_CreateWebhook> {
+    constructor() {
+        super("proto.packets.Request.CreateWebhook", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "triggers", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 4, name: "signing_secret", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_CreateWebhook>): Request_CreateWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.url = "";
+        message.triggers = 0n;
+        message.signingSecret = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_CreateWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_CreateWebhook): Request_CreateWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string url */ 2:
+                    message.url = reader.string();
+                    break;
+                case /* int64 triggers */ 3:
+                    message.triggers = reader.int64().toBigInt();
+                    break;
+                case /* string signing_secret */ 4:
+                    message.signingSecret = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_CreateWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string url = 2; */
+        if (message.url !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.url);
+        /* int64 triggers = 3; */
+        if (message.triggers !== 0n)
+            writer.tag(3, WireType.Varint).int64(message.triggers);
+        /* string signing_secret = 4; */
+        if (message.signingSecret !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.signingSecret);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.CreateWebhook
+ */
+export const Request_CreateWebhook = new Request_CreateWebhook$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_UpdateWebhook$Type extends MessageType<Request_UpdateWebhook> {
+    constructor() {
+        super("proto.packets.Request.UpdateWebhook", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "webhook_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "triggers", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 5, name: "replace_signing_secret", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "signing_secret", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_UpdateWebhook>): Request_UpdateWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.webhookGuid = "";
+        message.url = "";
+        message.triggers = 0n;
+        message.replaceSigningSecret = false;
+        message.signingSecret = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_UpdateWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_UpdateWebhook): Request_UpdateWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string webhook_guid */ 2:
+                    message.webhookGuid = reader.string();
+                    break;
+                case /* string url */ 3:
+                    message.url = reader.string();
+                    break;
+                case /* int64 triggers */ 4:
+                    message.triggers = reader.int64().toBigInt();
+                    break;
+                case /* bool replace_signing_secret */ 5:
+                    message.replaceSigningSecret = reader.bool();
+                    break;
+                case /* string signing_secret */ 6:
+                    message.signingSecret = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_UpdateWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string webhook_guid = 2; */
+        if (message.webhookGuid !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.webhookGuid);
+        /* string url = 3; */
+        if (message.url !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.url);
+        /* int64 triggers = 4; */
+        if (message.triggers !== 0n)
+            writer.tag(4, WireType.Varint).int64(message.triggers);
+        /* bool replace_signing_secret = 5; */
+        if (message.replaceSigningSecret !== false)
+            writer.tag(5, WireType.Varint).bool(message.replaceSigningSecret);
+        /* string signing_secret = 6; */
+        if (message.signingSecret !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.signingSecret);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.UpdateWebhook
+ */
+export const Request_UpdateWebhook = new Request_UpdateWebhook$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_DeleteWebhook$Type extends MessageType<Request_DeleteWebhook> {
+    constructor() {
+        super("proto.packets.Request.DeleteWebhook", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "webhook_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_DeleteWebhook>): Request_DeleteWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.webhookGuid = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_DeleteWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_DeleteWebhook): Request_DeleteWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string webhook_guid */ 2:
+                    message.webhookGuid = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_DeleteWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* string webhook_guid = 2; */
+        if (message.webhookGuid !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.webhookGuid);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.DeleteWebhook
+ */
+export const Request_DeleteWebhook = new Request_DeleteWebhook$Type();

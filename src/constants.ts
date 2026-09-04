@@ -41,6 +41,7 @@ export type Permission =
   | "tournament:qualifier:update_map"
   | "tournament:qualifier:remove_map"
   | "tournament:qualifier:delete"
+  | "tournament:webhooks:manage"
   | "tournament:settings:set_name"
   | "tournament:settings:set_image"
   | "tournament:settings:set_enable_teams"

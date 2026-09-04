@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Webhook } from './models.js';
 import { LeaderboardEntry } from './models.js';
 import { State } from './models.js';
 import { CoreServer } from './models.js';
@@ -208,6 +209,30 @@ export interface Response {
          * @generated from protobuf field: proto.packets.Response.LeaveTournament leave_tournament = 31
          */
         leaveTournament: Response_LeaveTournament;
+    } | {
+        oneofKind: "getWebhooks";
+        /**
+         * @generated from protobuf field: proto.packets.Response.GetWebhooks get_webhooks = 32
+         */
+        getWebhooks: Response_GetWebhooks;
+    } | {
+        oneofKind: "createWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Response.CreateWebhook create_webhook = 33
+         */
+        createWebhook: Response_CreateWebhook;
+    } | {
+        oneofKind: "updateWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Response.UpdateWebhook update_webhook = 34
+         */
+        updateWebhook: Response_UpdateWebhook;
+    } | {
+        oneofKind: "deleteWebhook";
+        /**
+         * @generated from protobuf field: proto.packets.Response.DeleteWebhook delete_webhook = 35
+         */
+        deleteWebhook: Response_DeleteWebhook;
     } | {
         oneofKind: undefined;
     };
@@ -658,6 +683,54 @@ export interface Response_PermissionError {
     currentPermissions: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Response.GetWebhooks
+ */
+export interface Response_GetWebhooks {
+    /**
+     * @generated from protobuf field: repeated proto.models.Webhook webhooks = 1
+     */
+    webhooks: Webhook[];
+}
+/**
+ * @generated from protobuf message proto.packets.Response.CreateWebhook
+ */
+export interface Response_CreateWebhook {
+    /**
+     * @generated from protobuf field: proto.models.Webhook webhook = 1
+     */
+    webhook?: Webhook;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.UpdateWebhook
+ */
+export interface Response_UpdateWebhook {
+    /**
+     * @generated from protobuf field: proto.models.Webhook webhook = 1
+     */
+    webhook?: Webhook;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.DeleteWebhook
+ */
+export interface Response_DeleteWebhook {
+    /**
+     * @generated from protobuf field: string webhook_guid = 1
+     */
+    webhookGuid: string;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
  * @generated from protobuf enum proto.packets.Response.ResponseType
  */
 export enum Response_ResponseType {
@@ -704,7 +777,11 @@ class Response$Type extends MessageType<Response> {
             { no: 28, name: "revoke_bot_token", kind: "message", oneof: "details", T: () => Response_RevokeBotToken },
             { no: 29, name: "refund_attempts", kind: "message", oneof: "details", T: () => Response_RefundAttempts },
             { no: 30, name: "permission_error", kind: "message", oneof: "details", T: () => Response_PermissionError },
-            { no: 31, name: "leave_tournament", kind: "message", oneof: "details", T: () => Response_LeaveTournament }
+            { no: 31, name: "leave_tournament", kind: "message", oneof: "details", T: () => Response_LeaveTournament },
+            { no: 32, name: "get_webhooks", kind: "message", oneof: "details", T: () => Response_GetWebhooks },
+            { no: 33, name: "create_webhook", kind: "message", oneof: "details", T: () => Response_CreateWebhook },
+            { no: 34, name: "update_webhook", kind: "message", oneof: "details", T: () => Response_UpdateWebhook },
+            { no: 35, name: "delete_webhook", kind: "message", oneof: "details", T: () => Response_DeleteWebhook }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -901,6 +978,30 @@ class Response$Type extends MessageType<Response> {
                         leaveTournament: Response_LeaveTournament.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).leaveTournament)
                     };
                     break;
+                case /* proto.packets.Response.GetWebhooks get_webhooks */ 32:
+                    message.details = {
+                        oneofKind: "getWebhooks",
+                        getWebhooks: Response_GetWebhooks.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).getWebhooks)
+                    };
+                    break;
+                case /* proto.packets.Response.CreateWebhook create_webhook */ 33:
+                    message.details = {
+                        oneofKind: "createWebhook",
+                        createWebhook: Response_CreateWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).createWebhook)
+                    };
+                    break;
+                case /* proto.packets.Response.UpdateWebhook update_webhook */ 34:
+                    message.details = {
+                        oneofKind: "updateWebhook",
+                        updateWebhook: Response_UpdateWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).updateWebhook)
+                    };
+                    break;
+                case /* proto.packets.Response.DeleteWebhook delete_webhook */ 35:
+                    message.details = {
+                        oneofKind: "deleteWebhook",
+                        deleteWebhook: Response_DeleteWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).deleteWebhook)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1006,6 +1107,18 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.LeaveTournament leave_tournament = 31; */
         if (message.details.oneofKind === "leaveTournament")
             Response_LeaveTournament.internalBinaryWrite(message.details.leaveTournament, writer.tag(31, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.GetWebhooks get_webhooks = 32; */
+        if (message.details.oneofKind === "getWebhooks")
+            Response_GetWebhooks.internalBinaryWrite(message.details.getWebhooks, writer.tag(32, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.CreateWebhook create_webhook = 33; */
+        if (message.details.oneofKind === "createWebhook")
+            Response_CreateWebhook.internalBinaryWrite(message.details.createWebhook, writer.tag(33, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.UpdateWebhook update_webhook = 34; */
+        if (message.details.oneofKind === "updateWebhook")
+            Response_UpdateWebhook.internalBinaryWrite(message.details.updateWebhook, writer.tag(34, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.DeleteWebhook delete_webhook = 35; */
+        if (message.details.oneofKind === "deleteWebhook")
+            Response_DeleteWebhook.internalBinaryWrite(message.details.deleteWebhook, writer.tag(35, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2748,3 +2861,213 @@ class Response_PermissionError$Type extends MessageType<Response_PermissionError
  * @generated MessageType for protobuf message proto.packets.Response.PermissionError
  */
 export const Response_PermissionError = new Response_PermissionError$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_GetWebhooks$Type extends MessageType<Response_GetWebhooks> {
+    constructor() {
+        super("proto.packets.Response.GetWebhooks", [
+            { no: 1, name: "webhooks", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Webhook }
+        ]);
+    }
+    create(value?: PartialMessage<Response_GetWebhooks>): Response_GetWebhooks {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.webhooks = [];
+        if (value !== undefined)
+            reflectionMergePartial<Response_GetWebhooks>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_GetWebhooks): Response_GetWebhooks {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated proto.models.Webhook webhooks */ 1:
+                    message.webhooks.push(Webhook.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_GetWebhooks, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated proto.models.Webhook webhooks = 1; */
+        for (let i = 0; i < message.webhooks.length; i++)
+            Webhook.internalBinaryWrite(message.webhooks[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.GetWebhooks
+ */
+export const Response_GetWebhooks = new Response_GetWebhooks$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_CreateWebhook$Type extends MessageType<Response_CreateWebhook> {
+    constructor() {
+        super("proto.packets.Response.CreateWebhook", [
+            { no: 1, name: "webhook", kind: "message", T: () => Webhook },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_CreateWebhook>): Response_CreateWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_CreateWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_CreateWebhook): Response_CreateWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* proto.models.Webhook webhook */ 1:
+                    message.webhook = Webhook.internalBinaryRead(reader, reader.uint32(), options, message.webhook);
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_CreateWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* proto.models.Webhook webhook = 1; */
+        if (message.webhook)
+            Webhook.internalBinaryWrite(message.webhook, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.CreateWebhook
+ */
+export const Response_CreateWebhook = new Response_CreateWebhook$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_UpdateWebhook$Type extends MessageType<Response_UpdateWebhook> {
+    constructor() {
+        super("proto.packets.Response.UpdateWebhook", [
+            { no: 1, name: "webhook", kind: "message", T: () => Webhook },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_UpdateWebhook>): Response_UpdateWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_UpdateWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_UpdateWebhook): Response_UpdateWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* proto.models.Webhook webhook */ 1:
+                    message.webhook = Webhook.internalBinaryRead(reader, reader.uint32(), options, message.webhook);
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_UpdateWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* proto.models.Webhook webhook = 1; */
+        if (message.webhook)
+            Webhook.internalBinaryWrite(message.webhook, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.UpdateWebhook
+ */
+export const Response_UpdateWebhook = new Response_UpdateWebhook$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_DeleteWebhook$Type extends MessageType<Response_DeleteWebhook> {
+    constructor() {
+        super("proto.packets.Response.DeleteWebhook", [
+            { no: 1, name: "webhook_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_DeleteWebhook>): Response_DeleteWebhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.webhookGuid = "";
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_DeleteWebhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_DeleteWebhook): Response_DeleteWebhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string webhook_guid */ 1:
+                    message.webhookGuid = reader.string();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_DeleteWebhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string webhook_guid = 1; */
+        if (message.webhookGuid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.webhookGuid);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.DeleteWebhook
+ */
+export const Response_DeleteWebhook = new Response_DeleteWebhook$Type();

@@ -7,3 +7,4 @@ export * from "./pushes.js";
 export * from "./requests.js";
 export * from "./responses.js";
 export * from "./replay_stream.js";
+export * from "./google/protobuf/timestamp.js";

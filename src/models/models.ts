@@ -411,6 +411,10 @@ export interface User {
      * @generated from protobuf field: proto.models.User.DiscordInfo discord_info = 12
      */
     discordInfo?: User_DiscordInfo;
+    /**
+     * @generated from protobuf field: bool is_mock = 13
+     */
+    isMock: boolean;
 }
 /**
  * @generated from protobuf message proto.models.User.DiscordInfo
@@ -550,6 +554,14 @@ export interface QualifierEvent {
      * @generated from protobuf field: proto.models.QualifierEvent.LeaderboardSort sort = 7
      */
     sort: QualifierEvent_LeaderboardSort;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp start_time = 8
+     */
+    startTime?: Timestamp;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp end_time = 9
+     */
+    endTime?: Timestamp;
 }
 /**
  * @generated from protobuf enum proto.models.QualifierEvent.EventSettings
@@ -751,6 +763,10 @@ export interface Tournament_TournamentSettings {
      * @generated from protobuf field: bool enable_replay_streaming = 14
      */
     enableReplayStreaming: boolean;
+    /**
+     * @generated from protobuf field: bool allow_mock_clients = 15
+     */
+    allowMockClients: boolean;
 }
 /**
  * @generated from protobuf message proto.models.Tournament.TournamentSettings.Pool
@@ -1521,7 +1537,8 @@ class User$Type extends MessageType<User> {
             { no: 9, name: "stream_screen_coordinates", kind: "message", T: () => User_Point },
             { no: 10, name: "stream_delay_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 11, name: "stream_sync_start_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 12, name: "discord_info", kind: "message", T: () => User_DiscordInfo }
+            { no: 12, name: "discord_info", kind: "message", T: () => User_DiscordInfo },
+            { no: 13, name: "is_mock", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<User>): User {
@@ -1536,6 +1553,7 @@ class User$Type extends MessageType<User> {
         message.modList = [];
         message.streamDelayMs = 0n;
         message.streamSyncStartMs = 0n;
+        message.isMock = false;
         if (value !== undefined)
             reflectionMergePartial<User>(this, message, value);
         return message;
@@ -1580,6 +1598,9 @@ class User$Type extends MessageType<User> {
                     break;
                 case /* proto.models.User.DiscordInfo discord_info */ 12:
                     message.discordInfo = User_DiscordInfo.internalBinaryRead(reader, reader.uint32(), options, message.discordInfo);
+                    break;
+                case /* bool is_mock */ 13:
+                    message.isMock = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1629,6 +1650,9 @@ class User$Type extends MessageType<User> {
         /* proto.models.User.DiscordInfo discord_info = 12; */
         if (message.discordInfo)
             User_DiscordInfo.internalBinaryWrite(message.discordInfo, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
+        /* bool is_mock = 13; */
+        if (message.isMock !== false)
+            writer.tag(13, WireType.Varint).bool(message.isMock);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1837,7 +1861,9 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
             { no: 4, name: "info_channel", kind: "message", T: () => Channel },
             { no: 5, name: "qualifier_maps", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Map },
             { no: 6, name: "flags", kind: "enum", T: () => ["proto.models.QualifierEvent.EventSettings", QualifierEvent_EventSettings] },
-            { no: 7, name: "sort", kind: "enum", T: () => ["proto.models.QualifierEvent.LeaderboardSort", QualifierEvent_LeaderboardSort] }
+            { no: 7, name: "sort", kind: "enum", T: () => ["proto.models.QualifierEvent.LeaderboardSort", QualifierEvent_LeaderboardSort] },
+            { no: 8, name: "start_time", kind: "message", T: () => Timestamp },
+            { no: 9, name: "end_time", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<QualifierEvent>): QualifierEvent {
@@ -1878,6 +1904,12 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
                 case /* proto.models.QualifierEvent.LeaderboardSort sort */ 7:
                     message.sort = reader.int32();
                     break;
+                case /* google.protobuf.Timestamp start_time */ 8:
+                    message.startTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.startTime);
+                    break;
+                case /* google.protobuf.Timestamp end_time */ 9:
+                    message.endTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.endTime);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1911,6 +1943,12 @@ class QualifierEvent$Type extends MessageType<QualifierEvent> {
         /* proto.models.QualifierEvent.LeaderboardSort sort = 7; */
         if (message.sort !== 0)
             writer.tag(7, WireType.Varint).int32(message.sort);
+        /* google.protobuf.Timestamp start_time = 8; */
+        if (message.startTime)
+            Timestamp.internalBinaryWrite(message.startTime, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp end_time = 9; */
+        if (message.endTime)
+            Timestamp.internalBinaryWrite(message.endTime, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2094,7 +2132,8 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
             { no: 11, name: "allow_unauthorized_view", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 12, name: "roles", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Role },
             { no: 13, name: "my_permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
-            { no: 14, name: "enable_replay_streaming", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 14, name: "enable_replay_streaming", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 15, name: "allow_mock_clients", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings>): Tournament_TournamentSettings {
@@ -2113,6 +2152,7 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         message.roles = [];
         message.myPermissions = [];
         message.enableReplayStreaming = false;
+        message.allowMockClients = false;
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings>(this, message, value);
         return message;
@@ -2163,6 +2203,9 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
                     break;
                 case /* bool enable_replay_streaming */ 14:
                     message.enableReplayStreaming = reader.bool();
+                    break;
+                case /* bool allow_mock_clients */ 15:
+                    message.allowMockClients = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2218,6 +2261,9 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         /* bool enable_replay_streaming = 14; */
         if (message.enableReplayStreaming !== false)
             writer.tag(14, WireType.Varint).bool(message.enableReplayStreaming);
+        /* bool allow_mock_clients = 15; */
+        if (message.allowMockClients !== false)
+            writer.tag(15, WireType.Varint).bool(message.allowMockClients);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

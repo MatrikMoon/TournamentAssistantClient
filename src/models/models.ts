@@ -675,6 +675,96 @@ export interface CoreServer {
     websocketPort: number;
 }
 /**
+ * @generated from protobuf message proto.models.Webhook
+ */
+export interface Webhook {
+    /**
+     * @generated from protobuf field: string guid = 1
+     */
+    guid: string;
+    /**
+     * @generated from protobuf field: string tournament_id = 2
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string url = 3
+     */
+    url: string;
+    /**
+     * @generated from protobuf field: int64 triggers = 4
+     */
+    triggers: bigint;
+    /**
+     * @generated from protobuf field: bool has_signing_secret = 5
+     */
+    hasSigningSecret: boolean;
+}
+/**
+ * @generated from protobuf enum proto.models.Webhook.Trigger
+ */
+export enum Webhook_Trigger {
+    /**
+     * @generated from protobuf enum value: None = 0;
+     */
+    None = 0,
+    /**
+     * @generated from protobuf enum value: TournamentUpdated = 1;
+     */
+    TournamentUpdated = 1,
+    /**
+     * @generated from protobuf enum value: TournamentDeleted = 2;
+     */
+    TournamentDeleted = 2,
+    /**
+     * @generated from protobuf enum value: UserAdded = 4;
+     */
+    UserAdded = 4,
+    /**
+     * @generated from protobuf enum value: UserUpdated = 8;
+     */
+    UserUpdated = 8,
+    /**
+     * @generated from protobuf enum value: UserLeft = 16;
+     */
+    UserLeft = 16,
+    /**
+     * @generated from protobuf enum value: MatchCreated = 32;
+     */
+    MatchCreated = 32,
+    /**
+     * @generated from protobuf enum value: MatchUpdated = 64;
+     */
+    MatchUpdated = 64,
+    /**
+     * @generated from protobuf enum value: MatchDeleted = 128;
+     */
+    MatchDeleted = 128,
+    /**
+     * @generated from protobuf enum value: QualifierCreated = 256;
+     */
+    QualifierCreated = 256,
+    /**
+     * @generated from protobuf enum value: QualifierUpdated = 512;
+     */
+    QualifierUpdated = 512,
+    /**
+     * @generated from protobuf enum value: QualifierDeleted = 1024;
+     */
+    QualifierDeleted = 1024,
+    /**
+     * @generated from protobuf enum value: QualifierScoreSubmitted = 2048;
+     */
+    QualifierScoreSubmitted = 2048,
+    /**
+     * @generated from protobuf enum value: SongFinished = 4096;
+     */
+    SongFinished = 4096,
+    /**
+     * @generated from protobuf enum value: All = 8191;
+     */
+    All = 8191
+}
+/**
  * @generated from protobuf message proto.models.Tournament
  */
 export interface Tournament {
@@ -2030,6 +2120,85 @@ class CoreServer$Type extends MessageType<CoreServer> {
  * @generated MessageType for protobuf message proto.models.CoreServer
  */
 export const CoreServer = new CoreServer$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Webhook$Type extends MessageType<Webhook> {
+    constructor() {
+        super("proto.models.Webhook", [
+            { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "triggers", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 5, name: "has_signing_secret", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Webhook>): Webhook {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.guid = "";
+        message.tournamentId = "";
+        message.url = "";
+        message.triggers = 0n;
+        message.hasSigningSecret = false;
+        if (value !== undefined)
+            reflectionMergePartial<Webhook>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Webhook): Webhook {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string guid */ 1:
+                    message.guid = reader.string();
+                    break;
+                case /* string tournament_id */ 2:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string url */ 3:
+                    message.url = reader.string();
+                    break;
+                case /* int64 triggers */ 4:
+                    message.triggers = reader.int64().toBigInt();
+                    break;
+                case /* bool has_signing_secret */ 5:
+                    message.hasSigningSecret = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Webhook, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string guid = 1; */
+        if (message.guid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.guid);
+        /* string tournament_id = 2; */
+        if (message.tournamentId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.tournamentId);
+        /* string url = 3; */
+        if (message.url !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.url);
+        /* int64 triggers = 4; */
+        if (message.triggers !== 0n)
+            writer.tag(4, WireType.Varint).int64(message.triggers);
+        /* bool has_signing_secret = 5; */
+        if (message.hasSigningSecret !== false)
+            writer.tag(5, WireType.Varint).bool(message.hasSigningSecret);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.models.Webhook
+ */
+export const Webhook = new Webhook$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Tournament$Type extends MessageType<Tournament> {
     constructor() {

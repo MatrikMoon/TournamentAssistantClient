@@ -1318,6 +1318,70 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     return response[0].response;
   };
 
+  public getWebhooks = async (tournamentId: string) => {
+    const response = await this.sendRequest({
+      type: { oneofKind: "getWebhooks", getWebhooks: { tournamentId } },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  public createWebhook = async (
+    tournamentId: string,
+    url: string,
+    triggers: bigint,
+    signingSecret: string = ""
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "createWebhook",
+        createWebhook: { tournamentId, url, triggers, signingSecret },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  public updateWebhook = async (
+    tournamentId: string,
+    webhookGuid: string,
+    url: string,
+    triggers: bigint,
+    replaceSigningSecret: boolean = false,
+    signingSecret: string = ""
+  ) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "updateWebhook",
+        updateWebhook: {
+          tournamentId,
+          webhookGuid,
+          url,
+          triggers,
+          replaceSigningSecret,
+          signingSecret,
+        },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  public deleteWebhook = async (tournamentId: string, webhookGuid: string) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "deleteWebhook",
+        deleteWebhook: { tournamentId, webhookGuid },
+      },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
   public createTournament = async (
     serverAddress: string,
     serverName: string,

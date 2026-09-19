@@ -13,6 +13,7 @@ import {
   Tournament_TournamentSettings_Pool,
   RealtimeScore,
   Role,
+  GlobalConfiguration,
 } from "./models/models.js";
 import { Packet } from "./models/packets.js";
 import { StateManager } from "./state-manager.js";
@@ -1418,6 +1419,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               enablePools,
               enableReplayStreaming,
               allowMockClients,
+              isBkTournament: false,
+              beatKhanaTournamentGuid: "",
               showTournamentButton,
               showQualifierButton,
               roles,
@@ -1961,6 +1964,34 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
       throw new Error("Server timed out");
     }
 
+    return response[0].response;
+  };
+
+  public getGlobalConfiguration = async () => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "getGlobalConfiguration",
+        getGlobalConfiguration: {},
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+    return response[0].response;
+  };
+
+  public updateGlobalConfiguration = async (configuration: GlobalConfiguration) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "updateGlobalConfiguration",
+        updateGlobalConfiguration: { configuration },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
     return response[0].response;
   };
 }

@@ -765,6 +765,68 @@ export enum Webhook_Trigger {
     All = 8191
 }
 /**
+ * @generated from protobuf message proto.models.EndpointAccess
+ */
+export interface EndpointAccess {
+    /**
+     * @generated from protobuf field: string endpoint_id = 1
+     */
+    endpointId: string;
+    /**
+     * @generated from protobuf field: string display_name = 2
+     */
+    displayName: string;
+    /**
+     * @generated from protobuf field: string route = 3
+     */
+    route: string;
+    /**
+     * @generated from protobuf field: bool supports_websocket = 4
+     */
+    supportsWebsocket: boolean;
+    /**
+     * @generated from protobuf field: bool supports_rest = 5
+     */
+    supportsRest: boolean;
+    /**
+     * @generated from protobuf field: bool supports_player = 6
+     */
+    supportsPlayer: boolean;
+    /**
+     * @generated from protobuf field: bool websocket_enabled = 7
+     */
+    websocketEnabled: boolean;
+    /**
+     * @generated from protobuf field: bool rest_enabled = 8
+     */
+    restEnabled: boolean;
+    /**
+     * @generated from protobuf field: bool player_enabled = 9
+     */
+    playerEnabled: boolean;
+    /**
+     * @generated from protobuf field: bool is_core = 10
+     */
+    isCore: boolean;
+}
+/**
+ * @generated from protobuf message proto.models.GlobalConfiguration
+ */
+export interface GlobalConfiguration {
+    /**
+     * @generated from protobuf field: repeated string full_access_discord_ids = 1
+     */
+    fullAccessDiscordIds: string[];
+    /**
+     * @generated from protobuf field: repeated string endpoint_manager_discord_ids = 2
+     */
+    endpointManagerDiscordIds: string[];
+    /**
+     * @generated from protobuf field: repeated proto.models.EndpointAccess endpoints = 3
+     */
+    endpoints: EndpointAccess[];
+}
+/**
  * @generated from protobuf message proto.models.Tournament
  */
 export interface Tournament {
@@ -857,6 +919,14 @@ export interface Tournament_TournamentSettings {
      * @generated from protobuf field: bool allow_mock_clients = 15
      */
     allowMockClients: boolean;
+    /**
+     * @generated from protobuf field: bool is_bk_tournament = 16
+     */
+    isBkTournament: boolean;
+    /**
+     * @generated from protobuf field: string beat_khana_tournament_guid = 17
+     */
+    beatKhanaTournamentGuid: string;
 }
 /**
  * @generated from protobuf message proto.models.Tournament.TournamentSettings.Pool
@@ -2200,6 +2270,188 @@ class Webhook$Type extends MessageType<Webhook> {
  */
 export const Webhook = new Webhook$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class EndpointAccess$Type extends MessageType<EndpointAccess> {
+    constructor() {
+        super("proto.models.EndpointAccess", [
+            { no: 1, name: "endpoint_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "display_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "route", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "supports_websocket", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 5, name: "supports_rest", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "supports_player", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 7, name: "websocket_enabled", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 8, name: "rest_enabled", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 9, name: "player_enabled", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 10, name: "is_core", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<EndpointAccess>): EndpointAccess {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.endpointId = "";
+        message.displayName = "";
+        message.route = "";
+        message.supportsWebsocket = false;
+        message.supportsRest = false;
+        message.supportsPlayer = false;
+        message.websocketEnabled = false;
+        message.restEnabled = false;
+        message.playerEnabled = false;
+        message.isCore = false;
+        if (value !== undefined)
+            reflectionMergePartial<EndpointAccess>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EndpointAccess): EndpointAccess {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string endpoint_id */ 1:
+                    message.endpointId = reader.string();
+                    break;
+                case /* string display_name */ 2:
+                    message.displayName = reader.string();
+                    break;
+                case /* string route */ 3:
+                    message.route = reader.string();
+                    break;
+                case /* bool supports_websocket */ 4:
+                    message.supportsWebsocket = reader.bool();
+                    break;
+                case /* bool supports_rest */ 5:
+                    message.supportsRest = reader.bool();
+                    break;
+                case /* bool supports_player */ 6:
+                    message.supportsPlayer = reader.bool();
+                    break;
+                case /* bool websocket_enabled */ 7:
+                    message.websocketEnabled = reader.bool();
+                    break;
+                case /* bool rest_enabled */ 8:
+                    message.restEnabled = reader.bool();
+                    break;
+                case /* bool player_enabled */ 9:
+                    message.playerEnabled = reader.bool();
+                    break;
+                case /* bool is_core */ 10:
+                    message.isCore = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: EndpointAccess, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string endpoint_id = 1; */
+        if (message.endpointId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.endpointId);
+        /* string display_name = 2; */
+        if (message.displayName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.displayName);
+        /* string route = 3; */
+        if (message.route !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.route);
+        /* bool supports_websocket = 4; */
+        if (message.supportsWebsocket !== false)
+            writer.tag(4, WireType.Varint).bool(message.supportsWebsocket);
+        /* bool supports_rest = 5; */
+        if (message.supportsRest !== false)
+            writer.tag(5, WireType.Varint).bool(message.supportsRest);
+        /* bool supports_player = 6; */
+        if (message.supportsPlayer !== false)
+            writer.tag(6, WireType.Varint).bool(message.supportsPlayer);
+        /* bool websocket_enabled = 7; */
+        if (message.websocketEnabled !== false)
+            writer.tag(7, WireType.Varint).bool(message.websocketEnabled);
+        /* bool rest_enabled = 8; */
+        if (message.restEnabled !== false)
+            writer.tag(8, WireType.Varint).bool(message.restEnabled);
+        /* bool player_enabled = 9; */
+        if (message.playerEnabled !== false)
+            writer.tag(9, WireType.Varint).bool(message.playerEnabled);
+        /* bool is_core = 10; */
+        if (message.isCore !== false)
+            writer.tag(10, WireType.Varint).bool(message.isCore);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.models.EndpointAccess
+ */
+export const EndpointAccess = new EndpointAccess$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GlobalConfiguration$Type extends MessageType<GlobalConfiguration> {
+    constructor() {
+        super("proto.models.GlobalConfiguration", [
+            { no: 1, name: "full_access_discord_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "endpoint_manager_discord_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "endpoints", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => EndpointAccess }
+        ]);
+    }
+    create(value?: PartialMessage<GlobalConfiguration>): GlobalConfiguration {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.fullAccessDiscordIds = [];
+        message.endpointManagerDiscordIds = [];
+        message.endpoints = [];
+        if (value !== undefined)
+            reflectionMergePartial<GlobalConfiguration>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GlobalConfiguration): GlobalConfiguration {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated string full_access_discord_ids */ 1:
+                    message.fullAccessDiscordIds.push(reader.string());
+                    break;
+                case /* repeated string endpoint_manager_discord_ids */ 2:
+                    message.endpointManagerDiscordIds.push(reader.string());
+                    break;
+                case /* repeated proto.models.EndpointAccess endpoints */ 3:
+                    message.endpoints.push(EndpointAccess.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GlobalConfiguration, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated string full_access_discord_ids = 1; */
+        for (let i = 0; i < message.fullAccessDiscordIds.length; i++)
+            writer.tag(1, WireType.LengthDelimited).string(message.fullAccessDiscordIds[i]);
+        /* repeated string endpoint_manager_discord_ids = 2; */
+        for (let i = 0; i < message.endpointManagerDiscordIds.length; i++)
+            writer.tag(2, WireType.LengthDelimited).string(message.endpointManagerDiscordIds[i]);
+        /* repeated proto.models.EndpointAccess endpoints = 3; */
+        for (let i = 0; i < message.endpoints.length; i++)
+            EndpointAccess.internalBinaryWrite(message.endpoints[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.models.GlobalConfiguration
+ */
+export const GlobalConfiguration = new GlobalConfiguration$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Tournament$Type extends MessageType<Tournament> {
     constructor() {
         super("proto.models.Tournament", [
@@ -2302,7 +2554,9 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
             { no: 12, name: "roles", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Role },
             { no: 13, name: "my_permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
             { no: 14, name: "enable_replay_streaming", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 15, name: "allow_mock_clients", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 15, name: "allow_mock_clients", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 16, name: "is_bk_tournament", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 17, name: "beat_khana_tournament_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings>): Tournament_TournamentSettings {
@@ -2322,6 +2576,8 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         message.myPermissions = [];
         message.enableReplayStreaming = false;
         message.allowMockClients = false;
+        message.isBkTournament = false;
+        message.beatKhanaTournamentGuid = "";
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings>(this, message, value);
         return message;
@@ -2375,6 +2631,12 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
                     break;
                 case /* bool allow_mock_clients */ 15:
                     message.allowMockClients = reader.bool();
+                    break;
+                case /* bool is_bk_tournament */ 16:
+                    message.isBkTournament = reader.bool();
+                    break;
+                case /* string beat_khana_tournament_guid */ 17:
+                    message.beatKhanaTournamentGuid = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2433,6 +2695,12 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         /* bool allow_mock_clients = 15; */
         if (message.allowMockClients !== false)
             writer.tag(15, WireType.Varint).bool(message.allowMockClients);
+        /* bool is_bk_tournament = 16; */
+        if (message.isBkTournament !== false)
+            writer.tag(16, WireType.Varint).bool(message.isBkTournament);
+        /* string beat_khana_tournament_guid = 17; */
+        if (message.beatKhanaTournamentGuid !== "")
+            writer.tag(17, WireType.LengthDelimited).string(message.beatKhanaTournamentGuid);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { GlobalConfiguration } from './models.js';
 import { GameplayParameters } from './models.js';
 import { LeaderboardEntry } from './models.js';
 import { CoreServer } from './models.js';
@@ -454,6 +455,18 @@ export interface Request {
          * @generated from protobuf field: proto.packets.Request.DeleteWebhook delete_webhook = 72
          */
         deleteWebhook: Request_DeleteWebhook;
+    } | {
+        oneofKind: "getGlobalConfiguration";
+        /**
+         * @generated from protobuf field: proto.packets.Request.GetGlobalConfiguration get_global_configuration = 73
+         */
+        getGlobalConfiguration: Request_GetGlobalConfiguration;
+    } | {
+        oneofKind: "updateGlobalConfiguration";
+        /**
+         * @generated from protobuf field: proto.packets.Request.UpdateGlobalConfiguration update_global_configuration = 74
+         */
+        updateGlobalConfiguration: Request_UpdateGlobalConfiguration;
     } | {
         oneofKind: undefined;
     };
@@ -1567,6 +1580,103 @@ export interface Request_DeleteWebhook {
      */
     webhookGuid: string;
 }
+/**
+ * @generated from protobuf message proto.packets.Request.GetGlobalConfiguration
+ */
+export interface Request_GetGlobalConfiguration {
+}
+/**
+ * @generated from protobuf message proto.packets.Request.UpdateGlobalConfiguration
+ */
+export interface Request_UpdateGlobalConfiguration {
+    /**
+     * @generated from protobuf field: proto.models.GlobalConfiguration configuration = 1
+     */
+    configuration?: GlobalConfiguration;
+}
+/**
+ * This message is used by the dedicated POST /bks/tournaments REST route.
+ * It is intentionally not part of the general packet oneof.
+ *
+ * @generated from protobuf message proto.packets.Request.CreateBKTournament
+ */
+export interface Request_CreateBKTournament {
+    /**
+     * @generated from protobuf field: string beat_khana_tournament_guid = 1
+     */
+    beatKhanaTournamentGuid: string;
+    /**
+     * @generated from protobuf field: proto.models.Tournament tournament = 2
+     */
+    tournament?: Tournament;
+    /**
+     * @generated from protobuf field: proto.packets.Request.CreateBKTournament.BeatKhanaUser organizer = 3
+     */
+    organizer?: Request_CreateBKTournament_BeatKhanaUser;
+    /**
+     * @generated from protobuf field: repeated string organizer_permissions = 4
+     */
+    organizerPermissions: string[];
+    /**
+     * @generated from protobuf field: repeated proto.models.Role roles = 5
+     */
+    roles: Role[];
+    /**
+     * @generated from protobuf field: repeated proto.packets.Request.CreateBKTournament.AuthorizedUser authorized_users = 6
+     */
+    authorizedUsers: Request_CreateBKTournament_AuthorizedUser[];
+    /**
+     * @generated from protobuf field: repeated proto.packets.Request.CreateBKTournament.WebhookRegistration webhooks = 7
+     */
+    webhooks: Request_CreateBKTournament_WebhookRegistration[];
+}
+/**
+ * @generated from protobuf message proto.packets.Request.CreateBKTournament.BeatKhanaUser
+ */
+export interface Request_CreateBKTournament_BeatKhanaUser {
+    /**
+     * @generated from protobuf field: string discord_id = 1
+     */
+    discordId: string;
+    /**
+     * @generated from protobuf field: string preferred_name = 2
+     */
+    preferredName: string;
+    /**
+     * @generated from protobuf field: string avatar_url = 3
+     */
+    avatarUrl: string;
+}
+/**
+ * @generated from protobuf message proto.packets.Request.CreateBKTournament.AuthorizedUser
+ */
+export interface Request_CreateBKTournament_AuthorizedUser {
+    /**
+     * @generated from protobuf field: proto.packets.Request.CreateBKTournament.BeatKhanaUser user = 1
+     */
+    user?: Request_CreateBKTournament_BeatKhanaUser;
+    /**
+     * @generated from protobuf field: repeated string role_ids = 2
+     */
+    roleIds: string[];
+}
+/**
+ * @generated from protobuf message proto.packets.Request.CreateBKTournament.WebhookRegistration
+ */
+export interface Request_CreateBKTournament_WebhookRegistration {
+    /**
+     * @generated from protobuf field: string url = 1
+     */
+    url: string;
+    /**
+     * @generated from protobuf field: int64 triggers = 2
+     */
+    triggers: bigint;
+    /**
+     * @generated from protobuf field: string signing_secret = 3
+     */
+    signingSecret: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Request$Type extends MessageType<Request> {
     constructor() {
@@ -1640,7 +1750,9 @@ class Request$Type extends MessageType<Request> {
             { no: 69, name: "get_webhooks", kind: "message", oneof: "type", T: () => Request_GetWebhooks },
             { no: 70, name: "create_webhook", kind: "message", oneof: "type", T: () => Request_CreateWebhook },
             { no: 71, name: "update_webhook", kind: "message", oneof: "type", T: () => Request_UpdateWebhook },
-            { no: 72, name: "delete_webhook", kind: "message", oneof: "type", T: () => Request_DeleteWebhook }
+            { no: 72, name: "delete_webhook", kind: "message", oneof: "type", T: () => Request_DeleteWebhook },
+            { no: 73, name: "get_global_configuration", kind: "message", oneof: "type", T: () => Request_GetGlobalConfiguration },
+            { no: 74, name: "update_global_configuration", kind: "message", oneof: "type", T: () => Request_UpdateGlobalConfiguration }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -2075,6 +2187,18 @@ class Request$Type extends MessageType<Request> {
                         deleteWebhook: Request_DeleteWebhook.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).deleteWebhook)
                     };
                     break;
+                case /* proto.packets.Request.GetGlobalConfiguration get_global_configuration */ 73:
+                    message.type = {
+                        oneofKind: "getGlobalConfiguration",
+                        getGlobalConfiguration: Request_GetGlobalConfiguration.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).getGlobalConfiguration)
+                    };
+                    break;
+                case /* proto.packets.Request.UpdateGlobalConfiguration update_global_configuration */ 74:
+                    message.type = {
+                        oneofKind: "updateGlobalConfiguration",
+                        updateGlobalConfiguration: Request_UpdateGlobalConfiguration.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).updateGlobalConfiguration)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2297,6 +2421,12 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.DeleteWebhook delete_webhook = 72; */
         if (message.type.oneofKind === "deleteWebhook")
             Request_DeleteWebhook.internalBinaryWrite(message.type.deleteWebhook, writer.tag(72, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.GetGlobalConfiguration get_global_configuration = 73; */
+        if (message.type.oneofKind === "getGlobalConfiguration")
+            Request_GetGlobalConfiguration.internalBinaryWrite(message.type.getGlobalConfiguration, writer.tag(73, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.UpdateGlobalConfiguration update_global_configuration = 74; */
+        if (message.type.oneofKind === "updateGlobalConfiguration")
+            Request_UpdateGlobalConfiguration.internalBinaryWrite(message.type.updateGlobalConfiguration, writer.tag(74, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -6532,3 +6662,360 @@ class Request_DeleteWebhook$Type extends MessageType<Request_DeleteWebhook> {
  * @generated MessageType for protobuf message proto.packets.Request.DeleteWebhook
  */
 export const Request_DeleteWebhook = new Request_DeleteWebhook$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_GetGlobalConfiguration$Type extends MessageType<Request_GetGlobalConfiguration> {
+    constructor() {
+        super("proto.packets.Request.GetGlobalConfiguration", []);
+    }
+    create(value?: PartialMessage<Request_GetGlobalConfiguration>): Request_GetGlobalConfiguration {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<Request_GetGlobalConfiguration>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_GetGlobalConfiguration): Request_GetGlobalConfiguration {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_GetGlobalConfiguration, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.GetGlobalConfiguration
+ */
+export const Request_GetGlobalConfiguration = new Request_GetGlobalConfiguration$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_UpdateGlobalConfiguration$Type extends MessageType<Request_UpdateGlobalConfiguration> {
+    constructor() {
+        super("proto.packets.Request.UpdateGlobalConfiguration", [
+            { no: 1, name: "configuration", kind: "message", T: () => GlobalConfiguration }
+        ]);
+    }
+    create(value?: PartialMessage<Request_UpdateGlobalConfiguration>): Request_UpdateGlobalConfiguration {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<Request_UpdateGlobalConfiguration>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_UpdateGlobalConfiguration): Request_UpdateGlobalConfiguration {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* proto.models.GlobalConfiguration configuration */ 1:
+                    message.configuration = GlobalConfiguration.internalBinaryRead(reader, reader.uint32(), options, message.configuration);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_UpdateGlobalConfiguration, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* proto.models.GlobalConfiguration configuration = 1; */
+        if (message.configuration)
+            GlobalConfiguration.internalBinaryWrite(message.configuration, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.UpdateGlobalConfiguration
+ */
+export const Request_UpdateGlobalConfiguration = new Request_UpdateGlobalConfiguration$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_CreateBKTournament$Type extends MessageType<Request_CreateBKTournament> {
+    constructor() {
+        super("proto.packets.Request.CreateBKTournament", [
+            { no: 1, name: "beat_khana_tournament_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "tournament", kind: "message", T: () => Tournament },
+            { no: 3, name: "organizer", kind: "message", T: () => Request_CreateBKTournament_BeatKhanaUser },
+            { no: 4, name: "organizer_permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "roles", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Role },
+            { no: 6, name: "authorized_users", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Request_CreateBKTournament_AuthorizedUser },
+            { no: 7, name: "webhooks", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Request_CreateBKTournament_WebhookRegistration }
+        ]);
+    }
+    create(value?: PartialMessage<Request_CreateBKTournament>): Request_CreateBKTournament {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.beatKhanaTournamentGuid = "";
+        message.organizerPermissions = [];
+        message.roles = [];
+        message.authorizedUsers = [];
+        message.webhooks = [];
+        if (value !== undefined)
+            reflectionMergePartial<Request_CreateBKTournament>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_CreateBKTournament): Request_CreateBKTournament {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string beat_khana_tournament_guid */ 1:
+                    message.beatKhanaTournamentGuid = reader.string();
+                    break;
+                case /* proto.models.Tournament tournament */ 2:
+                    message.tournament = Tournament.internalBinaryRead(reader, reader.uint32(), options, message.tournament);
+                    break;
+                case /* proto.packets.Request.CreateBKTournament.BeatKhanaUser organizer */ 3:
+                    message.organizer = Request_CreateBKTournament_BeatKhanaUser.internalBinaryRead(reader, reader.uint32(), options, message.organizer);
+                    break;
+                case /* repeated string organizer_permissions */ 4:
+                    message.organizerPermissions.push(reader.string());
+                    break;
+                case /* repeated proto.models.Role roles */ 5:
+                    message.roles.push(Role.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated proto.packets.Request.CreateBKTournament.AuthorizedUser authorized_users */ 6:
+                    message.authorizedUsers.push(Request_CreateBKTournament_AuthorizedUser.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated proto.packets.Request.CreateBKTournament.WebhookRegistration webhooks */ 7:
+                    message.webhooks.push(Request_CreateBKTournament_WebhookRegistration.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_CreateBKTournament, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string beat_khana_tournament_guid = 1; */
+        if (message.beatKhanaTournamentGuid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.beatKhanaTournamentGuid);
+        /* proto.models.Tournament tournament = 2; */
+        if (message.tournament)
+            Tournament.internalBinaryWrite(message.tournament, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.CreateBKTournament.BeatKhanaUser organizer = 3; */
+        if (message.organizer)
+            Request_CreateBKTournament_BeatKhanaUser.internalBinaryWrite(message.organizer, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* repeated string organizer_permissions = 4; */
+        for (let i = 0; i < message.organizerPermissions.length; i++)
+            writer.tag(4, WireType.LengthDelimited).string(message.organizerPermissions[i]);
+        /* repeated proto.models.Role roles = 5; */
+        for (let i = 0; i < message.roles.length; i++)
+            Role.internalBinaryWrite(message.roles[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* repeated proto.packets.Request.CreateBKTournament.AuthorizedUser authorized_users = 6; */
+        for (let i = 0; i < message.authorizedUsers.length; i++)
+            Request_CreateBKTournament_AuthorizedUser.internalBinaryWrite(message.authorizedUsers[i], writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* repeated proto.packets.Request.CreateBKTournament.WebhookRegistration webhooks = 7; */
+        for (let i = 0; i < message.webhooks.length; i++)
+            Request_CreateBKTournament_WebhookRegistration.internalBinaryWrite(message.webhooks[i], writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.CreateBKTournament
+ */
+export const Request_CreateBKTournament = new Request_CreateBKTournament$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_CreateBKTournament_BeatKhanaUser$Type extends MessageType<Request_CreateBKTournament_BeatKhanaUser> {
+    constructor() {
+        super("proto.packets.Request.CreateBKTournament.BeatKhanaUser", [
+            { no: 1, name: "discord_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "preferred_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "avatar_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_CreateBKTournament_BeatKhanaUser>): Request_CreateBKTournament_BeatKhanaUser {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.discordId = "";
+        message.preferredName = "";
+        message.avatarUrl = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_CreateBKTournament_BeatKhanaUser>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_CreateBKTournament_BeatKhanaUser): Request_CreateBKTournament_BeatKhanaUser {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string discord_id */ 1:
+                    message.discordId = reader.string();
+                    break;
+                case /* string preferred_name */ 2:
+                    message.preferredName = reader.string();
+                    break;
+                case /* string avatar_url */ 3:
+                    message.avatarUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_CreateBKTournament_BeatKhanaUser, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string discord_id = 1; */
+        if (message.discordId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.discordId);
+        /* string preferred_name = 2; */
+        if (message.preferredName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.preferredName);
+        /* string avatar_url = 3; */
+        if (message.avatarUrl !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.avatarUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.CreateBKTournament.BeatKhanaUser
+ */
+export const Request_CreateBKTournament_BeatKhanaUser = new Request_CreateBKTournament_BeatKhanaUser$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_CreateBKTournament_AuthorizedUser$Type extends MessageType<Request_CreateBKTournament_AuthorizedUser> {
+    constructor() {
+        super("proto.packets.Request.CreateBKTournament.AuthorizedUser", [
+            { no: 1, name: "user", kind: "message", T: () => Request_CreateBKTournament_BeatKhanaUser },
+            { no: 2, name: "role_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_CreateBKTournament_AuthorizedUser>): Request_CreateBKTournament_AuthorizedUser {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.roleIds = [];
+        if (value !== undefined)
+            reflectionMergePartial<Request_CreateBKTournament_AuthorizedUser>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_CreateBKTournament_AuthorizedUser): Request_CreateBKTournament_AuthorizedUser {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* proto.packets.Request.CreateBKTournament.BeatKhanaUser user */ 1:
+                    message.user = Request_CreateBKTournament_BeatKhanaUser.internalBinaryRead(reader, reader.uint32(), options, message.user);
+                    break;
+                case /* repeated string role_ids */ 2:
+                    message.roleIds.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_CreateBKTournament_AuthorizedUser, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* proto.packets.Request.CreateBKTournament.BeatKhanaUser user = 1; */
+        if (message.user)
+            Request_CreateBKTournament_BeatKhanaUser.internalBinaryWrite(message.user, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated string role_ids = 2; */
+        for (let i = 0; i < message.roleIds.length; i++)
+            writer.tag(2, WireType.LengthDelimited).string(message.roleIds[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.CreateBKTournament.AuthorizedUser
+ */
+export const Request_CreateBKTournament_AuthorizedUser = new Request_CreateBKTournament_AuthorizedUser$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_CreateBKTournament_WebhookRegistration$Type extends MessageType<Request_CreateBKTournament_WebhookRegistration> {
+    constructor() {
+        super("proto.packets.Request.CreateBKTournament.WebhookRegistration", [
+            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "triggers", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "signing_secret", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_CreateBKTournament_WebhookRegistration>): Request_CreateBKTournament_WebhookRegistration {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.url = "";
+        message.triggers = 0n;
+        message.signingSecret = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_CreateBKTournament_WebhookRegistration>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_CreateBKTournament_WebhookRegistration): Request_CreateBKTournament_WebhookRegistration {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string url */ 1:
+                    message.url = reader.string();
+                    break;
+                case /* int64 triggers */ 2:
+                    message.triggers = reader.int64().toBigInt();
+                    break;
+                case /* string signing_secret */ 3:
+                    message.signingSecret = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_CreateBKTournament_WebhookRegistration, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string url = 1; */
+        if (message.url !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.url);
+        /* int64 triggers = 2; */
+        if (message.triggers !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.triggers);
+        /* string signing_secret = 3; */
+        if (message.signingSecret !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.signingSecret);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.CreateBKTournament.WebhookRegistration
+ */
+export const Request_CreateBKTournament_WebhookRegistration = new Request_CreateBKTournament_WebhookRegistration$Type();

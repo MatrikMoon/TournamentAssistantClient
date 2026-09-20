@@ -468,6 +468,12 @@ export interface Request {
          */
         updateGlobalConfiguration: Request_UpdateGlobalConfiguration;
     } | {
+        oneofKind: "setBkTournamentLink";
+        /**
+         * @generated from protobuf field: proto.packets.Request.SetBKTournamentLink set_bk_tournament_link = 75
+         */
+        setBkTournamentLink: Request_SetBKTournamentLink;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -1595,6 +1601,26 @@ export interface Request_UpdateGlobalConfiguration {
     configuration?: GlobalConfiguration;
 }
 /**
+ * Links or unlinks an existing TournamentAssistant tournament to BeatKhana.
+ * This operation is restricted to full-access global administrators.
+ *
+ * @generated from protobuf message proto.packets.Request.SetBKTournamentLink
+ */
+export interface Request_SetBKTournamentLink {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: bool is_bk_tournament = 2
+     */
+    isBkTournament: boolean;
+    /**
+     * @generated from protobuf field: string beat_khana_tournament_guid = 3
+     */
+    beatKhanaTournamentGuid: string;
+}
+/**
  * This message is used by the dedicated POST /bks/tournaments REST route.
  * It is intentionally not part of the general packet oneof.
  *
@@ -1752,7 +1778,8 @@ class Request$Type extends MessageType<Request> {
             { no: 71, name: "update_webhook", kind: "message", oneof: "type", T: () => Request_UpdateWebhook },
             { no: 72, name: "delete_webhook", kind: "message", oneof: "type", T: () => Request_DeleteWebhook },
             { no: 73, name: "get_global_configuration", kind: "message", oneof: "type", T: () => Request_GetGlobalConfiguration },
-            { no: 74, name: "update_global_configuration", kind: "message", oneof: "type", T: () => Request_UpdateGlobalConfiguration }
+            { no: 74, name: "update_global_configuration", kind: "message", oneof: "type", T: () => Request_UpdateGlobalConfiguration },
+            { no: 75, name: "set_bk_tournament_link", kind: "message", oneof: "type", T: () => Request_SetBKTournamentLink }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
@@ -2199,6 +2226,12 @@ class Request$Type extends MessageType<Request> {
                         updateGlobalConfiguration: Request_UpdateGlobalConfiguration.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).updateGlobalConfiguration)
                     };
                     break;
+                case /* proto.packets.Request.SetBKTournamentLink set_bk_tournament_link */ 75:
+                    message.type = {
+                        oneofKind: "setBkTournamentLink",
+                        setBkTournamentLink: Request_SetBKTournamentLink.internalBinaryRead(reader, reader.uint32(), options, (message.type as any).setBkTournamentLink)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2427,6 +2460,9 @@ class Request$Type extends MessageType<Request> {
         /* proto.packets.Request.UpdateGlobalConfiguration update_global_configuration = 74; */
         if (message.type.oneofKind === "updateGlobalConfiguration")
             Request_UpdateGlobalConfiguration.internalBinaryWrite(message.type.updateGlobalConfiguration, writer.tag(74, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Request.SetBKTournamentLink set_bk_tournament_link = 75; */
+        if (message.type.oneofKind === "setBkTournamentLink")
+            Request_SetBKTournamentLink.internalBinaryWrite(message.type.setBkTournamentLink, writer.tag(75, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -6746,6 +6782,69 @@ class Request_UpdateGlobalConfiguration$Type extends MessageType<Request_UpdateG
  * @generated MessageType for protobuf message proto.packets.Request.UpdateGlobalConfiguration
  */
 export const Request_UpdateGlobalConfiguration = new Request_UpdateGlobalConfiguration$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Request_SetBKTournamentLink$Type extends MessageType<Request_SetBKTournamentLink> {
+    constructor() {
+        super("proto.packets.Request.SetBKTournamentLink", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "is_bk_tournament", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 3, name: "beat_khana_tournament_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Request_SetBKTournamentLink>): Request_SetBKTournamentLink {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.isBkTournament = false;
+        message.beatKhanaTournamentGuid = "";
+        if (value !== undefined)
+            reflectionMergePartial<Request_SetBKTournamentLink>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Request_SetBKTournamentLink): Request_SetBKTournamentLink {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* bool is_bk_tournament */ 2:
+                    message.isBkTournament = reader.bool();
+                    break;
+                case /* string beat_khana_tournament_guid */ 3:
+                    message.beatKhanaTournamentGuid = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Request_SetBKTournamentLink, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* bool is_bk_tournament = 2; */
+        if (message.isBkTournament !== false)
+            writer.tag(2, WireType.Varint).bool(message.isBkTournament);
+        /* string beat_khana_tournament_guid = 3; */
+        if (message.beatKhanaTournamentGuid !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.beatKhanaTournamentGuid);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Request.SetBKTournamentLink
+ */
+export const Request_SetBKTournamentLink = new Request_SetBKTournamentLink$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Request_CreateBKTournament$Type extends MessageType<Request_CreateBKTournament> {
     constructor() {

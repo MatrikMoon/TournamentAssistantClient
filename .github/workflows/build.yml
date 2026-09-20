@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [codex/refresh-pr-1]
+    branches: [master]
   pull_request:
 
 jobs:

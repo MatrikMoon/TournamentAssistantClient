@@ -14,6 +14,7 @@ import {
   RealtimeScore,
   Role,
   GlobalConfiguration,
+  ReplayRetention,
 } from "./models/models.js";
 import { Packet } from "./models/packets.js";
 import { StateManager } from "./state-manager.js";
@@ -21,7 +22,7 @@ import { Response, Response_Connect, Response_ResponseType } from "./models/resp
 import { Request, Request_LoadSong, Request_ShowPrompt_PromptOption } from "./models/requests.js";
 import { Command, Command_ModifyGameplay_Modifier } from "./models/commands.js";
 import { masterAddress, masterApiPort, versionCode } from "./constants.js";
-import { Channel, Push_QualifierScoreSubmitted, Push_SongFinished } from "./models/index.js";
+import { Channel, Push_QualifierScoreSubmitted, Push_ReplaySubmitted, Push_SongFinished } from "./models/index.js";
 import WebSocket from "ws";
 import { Timestamp } from "./models/google/protobuf/timestamp.js";
 
@@ -50,6 +51,7 @@ type TAClientEvents = {
   songFinished: Push_SongFinished;
   realtimeScore: RealtimeScore;
   qualifierScoreSubmitted: Push_QualifierScoreSubmitted;
+  replaySubmitted: Push_ReplaySubmitted;
 
   responseReceived: ResponseFromUser;
 
@@ -809,6 +811,8 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
         this.emit("realtimeScore", push.data.realtimeScore);
       } else if (push.data.oneofKind === "qualifierScoreSubmtited") {
         this.emit("qualifierScoreSubmitted", push.data.qualifierScoreSubmtited);
+      } else if (push.data.oneofKind === "replaySubmitted") {
+        this.emit("replaySubmitted", push.data.replaySubmitted);
       }
     }
   };
@@ -1418,6 +1422,10 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
               enableTeams,
               enablePools,
               enableReplayStreaming,
+              enableReplayRecording: false,
+              replayRetention: ReplayRetention.ThirtyDays,
+              updatedAt: 0n, // set by the server
+              autoHideAt: 0n, // set by the server
               allowMockClients,
               isBkTournament: false,
               beatKhanaTournamentGuid: "",
@@ -1537,6 +1545,76 @@ export class TAClient extends CustomEventEmitter<TAClientEvents> {
     }
 
     return response[0].response;
+  };
+
+  public setTournamentEnableReplayRecording = async (tournamentId: string, enableReplayRecording: boolean) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentEnableReplayRecording",
+        setTournamentEnableReplayRecording: {
+          tournamentId,
+          enableReplayRecording,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  public setTournamentReplayRetention = async (tournamentId: string, replayRetention: ReplayRetention) => {
+    const response = await this.sendRequest({
+      type: {
+        oneofKind: "setTournamentReplayRetention",
+        setTournamentReplayRetention: {
+          tournamentId,
+          replayRetention,
+        },
+      },
+    });
+
+    if (response.length <= 0) {
+      throw new Error("Server timed out");
+    }
+
+    return response[0].response;
+  };
+
+  // Pages start at 0, the newest replays come first
+  public getReplays = async (tournamentId: string, page: number, pageSize: number) => {
+    const response = await this.sendRequest({
+      type: { oneofKind: "getReplays", getReplays: { tournamentId, page, pageSize } },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  public deleteReplay = async (tournamentId: string, replayGuid: string) => {
+    const response = await this.sendRequest({
+      type: { oneofKind: "deleteReplay", deleteReplay: { tournamentId, replayGuid } },
+    });
+
+    if (response.length <= 0) throw new Error("Server timed out");
+    return response[0].response;
+  };
+
+  // Replays can be larger than a packet, so they are downloaded over the REST API with the same token
+  public downloadReplay = async (downloadUrl: string): Promise<Uint8Array> => {
+    const response = await fetch(downloadUrl, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Download failed: " + (await response.text()));
+    }
+
+    return new Uint8Array(await response.arrayBuffer());
   };
 
   public setTournamentAllowMockClients = async (tournamentId: string, allowMockClients: boolean) => {

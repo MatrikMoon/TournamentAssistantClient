@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { ReplayRecording } from './models.js';
 import { GlobalConfiguration } from './models.js';
 import { Webhook } from './models.js';
 import { LeaderboardEntry } from './models.js';
@@ -258,6 +259,24 @@ export interface Response {
          * @generated from protobuf field: proto.packets.Response.SetBKTournamentLink set_bk_tournament_link = 39
          */
         setBkTournamentLink: Response_SetBKTournamentLink;
+    } | {
+        oneofKind: "submitReplay";
+        /**
+         * @generated from protobuf field: proto.packets.Response.SubmitReplay submit_replay = 40
+         */
+        submitReplay: Response_SubmitReplay;
+    } | {
+        oneofKind: "getReplays";
+        /**
+         * @generated from protobuf field: proto.packets.Response.GetReplays get_replays = 41
+         */
+        getReplays: Response_GetReplays;
+    } | {
+        oneofKind: "deleteReplay";
+        /**
+         * @generated from protobuf field: proto.packets.Response.DeleteReplay delete_replay = 42
+         */
+        deleteReplay: Response_DeleteReplay;
     } | {
         oneofKind: undefined;
     };
@@ -791,6 +810,61 @@ export interface Response_SetBKTournamentLink {
     message: string;
 }
 /**
+ * @generated from protobuf message proto.packets.Response.SubmitReplay
+ */
+export interface Response_SubmitReplay {
+    /**
+     * @generated from protobuf field: string message = 1
+     */
+    message: string;
+    /**
+     * Only set once the last chunk has arrived
+     *
+     * @generated from protobuf field: proto.models.ReplayRecording replay = 2
+     */
+    replay?: ReplayRecording;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.GetReplays
+ */
+export interface Response_GetReplays {
+    /**
+     * @generated from protobuf field: repeated proto.models.ReplayRecording replays = 1
+     */
+    replays: ReplayRecording[];
+    /**
+     * @generated from protobuf field: int32 total_count = 2
+     */
+    totalCount: number;
+    /**
+     * @generated from protobuf field: int32 page = 3
+     */
+    page: number;
+    /**
+     * @generated from protobuf field: int32 page_size = 4
+     */
+    pageSize: number;
+    /**
+     * False when the server has no replay storage or cannot reach it
+     *
+     * @generated from protobuf field: bool storage_available = 5
+     */
+    storageAvailable: boolean;
+}
+/**
+ * @generated from protobuf message proto.packets.Response.DeleteReplay
+ */
+export interface Response_DeleteReplay {
+    /**
+     * @generated from protobuf field: string replay_guid = 1
+     */
+    replayGuid: string;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
  * @generated from protobuf message proto.packets.Response.CreateBKTournament
  */
 export interface Response_CreateBKTournament {
@@ -858,7 +932,10 @@ class Response$Type extends MessageType<Response> {
             { no: 36, name: "get_global_configuration", kind: "message", oneof: "details", T: () => Response_GetGlobalConfiguration },
             { no: 37, name: "update_global_configuration", kind: "message", oneof: "details", T: () => Response_UpdateGlobalConfiguration },
             { no: 38, name: "create_bk_tournament", kind: "message", oneof: "details", T: () => Response_CreateBKTournament },
-            { no: 39, name: "set_bk_tournament_link", kind: "message", oneof: "details", T: () => Response_SetBKTournamentLink }
+            { no: 39, name: "set_bk_tournament_link", kind: "message", oneof: "details", T: () => Response_SetBKTournamentLink },
+            { no: 40, name: "submit_replay", kind: "message", oneof: "details", T: () => Response_SubmitReplay },
+            { no: 41, name: "get_replays", kind: "message", oneof: "details", T: () => Response_GetReplays },
+            { no: 42, name: "delete_replay", kind: "message", oneof: "details", T: () => Response_DeleteReplay }
         ]);
     }
     create(value?: PartialMessage<Response>): Response {
@@ -1103,6 +1180,24 @@ class Response$Type extends MessageType<Response> {
                         setBkTournamentLink: Response_SetBKTournamentLink.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).setBkTournamentLink)
                     };
                     break;
+                case /* proto.packets.Response.SubmitReplay submit_replay */ 40:
+                    message.details = {
+                        oneofKind: "submitReplay",
+                        submitReplay: Response_SubmitReplay.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).submitReplay)
+                    };
+                    break;
+                case /* proto.packets.Response.GetReplays get_replays */ 41:
+                    message.details = {
+                        oneofKind: "getReplays",
+                        getReplays: Response_GetReplays.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).getReplays)
+                    };
+                    break;
+                case /* proto.packets.Response.DeleteReplay delete_replay */ 42:
+                    message.details = {
+                        oneofKind: "deleteReplay",
+                        deleteReplay: Response_DeleteReplay.internalBinaryRead(reader, reader.uint32(), options, (message.details as any).deleteReplay)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1232,6 +1327,15 @@ class Response$Type extends MessageType<Response> {
         /* proto.packets.Response.SetBKTournamentLink set_bk_tournament_link = 39; */
         if (message.details.oneofKind === "setBkTournamentLink")
             Response_SetBKTournamentLink.internalBinaryWrite(message.details.setBkTournamentLink, writer.tag(39, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.SubmitReplay submit_replay = 40; */
+        if (message.details.oneofKind === "submitReplay")
+            Response_SubmitReplay.internalBinaryWrite(message.details.submitReplay, writer.tag(40, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.GetReplays get_replays = 41; */
+        if (message.details.oneofKind === "getReplays")
+            Response_GetReplays.internalBinaryWrite(message.details.getReplays, writer.tag(41, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Response.DeleteReplay delete_replay = 42; */
+        if (message.details.oneofKind === "deleteReplay")
+            Response_DeleteReplay.internalBinaryWrite(message.details.deleteReplay, writer.tag(42, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3338,6 +3442,194 @@ class Response_SetBKTournamentLink$Type extends MessageType<Response_SetBKTourna
  * @generated MessageType for protobuf message proto.packets.Response.SetBKTournamentLink
  */
 export const Response_SetBKTournamentLink = new Response_SetBKTournamentLink$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_SubmitReplay$Type extends MessageType<Response_SubmitReplay> {
+    constructor() {
+        super("proto.packets.Response.SubmitReplay", [
+            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "replay", kind: "message", T: () => ReplayRecording }
+        ]);
+    }
+    create(value?: PartialMessage<Response_SubmitReplay>): Response_SubmitReplay {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_SubmitReplay>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_SubmitReplay): Response_SubmitReplay {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string message */ 1:
+                    message.message = reader.string();
+                    break;
+                case /* proto.models.ReplayRecording replay */ 2:
+                    message.replay = ReplayRecording.internalBinaryRead(reader, reader.uint32(), options, message.replay);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_SubmitReplay, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string message = 1; */
+        if (message.message !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.message);
+        /* proto.models.ReplayRecording replay = 2; */
+        if (message.replay)
+            ReplayRecording.internalBinaryWrite(message.replay, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.SubmitReplay
+ */
+export const Response_SubmitReplay = new Response_SubmitReplay$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_GetReplays$Type extends MessageType<Response_GetReplays> {
+    constructor() {
+        super("proto.packets.Response.GetReplays", [
+            { no: 1, name: "replays", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ReplayRecording },
+            { no: 2, name: "total_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "page_size", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "storage_available", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_GetReplays>): Response_GetReplays {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.replays = [];
+        message.totalCount = 0;
+        message.page = 0;
+        message.pageSize = 0;
+        message.storageAvailable = false;
+        if (value !== undefined)
+            reflectionMergePartial<Response_GetReplays>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_GetReplays): Response_GetReplays {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated proto.models.ReplayRecording replays */ 1:
+                    message.replays.push(ReplayRecording.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* int32 total_count */ 2:
+                    message.totalCount = reader.int32();
+                    break;
+                case /* int32 page */ 3:
+                    message.page = reader.int32();
+                    break;
+                case /* int32 page_size */ 4:
+                    message.pageSize = reader.int32();
+                    break;
+                case /* bool storage_available */ 5:
+                    message.storageAvailable = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_GetReplays, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated proto.models.ReplayRecording replays = 1; */
+        for (let i = 0; i < message.replays.length; i++)
+            ReplayRecording.internalBinaryWrite(message.replays[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* int32 total_count = 2; */
+        if (message.totalCount !== 0)
+            writer.tag(2, WireType.Varint).int32(message.totalCount);
+        /* int32 page = 3; */
+        if (message.page !== 0)
+            writer.tag(3, WireType.Varint).int32(message.page);
+        /* int32 page_size = 4; */
+        if (message.pageSize !== 0)
+            writer.tag(4, WireType.Varint).int32(message.pageSize);
+        /* bool storage_available = 5; */
+        if (message.storageAvailable !== false)
+            writer.tag(5, WireType.Varint).bool(message.storageAvailable);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.GetReplays
+ */
+export const Response_GetReplays = new Response_GetReplays$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Response_DeleteReplay$Type extends MessageType<Response_DeleteReplay> {
+    constructor() {
+        super("proto.packets.Response.DeleteReplay", [
+            { no: 1, name: "replay_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Response_DeleteReplay>): Response_DeleteReplay {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.replayGuid = "";
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<Response_DeleteReplay>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Response_DeleteReplay): Response_DeleteReplay {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string replay_guid */ 1:
+                    message.replayGuid = reader.string();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Response_DeleteReplay, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string replay_guid = 1; */
+        if (message.replayGuid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.replayGuid);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Response.DeleteReplay
+ */
+export const Response_DeleteReplay = new Response_DeleteReplay$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Response_CreateBKTournament$Type extends MessageType<Response_CreateBKTournament> {
     constructor() {

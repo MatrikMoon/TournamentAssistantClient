@@ -760,9 +760,13 @@ export enum Webhook_Trigger {
      */
     SongFinished = 4096,
     /**
-     * @generated from protobuf enum value: All = 8191;
+     * @generated from protobuf enum value: ReplaySubmitted = 8192;
      */
-    All = 8191
+    ReplaySubmitted = 8192,
+    /**
+     * @generated from protobuf enum value: All = 16383;
+     */
+    All = 16383
 }
 /**
  * @generated from protobuf message proto.models.EndpointAccess
@@ -825,6 +829,73 @@ export interface GlobalConfiguration {
      * @generated from protobuf field: repeated proto.models.EndpointAccess endpoints = 3
      */
     endpoints: EndpointAccess[];
+}
+/**
+ * A .tarf replay a player submitted to the server
+ *
+ * @generated from protobuf message proto.models.ReplayRecording
+ */
+export interface ReplayRecording {
+    /**
+     * @generated from protobuf field: string guid = 1
+     */
+    guid: string;
+    /**
+     * @generated from protobuf field: string tournament_id = 2
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: string match_id = 3
+     */
+    matchId: string;
+    /**
+     * @generated from protobuf field: string file_name = 4
+     */
+    fileName: string;
+    /**
+     * @generated from protobuf field: string platform_id = 5
+     */
+    platformId: string;
+    /**
+     * @generated from protobuf field: string player_name = 6
+     */
+    playerName: string;
+    /**
+     * @generated from protobuf field: string map_hash = 7
+     */
+    mapHash: string;
+    /**
+     * @generated from protobuf field: string characteristic = 8
+     */
+    characteristic: string;
+    /**
+     * @generated from protobuf field: int32 difficulty = 9
+     */
+    difficulty: number;
+    /**
+     * Unix times in milliseconds
+     *
+     * @generated from protobuf field: int64 recorded_at = 10
+     */
+    recordedAt: bigint;
+    /**
+     * @generated from protobuf field: int64 submitted_at = 11
+     */
+    submittedAt: bigint;
+    /**
+     * @generated from protobuf field: int64 expires_at = 12
+     */
+    expiresAt: bigint;
+    /**
+     * @generated from protobuf field: int64 size = 13
+     */
+    size: bigint;
+    /**
+     * Empty when the replay was not stored, for example when replay storage is unavailable
+     *
+     * @generated from protobuf field: string download_url = 14
+     */
+    downloadUrl: string;
 }
 /**
  * @generated from protobuf message proto.models.Tournament
@@ -927,6 +998,26 @@ export interface Tournament_TournamentSettings {
      * @generated from protobuf field: string beat_khana_tournament_guid = 17
      */
     beatKhanaTournamentGuid: string;
+    /**
+     * @generated from protobuf field: bool enable_replay_recording = 18
+     */
+    enableReplayRecording: boolean;
+    /**
+     * @generated from protobuf field: proto.models.ReplayRetention replay_retention = 19
+     */
+    replayRetention: ReplayRetention;
+    /**
+     * Unix time in milliseconds of the last change to the tournament
+     *
+     * @generated from protobuf field: int64 updated_at = 20
+     */
+    updatedAt: bigint;
+    /**
+     * Unix time in milliseconds when a visible tournament gets hidden for being inactive, 0 when it is already hidden
+     *
+     * @generated from protobuf field: int64 auto_hide_at = 21
+     */
+    autoHideAt: bigint;
 }
 /**
  * @generated from protobuf message proto.models.Tournament.TournamentSettings.Pool
@@ -1141,6 +1232,29 @@ export interface ScoreTrackerHand {
      * @generated from protobuf field: repeated float avg_cut = 4
      */
     avgCut: number[];
+}
+/**
+ * How long a recorded replay is kept before it expires
+ *
+ * @generated from protobuf enum proto.models.ReplayRetention
+ */
+export enum ReplayRetention {
+    /**
+     * @generated from protobuf enum value: ThirtyDays = 0;
+     */
+    ThirtyDays = 0,
+    /**
+     * @generated from protobuf enum value: NinetyDays = 1;
+     */
+    NinetyDays = 1,
+    /**
+     * @generated from protobuf enum value: OneYear = 2;
+     */
+    OneYear = 2,
+    /**
+     * @generated from protobuf enum value: ThreeYears = 3;
+     */
+    ThreeYears = 3
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Characteristic$Type extends MessageType<Characteristic> {
@@ -2452,6 +2566,157 @@ class GlobalConfiguration$Type extends MessageType<GlobalConfiguration> {
  */
 export const GlobalConfiguration = new GlobalConfiguration$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class ReplayRecording$Type extends MessageType<ReplayRecording> {
+    constructor() {
+        super("proto.models.ReplayRecording", [
+            { no: 1, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "match_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "file_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "platform_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "player_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "map_hash", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "characteristic", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "difficulty", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 10, name: "recorded_at", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 11, name: "submitted_at", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 12, name: "expires_at", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 13, name: "size", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 14, name: "download_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ReplayRecording>): ReplayRecording {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.guid = "";
+        message.tournamentId = "";
+        message.matchId = "";
+        message.fileName = "";
+        message.platformId = "";
+        message.playerName = "";
+        message.mapHash = "";
+        message.characteristic = "";
+        message.difficulty = 0;
+        message.recordedAt = 0n;
+        message.submittedAt = 0n;
+        message.expiresAt = 0n;
+        message.size = 0n;
+        message.downloadUrl = "";
+        if (value !== undefined)
+            reflectionMergePartial<ReplayRecording>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ReplayRecording): ReplayRecording {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string guid */ 1:
+                    message.guid = reader.string();
+                    break;
+                case /* string tournament_id */ 2:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* string match_id */ 3:
+                    message.matchId = reader.string();
+                    break;
+                case /* string file_name */ 4:
+                    message.fileName = reader.string();
+                    break;
+                case /* string platform_id */ 5:
+                    message.platformId = reader.string();
+                    break;
+                case /* string player_name */ 6:
+                    message.playerName = reader.string();
+                    break;
+                case /* string map_hash */ 7:
+                    message.mapHash = reader.string();
+                    break;
+                case /* string characteristic */ 8:
+                    message.characteristic = reader.string();
+                    break;
+                case /* int32 difficulty */ 9:
+                    message.difficulty = reader.int32();
+                    break;
+                case /* int64 recorded_at */ 10:
+                    message.recordedAt = reader.int64().toBigInt();
+                    break;
+                case /* int64 submitted_at */ 11:
+                    message.submittedAt = reader.int64().toBigInt();
+                    break;
+                case /* int64 expires_at */ 12:
+                    message.expiresAt = reader.int64().toBigInt();
+                    break;
+                case /* int64 size */ 13:
+                    message.size = reader.int64().toBigInt();
+                    break;
+                case /* string download_url */ 14:
+                    message.downloadUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ReplayRecording, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string guid = 1; */
+        if (message.guid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.guid);
+        /* string tournament_id = 2; */
+        if (message.tournamentId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.tournamentId);
+        /* string match_id = 3; */
+        if (message.matchId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.matchId);
+        /* string file_name = 4; */
+        if (message.fileName !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.fileName);
+        /* string platform_id = 5; */
+        if (message.platformId !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.platformId);
+        /* string player_name = 6; */
+        if (message.playerName !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.playerName);
+        /* string map_hash = 7; */
+        if (message.mapHash !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.mapHash);
+        /* string characteristic = 8; */
+        if (message.characteristic !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.characteristic);
+        /* int32 difficulty = 9; */
+        if (message.difficulty !== 0)
+            writer.tag(9, WireType.Varint).int32(message.difficulty);
+        /* int64 recorded_at = 10; */
+        if (message.recordedAt !== 0n)
+            writer.tag(10, WireType.Varint).int64(message.recordedAt);
+        /* int64 submitted_at = 11; */
+        if (message.submittedAt !== 0n)
+            writer.tag(11, WireType.Varint).int64(message.submittedAt);
+        /* int64 expires_at = 12; */
+        if (message.expiresAt !== 0n)
+            writer.tag(12, WireType.Varint).int64(message.expiresAt);
+        /* int64 size = 13; */
+        if (message.size !== 0n)
+            writer.tag(13, WireType.Varint).int64(message.size);
+        /* string download_url = 14; */
+        if (message.downloadUrl !== "")
+            writer.tag(14, WireType.LengthDelimited).string(message.downloadUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.models.ReplayRecording
+ */
+export const ReplayRecording = new ReplayRecording$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Tournament$Type extends MessageType<Tournament> {
     constructor() {
         super("proto.models.Tournament", [
@@ -2556,7 +2821,11 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
             { no: 14, name: "enable_replay_streaming", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 15, name: "allow_mock_clients", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 16, name: "is_bk_tournament", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 17, name: "beat_khana_tournament_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 17, name: "beat_khana_tournament_guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 18, name: "enable_replay_recording", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 19, name: "replay_retention", kind: "enum", T: () => ["proto.models.ReplayRetention", ReplayRetention] },
+            { no: 20, name: "updated_at", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 21, name: "auto_hide_at", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
     }
     create(value?: PartialMessage<Tournament_TournamentSettings>): Tournament_TournamentSettings {
@@ -2578,6 +2847,10 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         message.allowMockClients = false;
         message.isBkTournament = false;
         message.beatKhanaTournamentGuid = "";
+        message.enableReplayRecording = false;
+        message.replayRetention = 0;
+        message.updatedAt = 0n;
+        message.autoHideAt = 0n;
         if (value !== undefined)
             reflectionMergePartial<Tournament_TournamentSettings>(this, message, value);
         return message;
@@ -2637,6 +2910,18 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
                     break;
                 case /* string beat_khana_tournament_guid */ 17:
                     message.beatKhanaTournamentGuid = reader.string();
+                    break;
+                case /* bool enable_replay_recording */ 18:
+                    message.enableReplayRecording = reader.bool();
+                    break;
+                case /* proto.models.ReplayRetention replay_retention */ 19:
+                    message.replayRetention = reader.int32();
+                    break;
+                case /* int64 updated_at */ 20:
+                    message.updatedAt = reader.int64().toBigInt();
+                    break;
+                case /* int64 auto_hide_at */ 21:
+                    message.autoHideAt = reader.int64().toBigInt();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2701,6 +2986,18 @@ class Tournament_TournamentSettings$Type extends MessageType<Tournament_Tourname
         /* string beat_khana_tournament_guid = 17; */
         if (message.beatKhanaTournamentGuid !== "")
             writer.tag(17, WireType.LengthDelimited).string(message.beatKhanaTournamentGuid);
+        /* bool enable_replay_recording = 18; */
+        if (message.enableReplayRecording !== false)
+            writer.tag(18, WireType.Varint).bool(message.enableReplayRecording);
+        /* proto.models.ReplayRetention replay_retention = 19; */
+        if (message.replayRetention !== 0)
+            writer.tag(19, WireType.Varint).int32(message.replayRetention);
+        /* int64 updated_at = 20; */
+        if (message.updatedAt !== 0n)
+            writer.tag(20, WireType.Varint).int64(message.updatedAt);
+        /* int64 auto_hide_at = 21; */
+        if (message.autoHideAt !== 0n)
+            writer.tag(21, WireType.Varint).int64(message.autoHideAt);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

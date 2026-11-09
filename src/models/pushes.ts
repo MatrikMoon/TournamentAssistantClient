@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { ReplayRecording } from './models.js';
 import { LeaderboardEntry } from './models.js';
 import { GameplayParameters } from './models.js';
 import { QualifierEvent } from './models.js';
@@ -43,6 +44,12 @@ export interface Push {
          * @generated from protobuf field: proto.packets.Push.QualifierScoreSubmitted qualifier_score_submtited = 3
          */
         qualifierScoreSubmtited: Push_QualifierScoreSubmitted;
+    } | {
+        oneofKind: "replaySubmitted";
+        /**
+         * @generated from protobuf field: proto.packets.Push.ReplaySubmitted replay_submitted = 4
+         */
+        replaySubmitted: Push_ReplaySubmitted;
     } | {
         oneofKind: undefined;
     };
@@ -138,13 +145,37 @@ export interface Push_QualifierScoreSubmitted {
      */
     qualifierScore?: LeaderboardEntry;
 }
+/**
+ * Sent when a player submits a replay. When the server could not store it the replay itself is in data, so listeners still get it once
+ *
+ * @generated from protobuf message proto.packets.Push.ReplaySubmitted
+ */
+export interface Push_ReplaySubmitted {
+    /**
+     * @generated from protobuf field: string tournament_id = 1
+     */
+    tournamentId: string;
+    /**
+     * @generated from protobuf field: proto.models.ReplayRecording replay = 2
+     */
+    replay?: ReplayRecording;
+    /**
+     * @generated from protobuf field: bool stored = 3
+     */
+    stored: boolean;
+    /**
+     * @generated from protobuf field: bytes data = 4
+     */
+    data: Uint8Array;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Push$Type extends MessageType<Push> {
     constructor() {
         super("proto.packets.Push", [
             { no: 1, name: "realtime_score", kind: "message", oneof: "data", T: () => RealtimeScore },
             { no: 2, name: "song_finished", kind: "message", oneof: "data", T: () => Push_SongFinished },
-            { no: 3, name: "qualifier_score_submtited", kind: "message", oneof: "data", T: () => Push_QualifierScoreSubmitted }
+            { no: 3, name: "qualifier_score_submtited", kind: "message", oneof: "data", T: () => Push_QualifierScoreSubmitted },
+            { no: 4, name: "replay_submitted", kind: "message", oneof: "data", T: () => Push_ReplaySubmitted }
         ]);
     }
     create(value?: PartialMessage<Push>): Push {
@@ -177,6 +208,12 @@ class Push$Type extends MessageType<Push> {
                         qualifierScoreSubmtited: Push_QualifierScoreSubmitted.internalBinaryRead(reader, reader.uint32(), options, (message.data as any).qualifierScoreSubmtited)
                     };
                     break;
+                case /* proto.packets.Push.ReplaySubmitted replay_submitted */ 4:
+                    message.data = {
+                        oneofKind: "replaySubmitted",
+                        replaySubmitted: Push_ReplaySubmitted.internalBinaryRead(reader, reader.uint32(), options, (message.data as any).replaySubmitted)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -198,6 +235,9 @@ class Push$Type extends MessageType<Push> {
         /* proto.packets.Push.QualifierScoreSubmitted qualifier_score_submtited = 3; */
         if (message.data.oneofKind === "qualifierScoreSubmtited")
             Push_QualifierScoreSubmitted.internalBinaryWrite(message.data.qualifierScoreSubmtited, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* proto.packets.Push.ReplaySubmitted replay_submitted = 4; */
+        if (message.data.oneofKind === "replaySubmitted")
+            Push_ReplaySubmitted.internalBinaryWrite(message.data.replaySubmitted, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -409,3 +449,73 @@ class Push_QualifierScoreSubmitted$Type extends MessageType<Push_QualifierScoreS
  * @generated MessageType for protobuf message proto.packets.Push.QualifierScoreSubmitted
  */
 export const Push_QualifierScoreSubmitted = new Push_QualifierScoreSubmitted$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Push_ReplaySubmitted$Type extends MessageType<Push_ReplaySubmitted> {
+    constructor() {
+        super("proto.packets.Push.ReplaySubmitted", [
+            { no: 1, name: "tournament_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "replay", kind: "message", T: () => ReplayRecording },
+            { no: 3, name: "stored", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 4, name: "data", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Push_ReplaySubmitted>): Push_ReplaySubmitted {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tournamentId = "";
+        message.stored = false;
+        message.data = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<Push_ReplaySubmitted>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Push_ReplaySubmitted): Push_ReplaySubmitted {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string tournament_id */ 1:
+                    message.tournamentId = reader.string();
+                    break;
+                case /* proto.models.ReplayRecording replay */ 2:
+                    message.replay = ReplayRecording.internalBinaryRead(reader, reader.uint32(), options, message.replay);
+                    break;
+                case /* bool stored */ 3:
+                    message.stored = reader.bool();
+                    break;
+                case /* bytes data */ 4:
+                    message.data = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Push_ReplaySubmitted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string tournament_id = 1; */
+        if (message.tournamentId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tournamentId);
+        /* proto.models.ReplayRecording replay = 2; */
+        if (message.replay)
+            ReplayRecording.internalBinaryWrite(message.replay, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* bool stored = 3; */
+        if (message.stored !== false)
+            writer.tag(3, WireType.Varint).bool(message.stored);
+        /* bytes data = 4; */
+        if (message.data.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.data);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.packets.Push.ReplaySubmitted
+ */
+export const Push_ReplaySubmitted = new Push_ReplaySubmitted$Type();

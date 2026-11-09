@@ -1,8 +1,8 @@
 export const masterAddress = "server.tournamentassistant.net";
 export const masterPort = "8676";
 export const masterApiPort = "8678";
-export const version = "1.3.3";
-export const versionCode = 1330;
+export const version = "1.4.0";
+export const versionCode = 1400;
 
 export type Permission =
   | "tournament:view_tournament_in_list"
